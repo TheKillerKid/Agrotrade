@@ -1,105 +1,108 @@
 package UI;
 
 import java.awt.BorderLayout;
-
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import java.awt.GridBagLayout;
-import javax.swing.JPasswordField;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
-import javax.swing.JTextField;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
-import javax.swing.JLabel;
-import javax.swing.JButton;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.SwingConstants;
-import javax.swing.JRadioButton;
-import java.awt.Font;
-import java.awt.Color;
-import javax.swing.ImageIcon;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 import javax.swing.JTextPane;
-import javax.swing.JLayeredPane;
-import javax.swing.JTabbedPane;
-import java.awt.ComponentOrientation;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Toolkit;
-import java.awt.Dialog.ModalExclusionType;
+import javax.swing.SwingConstants;
 
-public class LoginPage extends JFrame implements ActionListener {
+public class LoginPage extends JDialog {
 
-	private JPanel contentPane;
+	private final JPanel contentPanel = new JPanel();
+	
 	private JTextField textField;
 	private JPasswordField passwordField;
-	private JButton btnNewButton;
-	private JPanel panel;
+	private JLabel message;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					LoginPage frame = new LoginPage();
-					frame.setSize(640,480);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+		try {
+			LoginPage dialog = new LoginPage();
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
-	 * Create the frame.
+	 * Create the dialog.
 	 */
 	public LoginPage() {
-		setAlwaysOnTop(true);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 640, 480);
-		contentPane = new JPanel();
-		contentPane.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		contentPane.setBackground(Color.LIGHT_GRAY);
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
+		setBounds(300, 300, 750, 450);
+		getContentPane().setLayout(new BorderLayout());
 		
-		JLabel lblNewLabel = new JLabel("");
-		lblNewLabel.setBackground(Color.WHITE);
-		lblNewLabel.setIcon(new ImageIcon("C:\\Users\\krist\\eclipse-workspace\\Agrotrade\\logo.PNG"));
-		lblNewLabel.setBounds(109, 122, 126, 190);
-		contentPane.add(lblNewLabel);
+		contentPanel.setBorder(new EmptyBorder(100, 100, 100, 100));
+		getContentPane().add(contentPanel, BorderLayout.CENTER);
+		GridBagLayout gbl_contentPanel = new GridBagLayout();
+		gbl_contentPanel.columnWidths = new int[] {114, 275};
+		gbl_contentPanel.rowHeights = new int[]{0, 0, 0, 0};
+		gbl_contentPanel.columnWeights = new double[]{0.0, 1.0};
+		gbl_contentPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0};
+		contentPanel.setLayout(gbl_contentPanel);
 		
+		JLabel lblNewLabel = new JLabel("Email");
+		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
+		gbc_lblNewLabel.anchor = GridBagConstraints.WEST;
+		gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel.gridx = 0;
+		gbc_lblNewLabel.gridy = 0;
+		contentPanel.add(lblNewLabel, gbc_lblNewLabel);
+
 		textField = new JTextField();
-		textField.setBounds(306, 174, 144, 20);
-		contentPane.add(textField);
-		textField.setColumns(10);
+		GridBagConstraints gbc_textField = new GridBagConstraints();
+		gbc_textField.insets = new Insets(0, 0, 5, 0);
+		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textField.gridx = 1;
+		gbc_textField.gridy = 0;
+		contentPanel.add(textField, gbc_textField);
+		textField.setColumns(10);		
 		
+		JLabel lblNewLabel_1 = new JLabel("Password");
+		GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
+		gbc_lblNewLabel_1.anchor = GridBagConstraints.WEST;
+		gbc_lblNewLabel_1.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel_1.gridx = 0;
+		gbc_lblNewLabel_1.gridy = 1;
+		contentPanel.add(lblNewLabel_1, gbc_lblNewLabel_1);
+	
 		passwordField = new JPasswordField();
-		passwordField.setBounds(306, 205, 144, 20);
-		contentPane.add(passwordField);
+		GridBagConstraints gbc_passwordField = new GridBagConstraints();
+		gbc_passwordField.insets = new Insets(0, 0, 5, 0);
+		gbc_passwordField.fill = GridBagConstraints.HORIZONTAL;
+		gbc_passwordField.gridx = 1;
+		gbc_passwordField.gridy = 1;
+		contentPanel.add(passwordField, gbc_passwordField);
 		
-		btnNewButton = new JButton("Log In");
-		btnNewButton.setForeground(new Color(255, 255, 255));
-		btnNewButton.setBackground(new Color(0, 128, 0));
-		btnNewButton.setBounds(306, 236, 144, 29);
-		contentPane.add(btnNewButton);
+		message = new JLabel("");
+		GridBagConstraints gbc_message = new GridBagConstraints();
+		gbc_message.insets = new Insets(0, 0, 5, 0);
+		gbc_message.anchor = GridBagConstraints.WEST;
+		gbc_message.gridx = 1;
+		gbc_message.gridy = 2;
+		contentPanel.add(message, gbc_message);
 		
-		panel = new JPanel();
-		panel.setBackground(new Color(255, 255, 255));
-		panel.setBounds(79, 132, 421, 155);
-		contentPane.add(panel);
+		JButton btnNewButton = new JButton("Log In");
+		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
+		gbc_btnNewButton.anchor = GridBagConstraints.EAST;
+		gbc_btnNewButton.gridx = 1;
+		gbc_btnNewButton.gridy = 3;
+		contentPanel.add(btnNewButton, gbc_btnNewButton);
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
 }
