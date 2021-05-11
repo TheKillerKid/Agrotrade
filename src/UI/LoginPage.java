@@ -21,12 +21,23 @@ import javax.swing.SwingConstants;
 import javax.swing.JRadioButton;
 import java.awt.Font;
 import java.awt.Color;
+import javax.swing.ImageIcon;
+import javax.swing.JTextPane;
+import javax.swing.JLayeredPane;
+import javax.swing.JTabbedPane;
+import java.awt.ComponentOrientation;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.Dialog.ModalExclusionType;
 
 public class LoginPage extends JFrame implements ActionListener {
 
 	private JPanel contentPane;
 	private JTextField textField;
 	private JPasswordField passwordField;
+	private JButton btnNewButton;
+	private JPanel panel;
 
 	/**
 	 * Launch the application.
@@ -36,6 +47,7 @@ public class LoginPage extends JFrame implements ActionListener {
 			public void run() {
 				try {
 					LoginPage frame = new LoginPage();
+					frame.setSize(640,480);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -48,31 +60,41 @@ public class LoginPage extends JFrame implements ActionListener {
 	 * Create the frame.
 	 */
 	public LoginPage() {
+		setAlwaysOnTop(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 640, 480);
 		contentPane = new JPanel();
+		contentPane.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		contentPane.setBackground(Color.LIGHT_GRAY);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel lblNewLabel = new JLabel("New label");
-		lblNewLabel.setBounds(22, 23, 129, 194);
+		JLabel lblNewLabel = new JLabel("");
+		lblNewLabel.setBackground(Color.WHITE);
+		lblNewLabel.setIcon(new ImageIcon("C:\\Users\\krist\\eclipse-workspace\\Agrotrade\\logo.PNG"));
+		lblNewLabel.setBounds(109, 122, 126, 190);
 		contentPane.add(lblNewLabel);
 		
 		textField = new JTextField();
-		textField.setBounds(237, 75, 163, 20);
+		textField.setBounds(306, 174, 144, 20);
 		contentPane.add(textField);
 		textField.setColumns(10);
 		
 		passwordField = new JPasswordField();
-		passwordField.setBounds(237, 110, 163, 20);
+		passwordField.setBounds(306, 205, 144, 20);
 		contentPane.add(passwordField);
 		
-		JButton btnNewButton = new JButton("New button");
-		btnNewButton.setBackground(Color.BLACK);
-		btnNewButton.setForeground(Color.BLACK);
-		btnNewButton.setBounds(237, 147, 163, 23);
+		btnNewButton = new JButton("Log In");
+		btnNewButton.setForeground(new Color(255, 255, 255));
+		btnNewButton.setBackground(new Color(0, 128, 0));
+		btnNewButton.setBounds(306, 236, 144, 29);
 		contentPane.add(btnNewButton);
+		
+		panel = new JPanel();
+		panel.setBackground(new Color(255, 255, 255));
+		panel.setBounds(79, 132, 421, 155);
+		contentPane.add(panel);
 	}
 
 	@Override
