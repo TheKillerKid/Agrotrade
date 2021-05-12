@@ -1,5 +1,7 @@
 package Controller;
 
+import Model.Employee;
+
 //import EmployeeController;
 
 public class LoginController {
@@ -10,7 +12,9 @@ public class LoginController {
 
 
 	public Employee login(String email, String password) {
-		this.email = new email();
-		this.password = new password();
+		this.email = email;
+		this.password = password;
+		
+		return null;
 	}
 }
