@@ -2,8 +2,6 @@ package Controller;
 
 import Model.Employee;
 
-//import EmployeeController;
-
 public class LoginController {
 
 	private String email;
