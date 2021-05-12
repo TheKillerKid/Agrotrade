@@ -1,6 +1,6 @@
 package Controller;
 
-import Model.Employee;
+import Model.Model.Employee;
 
 public class LoginController {
 
