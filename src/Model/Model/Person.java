@@ -1,13 +1,13 @@
-package Model;
+package Model.Model;
 
 public class Person {
 	
-	private long id;
-	private String firstName;
-	private String lastName;
-	private Address address;
-	private String phone;
-	private String email;
+	protected long id;
+	protected String firstName;
+	protected String lastName;
+	protected Address address;
+	protected String phone;
+	protected String email;
 
 	public Person(long id, String firstName, String lastName, Address address, String phone, String email) {
 		this.id = id;
