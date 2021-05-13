@@ -13,6 +13,8 @@ public interface EmployeeIF {
 	
 	public long createEmployee(Employee employee) throws SQLException;
 	
+	public int updateEmployee(Employee employee) throws SQLException;
+	
 	public void deleteEmployee(long cprNo) throws SQLException;
 	
 	public ArrayList<Employee> getEmployeeList(long warehouseId) throws SQLException;
