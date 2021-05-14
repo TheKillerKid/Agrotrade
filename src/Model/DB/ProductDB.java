@@ -6,7 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+
+import Model.Model.Category;
 import Model.Model.Product;
+import Model.Model.Unit;
 //import Model.Model.Supplier;
 import Model.DBIF.ProductDBIF;
 
@@ -14,10 +17,12 @@ public class ProductDB implements ProductDBIF {
 	
 	public Product getProduct(long barcode) throws SQLException {
 		Product res = null;
-		String sqlProduct = String.format("SELECT * FROM Product WHERE barcode = '%s'");
+		String sqlProduct = "SELECT * FROM Product WHERE barcode = '?'";
 		
-		try (Statement s = DBConnection.getInstance().getConnection().createStatement()){
-			ResultSet rsProduct = s.executeQuery(sqlProduct);
+		try (Connection con = DBConnection.getInstance().getConnection()) {
+			PreparedStatement preparedStmt = con.prepareStatement(sqlProduct);
+			preparedStmt.setLong(1, barcode);
+			ResultSet rsProduct = preparedStmt.executeQuery();
 			if (rsProduct.next()) {
 				res = buildProduct(rsProduct);
 			}
@@ -28,30 +33,34 @@ public class ProductDB implements ProductDBIF {
 	}
 
 	private Product buildProduct(ResultSet rsProduct) throws SQLException {
-		return new Product(rsProduct.getLong(0), rsProduct.getLong("barcode"), rsProduct.getString("name"), rsProduct.getString("category"), rsProduct.getString("unit"), rsProduct.getInt("discount"), null);
+		return new Product(rsProduct.getLong(0), rsProduct.getLong("barcode"), rsProduct.getString("name"), new Category(rsProduct.getLong("category_id"), rsProduct.getString("category_name")), new Unit(rsProduct.getLong("unit_id"), rsProduct.getString("unit_name")), rsProduct.getInt("discount"), null);
 	}
 
 	@Override
 	public long createProduct(Product product) throws SQLException {
 		
-		String sqlCreate = "INSERT INTO Product (barcode, name) VALUES (?,?)"; 
+		String sqlCreate = "INSERT INTO Product (barcode, name) VALUES (?,?,?,?,?)";
 		
-		long rowID = 0;
+		long id;
 		long barcode = product.getBarcode();
 		String name = product.getName();
-		//int category_id = 1;			missing method 										
-		//int unit_id
-		long supplierID = product.getSupplier().getSupplierID();
+		long categoryId = product.getCategory().getId();													
+		long unitId = product.getUnit().getId();
+		long supplierId = product.getSupplier().getId();
+		
 		try (Connection con = DBConnection.getInstance().getConnection()) {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate);
 			preparedStmt.setLong(1, barcode);
 			preparedStmt.setString(2, name);
+			preparedStmt.setLong(3, categoryId);
+			preparedStmt.setLong(4, unitId);
+			preparedStmt.setLong(5, supplierId);
 		
-			rowID = preparedStmt.executeUpdate();
+			id = preparedStmt.executeUpdate();
 		} catch (SQLException e) {
 			throw e;
 		}
-		return rowID;
+		return id;
 	}
 
 	@Override
