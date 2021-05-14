@@ -28,5 +28,10 @@ public class EmployeeController {
 	}
 	
 	// needs create, update, delete and build object
+	
+	public String generateRandomPassword() {
+		String randomPassword = "";
+		return randomPassword;
+	}
 
 }

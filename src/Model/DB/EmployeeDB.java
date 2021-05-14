@@ -20,11 +20,15 @@ public class EmployeeDB implements EmployeeIF{
 	@Override
 	public Employee getEmployee(long cprNo) throws SQLException {
 		Employee res = null;
-		String sqlEmployee = String.format("SELECT * FROM Employee WHERE cprNo = '%s'", cprNo);
+		String sqlEmployee = ("SELECT * FROM Employee WHERE cprNo = '%s = ?'" );
 		System.out.println(sqlEmployee);
 		
-		try(Statement s = DBConnection.getInstance().getConnection().createStatement()) {
-			ResultSet rsEmployee = s.executeQuery(sqlEmployee);
+		try(Connection con = DBConnection.getInstance().getConnection()) {
+			PreparedStatement preparedStmt = con.prepareStatement(sqlEmployee);
+				
+				preparedStmt.setLong(1, cprNo);
+				
+				ResultSet rsEmployee = preparedStmt.executeQuery();
 			
 			if(rsEmployee.next()) {
 				Address address = addressDB.getAddress(rsEmployee.getLong("address_id"));
@@ -40,17 +44,21 @@ public class EmployeeDB implements EmployeeIF{
 	@Override
 	public Employee getEmployee(String email) throws SQLException {
 		Employee res = null;
-		String sqlEmployee = String.format("SELECT * FROM Employee WHERE email = '%s'", email);
+		String sqlEmployee = ("SELECT * FROM Employee WHERE cprNo = '%s = ?'" );
 		System.out.println(sqlEmployee);
 		
-		try(Statement s = DBConnection.getInstance().getConnection().createStatement()) {
-			ResultSet rsEmployee = s.executeQuery(sqlEmployee);
+		try(Connection con = DBConnection.getInstance().getConnection()) {
+			PreparedStatement preparedStmt = con.prepareStatement(sqlEmployee);
+				
+				preparedStmt.setString(1, email);
+				
+				ResultSet rsEmployee = preparedStmt.executeQuery();
 			
 			if(rsEmployee.next()) {
 				Address address = addressDB.getAddress(rsEmployee.getLong("address_id"));
 				res = buildEmployee(rsEmployee, address);
 			}
-			
+
 		} catch (SQLException e) {
 			throw e;
 		}
