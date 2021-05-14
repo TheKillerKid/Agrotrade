@@ -3,10 +3,9 @@ package Model.Model;
 public class LoginContainer {
 private static LoginContainer INSTANCE;
 	
-	private String email;
-	private boolean isLogged;
+	private Employee employee;
 
-	public LoginContainer() {
+	private LoginContainer() {
 	}
 	
     public static LoginContainer getInstance() {
@@ -17,22 +16,15 @@ private static LoginContainer INSTANCE;
         return INSTANCE;
     }
     
-    public String getEmailOfLoggedUser() {
-    	return email;
-    }
-    
     public boolean isLogged() {
-    	return isLogged;
+    	return employee != null;
     }
     
-    public boolean login(String email) {
-    	this.email = email;
-    	this.isLogged = true;
-    	return true;
+    public void login(Employee employee) {
+    	this.employee = employee;
     }
     
     public void logout() {
-    	email = null;
-    	isLogged = false;
+    	employee = null;
     }
 }

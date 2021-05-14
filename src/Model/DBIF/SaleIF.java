@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import Model.Model.Sale;
 
 public interface SaleIF {
-	public long createSale(Sale sale) throws SQLException;
+	public Sale createSale(Sale sale) throws SQLException;
 	 
 	//Sale update(Sale sale) throws SQLException;
 	 

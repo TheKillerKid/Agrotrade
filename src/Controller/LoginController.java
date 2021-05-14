@@ -2,6 +2,7 @@ package Controller;
 
 import java.sql.SQLException;
 
+import Model.Model.Employee;
 import Model.Model.LoginContainer;
 
 public class LoginController {
@@ -13,24 +14,23 @@ public class LoginController {
 
 	public LoginController() {
 		employeeController = new EmployeeController();
-		loginContainer = new LoginContainer();
+		loginContainer = LoginContainer.getInstance();
 	}
 	
 	public boolean isLogged() {
 		return loginContainer.isLogged();
 	}
 
-	public void login(String email, String password) throws SQLException {
-		this.employeeController.getEmployee(email);
-	}
-	
-	
-	public boolean isPasswordCorrect(String email, String password) throws SQLException {
-		if(password.equals(employeeController.generateRandomPassword(0, 0, 0))) {
-			return true;
-		}
-		else {
-			return false;
+	public void login(String email, String password) throws SQLException{
+		Employee employee;
+		try {
+			employee = this.employeeController.getEmployee(email);
+			if(employee != null && employee.getPassword() == password) {
+				loginContainer.login(employee);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
 	

@@ -10,8 +10,10 @@ import Model.Model.Sale;
 
 public class SaleDB implements SaleIF {
 
+	private OrderDB orderDB = new OrderDB();
+	
 	@Override
-	public long createSale(Sale sale) throws SQLException {
+	public Sale createSale(Sale sale) throws SQLException {
 		String sqlCreate = "INSERT INTO Sale (shipping_date, delivery_date, customer_id) VALUES (?,?,?)";
 		
 		long id = 0;
@@ -26,11 +28,10 @@ public class SaleDB implements SaleIF {
 			preparedStmt.setLong(3, customerId);
 			int saleId= preparedStmt.executeUpdate();
 			sale.setId(saleId); 
-			
-			
+			sale.setOrderId(orderDB.createOrder(sale)); 
 		} catch (SQLException e) {
 			throw e;
 		}
-		return id;
+		return sale;
 	}
 }
