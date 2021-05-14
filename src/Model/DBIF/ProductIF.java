@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import Model.Model.Product;
 
-public interface ProductDBIF {
+public interface ProductIF {
 	
 	Product getProduct(long barcode) throws SQLException;
 	

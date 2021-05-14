@@ -11,12 +11,14 @@ import Model.Model.Category;
 import Model.Model.Product;
 import Model.Model.Unit;
 //import Model.Model.Supplier;
-import Model.DBIF.ProductDBIF;
+import Model.DBIF.ProductIF;
 
-public class ProductDB implements ProductDBIF {
+public class ProductDB implements ProductIF {
+	
+	private PriceDB priceDB = new PriceDB();
 	
 	public Product getProduct(long barcode) throws SQLException {
-		Product res = null;
+		Product product = null;
 		String sqlProduct = "SELECT * FROM Product WHERE barcode = '?'";
 		
 		try (Connection con = DBConnection.getInstance().getConnection()) {
@@ -24,16 +26,26 @@ public class ProductDB implements ProductDBIF {
 			preparedStmt.setLong(1, barcode);
 			ResultSet rsProduct = preparedStmt.executeQuery();
 			if (rsProduct.next()) {
-				res = buildProduct(rsProduct);
+				product = buildProduct(rsProduct);
+				//priceDB.
 			}
 		} catch (SQLException e) {
 			throw e;
 		}
-		return res;
+		return product;
 	}
 
 	private Product buildProduct(ResultSet rsProduct) throws SQLException {
-		return new Product(rsProduct.getLong(0), rsProduct.getLong("barcode"), rsProduct.getString("name"), new Category(rsProduct.getLong("category_id"), rsProduct.getString("category_name")), new Unit(rsProduct.getLong("unit_id"), rsProduct.getString("unit_name")), rsProduct.getInt("discount"), null);
+		return new Product(rsProduct.getLong("id"), 
+						   rsProduct.getLong("barcode"), 
+						   rsProduct.getString("name"), 
+						   new Category(rsProduct.getLong("category_id"), rsProduct.getString("category_name")), 
+					       null, 
+						   null, 
+						   null, 
+						   new Unit(rsProduct.getLong("unit_id"), rsProduct.getString("unit_name")), 
+						   rsProduct.getInt("discount"), 
+						   null);
 	}
 
 	@Override
