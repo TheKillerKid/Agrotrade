@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 import Model.DBIF.EmployeeIF;
@@ -44,7 +43,7 @@ public class EmployeeDB implements EmployeeIF{
 	@Override
 	public Employee getEmployee(String email) throws SQLException {
 		Employee res = null;
-		String sqlEmployee = ("SELECT * FROM Employee WHERE cprNo = '%s = ?'" );
+		String sqlEmployee = ("SELECT * FROM Employee WHERE email = '%s = ?'" );
 		System.out.println(sqlEmployee);
 		
 		try(Connection con = DBConnection.getInstance().getConnection()) {
@@ -68,7 +67,7 @@ public class EmployeeDB implements EmployeeIF{
 	String sqlCreate = "INSERT INTO Employee (firstName, lastName, address, phone, email, password, cprNo, department, position, warehouse) VALUES (?,?,?,?,?,?,?,?,?,?)";
 	@Override
 	public long createEmployee(Employee employee) throws SQLException {
-		long rowID = 0;
+		long id = 0;
 		String firstName = employee.getFirstName();
 		String lastName = employee.getLastName();
 		Address address = employee.getAddress();
@@ -93,11 +92,11 @@ public class EmployeeDB implements EmployeeIF{
 			preparedStmt.setString(9, position);
 			//preparedStmt.setWarehouse(10, warehouse);
 			
-			rowID = preparedStmt.executeUpdate();
+			id = preparedStmt.executeUpdate();
 		} catch (SQLException e) {
 			throw e;
 		}
-		return rowID;
+		return id;
 	}
 
 	

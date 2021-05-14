@@ -16,6 +16,10 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+
+import Controller.EmployeeController;
+import Controller.LoginController;
+
 import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
 import java.awt.Color;
@@ -25,16 +29,18 @@ import javax.swing.JSplitPane;
 import javax.swing.UIManager;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.SQLException;
 
 public class LoginPage extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	
-	private JTextField txtLabel;
+	private JTextField emailField;
 	private JPasswordField passwordField;
-	private JLabel message;
-	private JLabel lblNewLabel_2;
+	private JLabel messageLabel;
+	private JLabel logo;
 	private static HomePage homePage = new HomePage(); 
+	private LoginController loginCtrl = new LoginController();
 
 	/**
 	 * Launch the application.
@@ -61,19 +67,19 @@ public class LoginPage extends JDialog {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		GridBagLayout gbl_contentPanel = new GridBagLayout();
 		gbl_contentPanel.columnWidths = new int[] {114, 0, 275};
-		gbl_contentPanel.rowHeights = new int[] {0, 0, 0, 0, 0, 30};
+		gbl_contentPanel.rowHeights = new int[] {0, 0, 0, 0, 20};
 		gbl_contentPanel.columnWeights = new double[]{0.0, 0.0, 0.0};
-		gbl_contentPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+		gbl_contentPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0};
 		contentPanel.setLayout(gbl_contentPanel);
 		
-		lblNewLabel_2 = new JLabel("");
-		GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
-		gbc_lblNewLabel_2.insets = new Insets(0, 0, 5, 0);
-		gbc_lblNewLabel_2.gridx = 2;
-		gbc_lblNewLabel_2.gridy = 0;
-		contentPanel.add(lblNewLabel_2, gbc_lblNewLabel_2);
-		lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_2.setIcon(new ImageIcon("/Users/adampetricek/eclipse-workspace/Agrotrade/logo.PNG"));
+		logo = new JLabel("");
+		GridBagConstraints gbc_logo = new GridBagConstraints();
+		gbc_logo.insets = new Insets(0, 0, 5, 0);
+		gbc_logo.gridx = 2;
+		gbc_logo.gridy = 0;
+		contentPanel.add(logo, gbc_logo);
+		logo.setHorizontalAlignment(SwingConstants.CENTER);
+		logo.setIcon(new ImageIcon("/Users/adampetricek/eclipse-workspace/Agrotrade/logo.PNG"));
 		
 		JLabel lblNewLabel = new JLabel("Email");
 		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
@@ -83,16 +89,16 @@ public class LoginPage extends JDialog {
 		gbc_lblNewLabel.gridy = 1;
 		contentPanel.add(lblNewLabel, gbc_lblNewLabel);
 		
-				txtLabel = new JTextField();
-				txtLabel.setBackground(UIManager.getColor("Button.background"));
-				txtLabel.setToolTipText("");
-				GridBagConstraints gbc_txtLabel = new GridBagConstraints();
-				gbc_txtLabel.insets = new Insets(0, 0, 5, 0);
-				gbc_txtLabel.fill = GridBagConstraints.HORIZONTAL;
-				gbc_txtLabel.gridx = 2;
-				gbc_txtLabel.gridy = 1;
-				contentPanel.add(txtLabel, gbc_txtLabel);
-				txtLabel.setColumns(10);		
+				emailField = new JTextField();
+				emailField.setBackground(UIManager.getColor("Button.background"));
+				emailField.setToolTipText("");
+				GridBagConstraints gbc_emailField = new GridBagConstraints();
+				gbc_emailField.insets = new Insets(0, 0, 5, 0);
+				gbc_emailField.fill = GridBagConstraints.HORIZONTAL;
+				gbc_emailField.gridx = 2;
+				gbc_emailField.gridy = 1;
+				contentPanel.add(emailField, gbc_emailField);
+				emailField.setColumns(10);		
 				
 				JLabel lblNewLabel_1 = new JLabel("Password");
 				GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
@@ -111,21 +117,18 @@ public class LoginPage extends JDialog {
 					gbc_passwordField.gridy = 2;
 					contentPanel.add(passwordField, gbc_passwordField);
 					
-					message = new JLabel("");
-					GridBagConstraints gbc_message = new GridBagConstraints();
-					gbc_message.insets = new Insets(0, 0, 5, 0);
-					gbc_message.anchor = GridBagConstraints.WEST;
-					gbc_message.gridx = 2;
-					gbc_message.gridy = 3;
-					contentPanel.add(message, gbc_message);
-					
 					JButton btnNewButton = new JButton("Log In");
 					btnNewButton.addMouseListener(new MouseAdapter() {
 						@Override
 						public void mouseClicked(MouseEvent e) {
-							homePage.start();
-							dispose();
-							
+							try {
+								String password = String.valueOf(passwordField.getPassword());
+								loginCtrl.login(emailField.getText(), password);
+								homePage.start();
+								dispose();
+							} catch (SQLException e1) {
+								messageLabel.setText("Wrong credentials. Please try again or contact the administrator.");
+							}
 						}
 					});
 					btnNewButton.setBackground(Color.WHITE);
@@ -133,8 +136,15 @@ public class LoginPage extends JDialog {
 					gbc_btnNewButton.insets = new Insets(0, 0, 5, 0);
 					gbc_btnNewButton.anchor = GridBagConstraints.EAST;
 					gbc_btnNewButton.gridx = 2;
-					gbc_btnNewButton.gridy = 4;
+					gbc_btnNewButton.gridy = 3;
 					contentPanel.add(btnNewButton, gbc_btnNewButton);
+					
+					messageLabel = new JLabel("");
+					messageLabel.setForeground(Color.RED);
+					GridBagConstraints gbc_messageLabel = new GridBagConstraints();
+					gbc_messageLabel.anchor = GridBagConstraints.WEST;
+					gbc_messageLabel.gridx = 2;
+					gbc_messageLabel.gridy = 4;
+					contentPanel.add(messageLabel, gbc_messageLabel);
 	}
-
 }

@@ -1,7 +1,6 @@
 package Controller;
 
 import java.security.SecureRandom;
-import org.
 import java.sql.SQLException;
 
 import Model.DB.EmployeeDB;
