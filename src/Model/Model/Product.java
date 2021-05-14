@@ -11,8 +11,9 @@ public class Product {
 	//private Price leasePrice;
 	private String unit;
 	private int discount;
+	private Supplier supplier;
 	
-	public Product(long id, long barcode, String name, String category, String unit, int discount) {				//need of adding prices
+	public Product(long id, long barcode, String name, String category, String unit, int discount, Supplier supplier) {				//need of adding prices
 		this.id = id;
 		this.barcode = barcode;
 		this.name = name;
@@ -67,5 +68,9 @@ public class Product {
 
 	public void setDiscount(int discount) {
 		this.discount = discount;
+	}
+
+	public Supplier getSupplier() {
+		return supplier;
 	}
 }

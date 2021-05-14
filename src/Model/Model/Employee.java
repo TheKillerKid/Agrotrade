@@ -4,7 +4,7 @@ public class Employee extends Person {
 	
 	private String password;
 	private long cprNo;
-	private String deparment;
+	private String department;
 	private String position;
 	private Warehouse warehouse;
 	
@@ -13,7 +13,7 @@ public class Employee extends Person {
 		super(id, firstName, lastName, address, phone, email);
 		this.password = password;
 		this.cprNo = cprNo;
-		this.deparment = department;
+		this.department = department;
 		this.position = position;
 		this.warehouse = warehouse;
 	}
@@ -38,13 +38,13 @@ public class Employee extends Person {
 	}
 
 
-	public String getDeparment() {
-		return deparment;
+	public String getDepartment() {
+		return department;
 	}
 
 
-	public void setDeparment(String deparment) {
-		this.deparment = deparment;
+	public void setDepartment(String department) {
+		this.department = department;
 	}
 
 
@@ -57,8 +57,8 @@ public class Employee extends Person {
 		this.position = position;	
 	}
 	
-	public void getWarehouse(Warehouse warehouse) {
-		this.warehouse = warehouse;
+	public Warehouse getWarehouse() {
+		return warehouse;
 	}
 	
 	public void setWarehouse(Warehouse warehouse) {

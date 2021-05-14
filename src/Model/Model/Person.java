@@ -1,4 +1,4 @@
-package Model.Model;
+ package Model.Model;
 
 public class Person {
 	
@@ -26,12 +26,12 @@ public class Person {
 		this.id = id;
 	}
 
-	public String getFristName() {
+	public String getFirstName() {
 		return firstName;
 	}
 
-	public void setFristName(String fristName) {
-		this.firstName = fristName;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
 	public String getLastName() {
@@ -42,12 +42,12 @@ public class Person {
 		this.lastName = lastName;
 	}
 
-	public Address getAdress() {
+	public Address getAddress() {
 		return address;
 	}
 
-	public void setAdress(Address adress) {
-		this.address = adress;
+	public void setAddress(Address address) {
+		this.address = address;
 	}
 
 	public String getPhone() {
