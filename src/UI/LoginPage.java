@@ -23,6 +23,8 @@ import javax.swing.ImageIcon;
 import java.awt.SystemColor;
 import javax.swing.JSplitPane;
 import javax.swing.UIManager;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class LoginPage extends JDialog {
 
@@ -32,6 +34,7 @@ public class LoginPage extends JDialog {
 	private JPasswordField passwordField;
 	private JLabel message;
 	private JLabel lblNewLabel_2;
+	private static HomePage homePage = new HomePage(); 
 
 	/**
 	 * Launch the application.
@@ -50,7 +53,7 @@ public class LoginPage extends JDialog {
 	 * Create the dialog.
 	 */
 	public LoginPage() {
-		setBounds(300, 300, 750, 450);
+		setBounds(300, 300, 740, 480);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(Color.WHITE);
 		
@@ -117,6 +120,14 @@ public class LoginPage extends JDialog {
 					contentPanel.add(message, gbc_message);
 					
 					JButton btnNewButton = new JButton("Log In");
+					btnNewButton.addMouseListener(new MouseAdapter() {
+						@Override
+						public void mouseClicked(MouseEvent e) {
+							homePage.start();
+							dispose();
+							
+						}
+					});
 					btnNewButton.setBackground(Color.WHITE);
 					GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
 					gbc_btnNewButton.insets = new Insets(0, 0, 5, 0);

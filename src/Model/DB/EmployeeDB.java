@@ -14,6 +14,8 @@ import Model.Model.Employee;
 import Model.Model.Warehouse;
 
 public class EmployeeDB implements EmployeeIF{
+	
+	private AddressDB addressDB = new AddressDB();
 
 	@Override
 	public Employee getEmployee(long cprNo) throws SQLException {
@@ -25,7 +27,7 @@ public class EmployeeDB implements EmployeeIF{
 			ResultSet rsEmployee = s.executeQuery(sqlEmployee);
 			
 			if(rsEmployee.next()) {
-				Address address = AddressDB.getAddress(rsEmployee.getLong("address_id"));
+				Address address = addressDB.getAddress(rsEmployee.getLong("address_id"));
 				res = buildEmployee(rsEmployee, address);
 			}
 
@@ -45,7 +47,7 @@ public class EmployeeDB implements EmployeeIF{
 			ResultSet rsEmployee = s.executeQuery(sqlEmployee);
 			
 			if(rsEmployee.next()) {
-				Address address = AddressDB.getAddress(rsEmployee.getLong("address_id"));
+				Address address = addressDB.getAddress(rsEmployee.getLong("address_id"));
 				res = buildEmployee(rsEmployee, address);
 			}
 			
@@ -203,7 +205,24 @@ public class EmployeeDB implements EmployeeIF{
 	
 	@Override
 	public void deleteEmployee(long cprNo) throws SQLException {
-		// TODO Auto-generated method stub
+		 /* Connection connection = null;
+	       Statement stmt = null;
+		
+		try
+		{ (Statement s = DBConnection.getInstance().getConnection().createStatement()) {
+			
+			stmt.execute("DELETE FROM EMPLOYEE WHERE CPRNO >= 1");
+		}catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            try {   
+                stmt.close();
+                connection.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            	}
+        	}
+		}*/
 		
 	}
 
