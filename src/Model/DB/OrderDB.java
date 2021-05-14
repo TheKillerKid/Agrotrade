@@ -37,8 +37,7 @@ public class OrderDB implements OrderIF {
 			preparedStmt.setLong(6, leaseId);
 			preparedStmt.setLong(7, purchaseId);
 			
-			long orderId = preparedStmt.executeUpdate();
-			order.setOrderId(orderId);
+			id = preparedStmt.executeUpdate();
 		} catch(SQLException e) {
 			throw e;
 		}

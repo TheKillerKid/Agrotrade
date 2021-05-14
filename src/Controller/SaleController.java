@@ -3,7 +3,6 @@ package Controller;
 import java.sql.SQLException;
 
 import Model.DB.SaleDB;
-import Model.Model.Order;
 import Model.Model.Sale;
 
 public class SaleController {
