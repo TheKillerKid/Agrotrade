@@ -5,15 +5,15 @@ public class Product {
 	private long id;
 	private long barcode;
 	private String name;
-	private String category;
+	private Category category;
 	//private Price purchasePrice;
 	//private Price salePrice;
 	//private Price leasePrice;
-	private String unit;
+	private Unit unit;
 	private int discount;
 	private Supplier supplier;
 	
-	public Product(long id, long barcode, String name, String category, String unit, int discount, Supplier supplier) {				//need of adding prices
+	public Product(long id, long barcode, String name, Category category, Unit unit, int discount, Supplier supplier) {				//need of adding prices
 		this.id = id;
 		this.barcode = barcode;
 		this.name = name;
@@ -46,19 +46,19 @@ public class Product {
 		this.name = name;
 	}
 
-	public String getCategory() {
+	public Category getCategory() {
 		return category;
 	}
 
-	public void setCategory(String category) {
+	public void setCategory(Category category) {
 		this.category = category;
 	}
 
-	public String getUnit() {
+	public Unit getUnit() {
 		return unit;
 	}
 
-	public void setUnit(String unit) {
+	public void setUnit(Unit unit) {
 		this.unit = unit;
 	}
 
