@@ -19,24 +19,31 @@ public class Price {
 	public long getId() {
 		return id;
 	}
+	
 	public void setId(long id) {
 		this.id = id;
 	}
+	
 	public double getAmount() {
 		return amount;
 	}
+	
 	public void setAmount(double amount) {
 		this.amount = amount;
 	}
+	
 	public LocalDate getStartDate() {
 		return startDate;
 	}
+	
 	public void setStartDate(LocalDate startDate) {
 		this.startDate = startDate;
 	}
+	
 	public String getPriceType() {
 		return priceType;
 	}
+	
 	public void setPriceType(String priceType) {
 		this.priceType = priceType;
 	}
