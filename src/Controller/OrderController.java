@@ -8,14 +8,14 @@ import Model.Model.Sale;
 public class OrderController {
 	private SaleController saleCtrl = new SaleController();
 	
-	public long createOrder(Order order) {
+	public Sale createOrder(Order order) throws SQLException{
 		if(order instanceof Sale) {
 			try {
 				return this.saleCtrl.createSale((Sale)order);
 			} catch (SQLException e) {
-				e.printStackTrace();
+				throw e;
 			}
 		}
-		return 0;
+		return null;
 	}
 }
