@@ -1,5 +1,7 @@
 package Controller;
 
+import java.security.SecureRandom;
+import org.
 import java.sql.SQLException;
 
 import Model.DB.EmployeeDB;
@@ -29,9 +31,20 @@ public class EmployeeController {
 	
 	// needs create, update, delete and build object
 	
-	public String generateRandomPassword() {
-		String randomPassword = "";
-		return randomPassword;
-	}
-
+	public String generateRandomPassword(int len, int randNumOrigin, int randNumBound) {
+		  SecureRandom random = new SecureRandom();
+	        return random.ints(randNumOrigin, randNumBound + 1)
+	                .filter(i -> Character.isAlphabetic(i) || Character.isDigit(i))
+	                .limit(len)
+	                .collect(StringBuilder::new, StringBuilder::appendCodePoint,
+	                        StringBuilder::append)
+	                .toString();
+	    }
+	 
+	public void printPassword(String[] args) {
+	        int len = 10;
+	        int randNumOrigin = 48, randNumBound = 122;
+	 
+	        System.out.println(generateRandomPassword(len, randNumOrigin, randNumBound));
+	} 
 }

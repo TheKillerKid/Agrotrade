@@ -26,7 +26,7 @@ public class LoginController {
 	
 	
 	public boolean isPasswordCorrect(String email, String password) throws SQLException {
-		if(password.equals(employeeController.generateRandomPassword())) {
+		if(password.equals(employeeController.generateRandomPassword(0, 0, 0))) {
 			return true;
 		}
 		else {
