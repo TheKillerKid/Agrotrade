@@ -7,15 +7,15 @@ public class StockProduct {
 	private int minStock;
 	private int maxStock;
 	private Product product;
-	private long warehouseID;
+	private long warehouseId;
 	
-	public StockProduct(long id, int amount, int minStock, int maxStock, Product product, long warehouseID) {
+	public StockProduct(long id, int amount, int minStock, int maxStock, Product product, long warehouseId) {
 		this.id = id;
 		this.amount = amount;
 		this.minStock = minStock;
 		this.maxStock = maxStock;
 		this.product = product;
-		this.warehouseID = warehouseID;
+		this.warehouseId = warehouseId;
 	}
 	
 	public long getId() {
@@ -58,11 +58,11 @@ public class StockProduct {
 		this.product = product;
 	}
 	
-	public long getWarehouseID() {
-		return warehouseID;
+	public long getWarehouseId() {
+		return warehouseId;
 	}
 	
-	public void setWarehouseID(long warehouseID) {
-		this.warehouseID = warehouseID;
+	public void setWarehouseId(long warehouseId) {
+		this.warehouseId = warehouseId;
 	}
 }

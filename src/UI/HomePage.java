@@ -15,6 +15,20 @@ import javax.swing.JToolBar;
 import javax.swing.JMenuBar;
 import java.awt.Color;
 import javax.swing.JMenu;
+import javax.swing.JInternalFrame;
+import java.awt.GridBagLayout;
+import javax.swing.BoxLayout;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.RowSpec;
+import com.jgoodies.forms.layout.FormSpecs;
+import java.awt.Panel;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 
 public class HomePage extends JDialog {
 
@@ -41,7 +55,6 @@ public class HomePage extends JDialog {
 	 */
 	public HomePage() {
 		setBounds(100, 100, 740, 480);
-		getContentPane().setLayout(new BorderLayout());
 		
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setForeground(Color.BLACK);
@@ -55,5 +68,98 @@ public class HomePage extends JDialog {
 		
 		JMenu mnNewMenu_2 = new JMenu("Person");
 		menuBar.add(mnNewMenu_2);
+		
+		JMenuItem mntmNewMenuItem = new JMenuItem("Employee Overview");
+		mnNewMenu_2.add(mntmNewMenuItem);
+		
+		JMenuItem mntmCreateEmployee = new JMenuItem("Create Employee");
+		mnNewMenu_2.add(mntmCreateEmployee);
+		
+		JMenuItem mntmNewMenuItem_2 = new JMenuItem("Edit Employee");
+		mnNewMenu_2.add(mntmNewMenuItem_2);
+		
+		JMenuItem mntmNewMenuItem_3 = new JMenuItem("Customer Overview");
+		mnNewMenu_2.add(mntmNewMenuItem_3);
+		
+		JMenuItem mntmNewMenuItem_4 = new JMenuItem("Create Customer ");
+		mnNewMenu_2.add(mntmNewMenuItem_4);
+				
+		
+		JMenuItem mntmNewMenuItem_5 = new JMenuItem("Edit Customer");
+		mnNewMenu_2.add(mntmNewMenuItem_5);
+		
+		JMenuItem mntmNewMenuItem_7 = new JMenuItem("Supplier Overview");
+		mnNewMenu_2.add(mntmNewMenuItem_7);
+		
+		JMenuItem mntmNewMenuItem_6 = new JMenuItem("Create Supplier");
+		mnNewMenu_2.add(mntmNewMenuItem_6);
+		
+		JMenuItem mntmNewMenuItem_8 = new JMenuItem("Edit Employee");
+		mnNewMenu_2.add(mntmNewMenuItem_8);
+		GridBagLayout gridBagLayout = new GridBagLayout();
+		gridBagLayout.columnWidths = new int[]{0, 0, 0, 0};
+		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0};
+		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 1.0, Double.MIN_VALUE};
+		getContentPane().setLayout(gridBagLayout);
+		
+		JPanel panel = new JPanel();
+		GridBagConstraints gbc_panel = new GridBagConstraints();
+		gbc_panel.fill = GridBagConstraints.BOTH;
+		gbc_panel.gridx = 2;
+		gbc_panel.gridy = 2;
+		getContentPane().add(panel, gbc_panel);
+		GridBagLayout gbl_panel = new GridBagLayout();
+		gbl_panel.columnWidths = new int[]{0, 0, 0};
+		gbl_panel.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0};
+		gbl_panel.columnWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
+		gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		panel.setLayout(gbl_panel);
+		
+		JButton btnNewButton = new JButton("New button");
+		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
+		gbc_btnNewButton.insets = new Insets(0, 0, 5, 0);
+		gbc_btnNewButton.gridx = 0;
+		gbc_btnNewButton.gridy = 0;
+		panel.add(btnNewButton, gbc_btnNewButton);
+		
+		JButton btnNewButton_1 = new JButton("New button");
+		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
+		gbc_btnNewButton_1.insets = new Insets(0, 0, 5, 0);
+		gbc_btnNewButton_1.gridx = 0;
+		gbc_btnNewButton_1.gridy = 1;
+		panel.add(btnNewButton_1, gbc_btnNewButton_1);
+		
+		JButton btnNewButton_2 = new JButton("New button");
+		GridBagConstraints gbc_btnNewButton_2 = new GridBagConstraints();
+		gbc_btnNewButton_2.insets = new Insets(0, 0, 5, 0);
+		gbc_btnNewButton_2.gridx = 0;
+		gbc_btnNewButton_2.gridy = 2;
+		panel.add(btnNewButton_2, gbc_btnNewButton_2);
+		
+		JButton btnNewButton_3 = new JButton("Create Employee");
+		btnNewButton_3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				CreateEmployeePage.start();
+			}
+		});
+		GridBagConstraints gbc_btnNewButton_3 = new GridBagConstraints();
+		gbc_btnNewButton_3.insets = new Insets(0, 0, 5, 0);
+		gbc_btnNewButton_3.gridx = 1;
+		gbc_btnNewButton_3.gridy = 0;
+		panel.add(btnNewButton_3, gbc_btnNewButton_3);
+		
+		JButton btnNewButton_4 = new JButton("New button");
+		GridBagConstraints gbc_btnNewButton_4 = new GridBagConstraints();
+		gbc_btnNewButton_4.insets = new Insets(0, 0, 5, 0);
+		gbc_btnNewButton_4.gridx = 1;
+		gbc_btnNewButton_4.gridy = 1;
+		panel.add(btnNewButton_4, gbc_btnNewButton_4);
+		
+		JButton btnNewButton_5 = new JButton("New button");
+		GridBagConstraints gbc_btnNewButton_5 = new GridBagConstraints();
+		gbc_btnNewButton_5.gridx = 1;
+		gbc_btnNewButton_5.gridy = 2;
+		panel.add(btnNewButton_5, gbc_btnNewButton_5);
 	}
 }

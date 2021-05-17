@@ -19,7 +19,7 @@ public class EmployeeDB implements EmployeeIF{
 	@Override
 	public Employee getEmployee(long cprNo) throws SQLException {
 		Employee res = null;
-		String sqlEmployee = ("SELECT * FROM Employee WHERE cprNo = '%s = ?'" );
+		String sqlEmployee = ("SELECT * FROM Employee WHERE cprNo = ?" );
 		System.out.println(sqlEmployee);
 		
 		try(Connection con = DBConnection.getInstance().getConnection()) {
@@ -43,7 +43,7 @@ public class EmployeeDB implements EmployeeIF{
 	@Override
 	public Employee getEmployee(String email) throws SQLException {
 		Employee res = null;
-		String sqlEmployee = ("SELECT * FROM Employee WHERE email = %s = ?" );
+		String sqlEmployee = ("SELECT * FROM Employee WHERE email = ?" );
 		System.out.println(sqlEmployee);
 		
 		try(Connection con = DBConnection.getInstance().getConnection()) {
@@ -64,7 +64,7 @@ public class EmployeeDB implements EmployeeIF{
 		return res;
 	}
 
-	String sqlCreate = "INSERT INTO Employee (firstName, lastName, address, phone, email, password, cprNo, department, position, warehouse) VALUES (?,?,?,?,?,?,?,?,?,?)";
+	String sqlCreate = "INSERT INTO Employee (firstName, lastName, address, phone, email, password, cpr_no, department, position, warehouse) VALUES (?,?,?,?,?,?,?,?,?,?)";
 	@Override
 	public long createEmployee(Employee employee) throws SQLException {
 		long id = 0;
@@ -83,14 +83,14 @@ public class EmployeeDB implements EmployeeIF{
 			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate);
 			preparedStmt.setString(1, firstName);
 			preparedStmt.setString(2, lastName);
-			//preparedStmt.setAddress(3, address);
+			preparedStmt.setLong(3, address.getId());
 			preparedStmt.setString(4, phone);
 			preparedStmt.setString(5, email);
 			preparedStmt.setString(6, password);
 			preparedStmt.setLong(7, cprNo);
 			preparedStmt.setString(8, department);
 			preparedStmt.setString(9, position);
-			//preparedStmt.setWarehouse(10, warehouse);
+			preparedStmt.setLong(10, warehouse.getId());
 			
 			id = preparedStmt.executeUpdate();
 		} catch (SQLException e) {
@@ -115,8 +115,7 @@ public class EmployeeDB implements EmployeeIF{
 		String position = employee.getPosition();
 		Warehouse warehouse = employee.getWarehouse();
 		
-		try (Connection con = DBConnection.getInstance().getConnection()) {
-		
+		try (Connection con = DBConnection.getInstance().getConnection()) {		
 		
 		StringBuffer columns = new StringBuffer( 255 );
 		 
@@ -241,7 +240,7 @@ public class EmployeeDB implements EmployeeIF{
 
 
 	private Employee buildEmployee(ResultSet rs, Address address) throws SQLException {
-		return new Employee(rs.getLong("id"), rs.getString("first_name"), rs.getString("last_name"), address, rs.getString("phone"), rs.getString("email"), null, rs.getLong("cprNo"), rs.getString("department"), rs.getString("position"), null);
+		return new Employee(rs.getLong("id"), rs.getString("first_name"), rs.getString("last_name"), address, rs.getString("phone"), rs.getString("email"), rs.getString("password"), rs.getLong("cpr_no"), rs.getString("department"), rs.getString("position"), null);
 	}
 }
 
