@@ -33,7 +33,7 @@ public class ProductDB implements ProductIF {
 				product.setSalePrice(priceDb.getPrice(product.getId(), PriceType.SALE));
 				product.setLeasePrice(priceDb.getPrice(product.getId(), PriceType.LEASE));
 				product.setPurchasePrice(priceDb.getPrice(product.getId(), PriceType.PURCHASE));
-				product.setSupplier(supplierDb.getSupplierById(product.getSupplier().getSupplierId()));
+				product.setSupplier(supplierDb.getSupplierById(product.getSupplier().getId()));
 			}
 		} catch (SQLException e) {
 			throw e;
