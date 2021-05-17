@@ -19,6 +19,7 @@ public class OrderDB implements OrderIF {
 		String note = order.getNote();
 		LocalDate creationDate = order.getCreationDate();
 		long warehouseId = order.getWarehouse().getId();
+		
 		Long saleId = null;
 		if(order instanceof Sale) {
 			Sale sale = (Sale)order;
@@ -31,7 +32,7 @@ public class OrderDB implements OrderIF {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate);
 			preparedStmt.setDouble(1, totalPrice);
 			preparedStmt.setString(2, note);
-			preparedStmt.setObject(3, creationDate);
+			preparedStmt.setObject(3, java.sql.Date.valueOf(creationDate));
 			preparedStmt.setLong(4, warehouseId);
 			preparedStmt.setLong(5, saleId);
 			preparedStmt.setLong(6, leaseId);
