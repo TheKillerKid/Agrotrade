@@ -115,8 +115,7 @@ public class EmployeeDB implements EmployeeIF{
 		String position = employee.getPosition();
 		Warehouse warehouse = employee.getWarehouse();
 		
-		try (Connection con = DBConnection.getInstance().getConnection()) {
-		
+		try (Connection con = DBConnection.getInstance().getConnection()) {		
 		
 		StringBuffer columns = new StringBuffer( 255 );
 		 
