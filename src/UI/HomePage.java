@@ -74,6 +74,11 @@ public class HomePage extends JDialog {
 		
 		JMenuItem mntmCreateEmployee = new JMenuItem("Create Employee");
 		mnNewMenu_2.add(mntmCreateEmployee);
+		mntmCreateEmployee.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				CreateEmployeePage.start();				
+			}
+		});
 		
 		JMenuItem mntmNewMenuItem_2 = new JMenuItem("Edit Employee");
 		mnNewMenu_2.add(mntmNewMenuItem_2);
@@ -83,7 +88,6 @@ public class HomePage extends JDialog {
 		
 		JMenuItem mntmNewMenuItem_4 = new JMenuItem("Create Customer ");
 		mnNewMenu_2.add(mntmNewMenuItem_4);
-				
 		
 		JMenuItem mntmNewMenuItem_5 = new JMenuItem("Edit Customer");
 		mnNewMenu_2.add(mntmNewMenuItem_5);
