@@ -5,11 +5,11 @@ import java.time.LocalDate;
 public class OrderLine {
 
 	private long id;
-	private LocalDate requestedAmount;
+	private int requestedAmount;
 	private int amount;
 	private StockProduct stockProduct;
 	
-	public OrderLine(long id, LocalDate requestedAmount, int amount, StockProduct stockProduct) {	
+	public OrderLine(long id, int requestedAmount, int amount, StockProduct stockProduct) {	
 		this.id = id;
 		this.requestedAmount = requestedAmount;
 		this.amount = amount;
@@ -22,10 +22,10 @@ public class OrderLine {
 	public void setId(long id) {
 		this.id = id;
 	}
-	public LocalDate getRequestedAmount() {
+	public int getRequestedAmount() {
 		return requestedAmount;
 	}
-	public void setRequestedAmount(LocalDate requestedAmount) {
+	public void setRequestedAmount(int requestedAmount) {
 		this.requestedAmount = requestedAmount;
 	}
 	public int getAmount() {
