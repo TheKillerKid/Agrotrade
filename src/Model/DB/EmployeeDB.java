@@ -14,13 +14,13 @@ import Model.Model.Warehouse;
 
 public class EmployeeDB implements EmployeeIF{
 	
-	private AddressDB addressDB = new AddressDB();
+	private AddressDB addressDb = new AddressDB();
+	private WarehouseDB warehouseDb = new WarehouseDB();
 
 	@Override
 	public Employee getEmployee(long cprNo) throws SQLException {
 		Employee res = null;
 		String sqlEmployee = ("SELECT * FROM Employee WHERE cprNo = ?" );
-		System.out.println(sqlEmployee);
 		
 		try(Connection con = DBConnection.getInstance().getConnection()) {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlEmployee);
@@ -30,8 +30,9 @@ public class EmployeeDB implements EmployeeIF{
 				ResultSet rsEmployee = preparedStmt.executeQuery();
 			
 			if(rsEmployee.next()) {
-				Address address = addressDB.getAddress(rsEmployee.getLong("address_id"));
-				res = buildEmployee(rsEmployee, address);
+				res = buildEmployee(rsEmployee);
+				res.setAddress(addressDb.getAddress(rsEmployee.getLong("address_id")));
+				res.setWarehouse(warehouseDb.getWarehouse(rsEmployee.getLong("warehouse_id")));
 			}
 
 		} catch (SQLException e) {
@@ -44,7 +45,6 @@ public class EmployeeDB implements EmployeeIF{
 	public Employee getEmployee(String email) throws SQLException {
 		Employee res = null;
 		String sqlEmployee = ("SELECT * FROM Employee WHERE email = ?" );
-		System.out.println(sqlEmployee);
 		
 		try(Connection con = DBConnection.getInstance().getConnection()) {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlEmployee);
@@ -54,8 +54,9 @@ public class EmployeeDB implements EmployeeIF{
 				ResultSet rsEmployee = preparedStmt.executeQuery();
 			
 			if(rsEmployee.next()) {
-				Address address = addressDB.getAddress(rsEmployee.getLong("address_id"));
-				res = buildEmployee(rsEmployee, address);
+				res = buildEmployee(rsEmployee);
+				res.setAddress(addressDb.getAddress(rsEmployee.getLong("address_id")));
+				//res.setWarehouse(warehouseDb.getWarehouse(rsEmployee.getLong("warehouse_id")));
 			}
 
 		} catch (SQLException e) {
@@ -189,12 +190,12 @@ public class EmployeeDB implements EmployeeIF{
 			    columns.append( "warehouse = '" + warehouse + "'" );
 			  }
 		
-		 if ( columns.length() > 0 )
-		  {
+		 if ( columns.length() > 0 ) 
+		 {
 		    String sqlString = "UPDATE Employees SET " + columns.toString() + 
 		            " WHERE employee cprNo = " + employee.getCprNo();
 		    System.out.println("\nExecuting: " + sqlString);
-		PreparedStatement preparedStmt = con.prepareStatement(sqlString);
+	    	PreparedStatement preparedStmt = con.prepareStatement(sqlString);
 				 int res = preparedStmt.executeUpdate();
 				 rs = res;
 		  }
@@ -239,8 +240,8 @@ public class EmployeeDB implements EmployeeIF{
 	}
 
 
-	private Employee buildEmployee(ResultSet rs, Address address) throws SQLException {
-		return new Employee(rs.getLong("id"), rs.getString("first_name"), rs.getString("last_name"), address, rs.getString("phone"), rs.getString("email"), rs.getString("password"), rs.getLong("cpr_no"), rs.getString("department"), rs.getString("position"), null);
+	private Employee buildEmployee(ResultSet rs) throws SQLException {
+		return new Employee(rs.getLong("id"), rs.getString("first_name"), rs.getString("last_name"), null, rs.getString("phone"), rs.getString("email"), rs.getString("password"), rs.getLong("cpr_no"), rs.getString("department"), rs.getString("position"), null);
 	}
 }
 

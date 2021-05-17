@@ -4,14 +4,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import Model.DBIF.SaleIF;
+import Model.Model.OrderLine;
 import Model.Model.Sale;
 
 public class SaleDB implements SaleIF {
 
-	private OrderDB orderDB = new OrderDB();
-	private OrderLine ordeLineDB = new OrderLineDB();
+	private OrderDB orderDb = new OrderDB();
+	private OrderLineDB ordeLineDb = new OrderLineDB();
 	
 	@Override
 	public Sale createSale(Sale sale) throws SQLException {
@@ -29,15 +31,15 @@ public class SaleDB implements SaleIF {
 			preparedStmt.setLong(3, customerId);
 			int saleId= preparedStmt.executeUpdate();
 			sale.setId(saleId); 
-			sale.setOrderId(orderDB.createOrder(sale));
+			sale.setOrderId(orderDb.createOrder(sale));
 			
-			for (OrderLine ol : orderLines) {
-				ol.setId(orderLineDB.createOrderLine(ol));	
+			ArrayList<OrderLine> ols = new ArrayList<OrderLine>(); 
+			
+			for (OrderLine ol : sale.getOrderLines()) {
+				ol.setId(ordeLineDb.createOrderLine(ol));
+				ols.add(ol);
 			}
-			  
-			
-			//for (OrderLine o in orderLinesale.getOrderLines()) {
-			//orderLineDB.createOrderLine()
+			sale.setOrderLines(ols);
 		} catch (SQLException e) {
 			throw e;
 		}

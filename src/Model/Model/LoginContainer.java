@@ -27,4 +27,9 @@ private static LoginContainer INSTANCE;
     public void logout() {
     	employee = null;
     }
+    
+    public Employee getCurrentUser() {
+    	return employee;
+    }
+    
 }

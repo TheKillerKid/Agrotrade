@@ -21,6 +21,10 @@ import javax.swing.BoxLayout;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
+
+import Model.Model.Employee;
+import Model.Model.LoginContainer;
+
 import com.jgoodies.forms.layout.FormSpecs;
 import java.awt.Panel;
 import java.awt.GridBagConstraints;
@@ -29,10 +33,17 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
+import javax.swing.SwingConstants;
 
 public class HomePage extends JDialog {
-
 	
+	private LoginContainer loginContainer = LoginContainer.getInstance();
+	
+	private JLabel nameValue = new JLabel("");
+	private JLabel addressValue = new JLabel("");
+	private JLabel emailValue = new JLabel("");
+	private JLabel phoneValue = new JLabel("");
+
 	/**
 	 * Launch the application.
 	 */
@@ -43,6 +54,12 @@ public class HomePage extends JDialog {
 					HomePage dialog = new HomePage();
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.setVisible(true);
+				
+					nameValue.setText(getFullname());
+					addressValue.setText(getFullAddress());
+					emailValue.setText(getEmail());
+					phoneValue.setText(getPhone());
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -54,7 +71,7 @@ public class HomePage extends JDialog {
 	 * Create the dialog.
 	 */
 	public HomePage() {
-		setBounds(100, 100, 740, 480);
+		setBounds(100, 100, 745, 480);
 		
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setForeground(Color.BLACK);
@@ -69,101 +86,198 @@ public class HomePage extends JDialog {
 		JMenu mnNewMenu_2 = new JMenu("Person");
 		menuBar.add(mnNewMenu_2);
 		
-		JMenuItem mntmNewMenuItem = new JMenuItem("Employee Overview");
-		mnNewMenu_2.add(mntmNewMenuItem);
-		
-		JMenuItem mntmCreateEmployee = new JMenuItem("Create Employee");
-		mnNewMenu_2.add(mntmCreateEmployee);
-		mntmCreateEmployee.addActionListener(new ActionListener() {
+		JMenuItem registerEmployeeMntm = new JMenuItem("Register employee");
+		mnNewMenu_2.add(registerEmployeeMntm);
+		registerEmployeeMntm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CreateEmployeePage.start();				
+				EmployeePage.start();				
 			}
 		});
 		
-		JMenuItem mntmNewMenuItem_2 = new JMenuItem("Edit Employee");
-		mnNewMenu_2.add(mntmNewMenuItem_2);
+		JMenuItem registerCustomerMntm = new JMenuItem("Register customer ");
+		mnNewMenu_2.add(registerCustomerMntm);
 		
-		JMenuItem mntmNewMenuItem_3 = new JMenuItem("Customer Overview");
-		mnNewMenu_2.add(mntmNewMenuItem_3);
+		JMenuItem registerSupplierMntm = new JMenuItem("Register supplier");
+		mnNewMenu_2.add(registerSupplierMntm);
 		
-		JMenuItem mntmNewMenuItem_4 = new JMenuItem("Create Customer ");
-		mnNewMenu_2.add(mntmNewMenuItem_4);
-		
-		JMenuItem mntmNewMenuItem_5 = new JMenuItem("Edit Customer");
-		mnNewMenu_2.add(mntmNewMenuItem_5);
-		
-		JMenuItem mntmNewMenuItem_7 = new JMenuItem("Supplier Overview");
-		mnNewMenu_2.add(mntmNewMenuItem_7);
-		
-		JMenuItem mntmNewMenuItem_6 = new JMenuItem("Create Supplier");
-		mnNewMenu_2.add(mntmNewMenuItem_6);
-		
-		JMenuItem mntmNewMenuItem_8 = new JMenuItem("Edit Employee");
-		mnNewMenu_2.add(mntmNewMenuItem_8);
+		JMenuItem peopleListMntm = new JMenuItem("People list");
+		mnNewMenu_2.add(peopleListMntm);
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[]{0, 0, 0, 0};
+		gridBagLayout.columnWidths = new int[]{0, 0, 0, 0, 0, 0};
 		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0};
-		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 1.0, Double.MIN_VALUE};
+		gridBagLayout.columnWeights = new double[]{1.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{1.0, 0.0, 1.0, Double.MIN_VALUE};
 		getContentPane().setLayout(gridBagLayout);
 		
 		JPanel panel = new JPanel();
 		GridBagConstraints gbc_panel = new GridBagConstraints();
-		gbc_panel.fill = GridBagConstraints.BOTH;
-		gbc_panel.gridx = 2;
-		gbc_panel.gridy = 2;
+		gbc_panel.insets = new Insets(0, 0, 5, 5);
+		gbc_panel.fill = GridBagConstraints.HORIZONTAL;
+		gbc_panel.gridx = 1;
+		gbc_panel.gridy = 1;
 		getContentPane().add(panel, gbc_panel);
 		GridBagLayout gbl_panel = new GridBagLayout();
 		gbl_panel.columnWidths = new int[]{0, 0, 0};
-		gbl_panel.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0};
+		gbl_panel.rowHeights = new int[]{0, 0, 0, 0, 0};
 		gbl_panel.columnWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
-		gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panel.setLayout(gbl_panel);
 		
-		JButton btnNewButton = new JButton("New button");
-		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
-		gbc_btnNewButton.insets = new Insets(0, 0, 5, 0);
-		gbc_btnNewButton.gridx = 0;
-		gbc_btnNewButton.gridy = 0;
-		panel.add(btnNewButton, gbc_btnNewButton);
+		JButton createOrderBtn = new JButton("Register order");
+		GridBagConstraints gbc_createOrderBtn = new GridBagConstraints();
+		gbc_createOrderBtn.insets = new Insets(0, 0, 5, 5);
+		gbc_createOrderBtn.gridx = 0;
+		gbc_createOrderBtn.gridy = 0;
+		panel.add(createOrderBtn, gbc_createOrderBtn);
 		
-		JButton btnNewButton_1 = new JButton("New button");
-		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
-		gbc_btnNewButton_1.insets = new Insets(0, 0, 5, 0);
-		gbc_btnNewButton_1.gridx = 0;
-		gbc_btnNewButton_1.gridy = 1;
-		panel.add(btnNewButton_1, gbc_btnNewButton_1);
-		
-		JButton btnNewButton_2 = new JButton("New button");
-		GridBagConstraints gbc_btnNewButton_2 = new GridBagConstraints();
-		gbc_btnNewButton_2.insets = new Insets(0, 0, 5, 0);
-		gbc_btnNewButton_2.gridx = 0;
-		gbc_btnNewButton_2.gridy = 2;
-		panel.add(btnNewButton_2, gbc_btnNewButton_2);
-		
-		JButton btnNewButton_3 = new JButton("Create Employee");
-		btnNewButton_3.addActionListener(new ActionListener() {
+		JButton createEmployeeBtn = new JButton("Register employee");
+		createEmployeeBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CreateEmployeePage.start();
+				EmployeePage.start();
+				dispose();
 			}
 		});
-		GridBagConstraints gbc_btnNewButton_3 = new GridBagConstraints();
-		gbc_btnNewButton_3.insets = new Insets(0, 0, 5, 0);
-		gbc_btnNewButton_3.gridx = 1;
-		gbc_btnNewButton_3.gridy = 0;
-		panel.add(btnNewButton_3, gbc_btnNewButton_3);
 		
-		JButton btnNewButton_4 = new JButton("New button");
-		GridBagConstraints gbc_btnNewButton_4 = new GridBagConstraints();
-		gbc_btnNewButton_4.insets = new Insets(0, 0, 5, 0);
-		gbc_btnNewButton_4.gridx = 1;
-		gbc_btnNewButton_4.gridy = 1;
-		panel.add(btnNewButton_4, gbc_btnNewButton_4);
+		JButton orderListBtn = new JButton("Order list");
+		GridBagConstraints gbc_orderListBtn = new GridBagConstraints();
+		gbc_orderListBtn.insets = new Insets(0, 0, 5, 0);
+		gbc_orderListBtn.gridx = 1;
+		gbc_orderListBtn.gridy = 0;
+		panel.add(orderListBtn, gbc_orderListBtn);
+		GridBagConstraints gbc_createEmployeeBtn = new GridBagConstraints();
+		gbc_createEmployeeBtn.insets = new Insets(0, 0, 5, 5);
+		gbc_createEmployeeBtn.gridx = 0;
+		gbc_createEmployeeBtn.gridy = 1;
+		panel.add(createEmployeeBtn, gbc_createEmployeeBtn);
 		
-		JButton btnNewButton_5 = new JButton("New button");
+		JButton peopleListBtn = new JButton("People list");
+		GridBagConstraints gbc_peopleListBtn = new GridBagConstraints();
+		gbc_peopleListBtn.insets = new Insets(0, 0, 5, 0);
+		gbc_peopleListBtn.gridx = 1;
+		gbc_peopleListBtn.gridy = 1;
+		panel.add(peopleListBtn, gbc_peopleListBtn);
+		
+		JButton createProductBtn = new JButton("Register product");
+		GridBagConstraints gbc_createProductBtn = new GridBagConstraints();
+		gbc_createProductBtn.insets = new Insets(0, 0, 5, 5);
+		gbc_createProductBtn.gridx = 0;
+		gbc_createProductBtn.gridy = 2;
+		panel.add(createProductBtn, gbc_createProductBtn);
+		
+		JButton btnNewButton_5 = new JButton("Product list");
 		GridBagConstraints gbc_btnNewButton_5 = new GridBagConstraints();
+		gbc_btnNewButton_5.insets = new Insets(0, 0, 5, 0);
 		gbc_btnNewButton_5.gridx = 1;
 		gbc_btnNewButton_5.gridy = 2;
 		panel.add(btnNewButton_5, gbc_btnNewButton_5);
+		
+		Panel loggedUserDetail = new Panel();
+		GridBagConstraints gbc_loggedUserDetail = new GridBagConstraints();
+		gbc_loggedUserDetail.fill = GridBagConstraints.HORIZONTAL;
+		gbc_loggedUserDetail.insets = new Insets(0, 0, 5, 5);
+		gbc_loggedUserDetail.gridx = 3;
+		gbc_loggedUserDetail.gridy = 1;
+		getContentPane().add(loggedUserDetail, gbc_loggedUserDetail);
+		GridBagLayout gbl_loggedUserDetail = new GridBagLayout();
+		gbl_loggedUserDetail.columnWidths = new int[]{61, 61, 0};
+		gbl_loggedUserDetail.rowHeights = new int[]{16, 0, 0, 0, 0};
+		gbl_loggedUserDetail.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
+		gbl_loggedUserDetail.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		loggedUserDetail.setLayout(gbl_loggedUserDetail);
+		
+		JLabel nameLbl = new JLabel("Name:");
+		GridBagConstraints gbc_nameLbl = new GridBagConstraints();
+		gbc_nameLbl.anchor = GridBagConstraints.NORTHWEST;
+		gbc_nameLbl.insets = new Insets(0, 0, 5, 5);
+		gbc_nameLbl.gridx = 0;
+		gbc_nameLbl.gridy = 0;
+		loggedUserDetail.add(nameLbl, gbc_nameLbl);
+		
+		GridBagConstraints gbc_nameValue = new GridBagConstraints();
+		gbc_nameValue.anchor = GridBagConstraints.NORTHWEST;
+		gbc_nameValue.insets = new Insets(0, 0, 5, 0);
+		gbc_nameValue.gridx = 1;
+		gbc_nameValue.gridy = 0;
+		loggedUserDetail.add(nameValue, gbc_nameValue);
+		
+		JLabel addressLbl = new JLabel("Address:");
+		GridBagConstraints gbc_addressLbl = new GridBagConstraints();
+		gbc_addressLbl.anchor = GridBagConstraints.NORTHWEST;
+		gbc_addressLbl.insets = new Insets(0, 0, 5, 5);
+		gbc_addressLbl.gridx = 0;
+		gbc_addressLbl.gridy = 1;
+		loggedUserDetail.add(addressLbl, gbc_addressLbl);
+		
+		GridBagConstraints gbc_addressValue = new GridBagConstraints();
+		gbc_addressValue.insets = new Insets(0, 0, 5, 0);
+		gbc_addressValue.anchor = GridBagConstraints.NORTHWEST;
+		gbc_addressValue.gridx = 1;
+		gbc_addressValue.gridy = 1;
+		loggedUserDetail.add(addressValue, gbc_addressValue);
+		
+		JLabel emailLbl = new JLabel("Email:");
+		GridBagConstraints gbc_emailLbl = new GridBagConstraints();
+		gbc_emailLbl.anchor = GridBagConstraints.NORTHWEST;
+		gbc_emailLbl.insets = new Insets(0, 0, 5, 5);
+		gbc_emailLbl.gridx = 0;
+		gbc_emailLbl.gridy = 2;
+		loggedUserDetail.add(emailLbl, gbc_emailLbl);
+		
+		GridBagConstraints gbc_emailValue = new GridBagConstraints();
+		gbc_emailValue.anchor = GridBagConstraints.NORTHWEST;
+		gbc_emailValue.insets = new Insets(0, 0, 5, 0);
+		gbc_emailValue.gridx = 1;
+		gbc_emailValue.gridy = 2;
+		loggedUserDetail.add(emailValue, gbc_emailValue);
+		
+		JLabel phoneLbl = new JLabel("Phone:");
+		GridBagConstraints gbc_phoneLbl = new GridBagConstraints();
+		gbc_phoneLbl.anchor = GridBagConstraints.NORTHWEST;
+		gbc_phoneLbl.insets = new Insets(0, 0, 0, 5);
+		gbc_phoneLbl.gridx = 0;
+		gbc_phoneLbl.gridy = 3;
+		loggedUserDetail.add(phoneLbl, gbc_phoneLbl);
+		
+		GridBagConstraints gbc_phoneValue = new GridBagConstraints();
+		gbc_phoneValue.anchor = GridBagConstraints.NORTHWEST;
+		gbc_phoneValue.gridx = 1;
+		gbc_phoneValue.gridy = 3;
+		loggedUserDetail.add(phoneValue, gbc_phoneValue);
+	}
+	
+	private String getFullname() {
+		Employee user = loginContainer.getCurrentUser();
+		if(user != null) {
+			return user.getFirstName() + " " + user.getLastName();	
+		}
+		return null;
+	}
+	
+	private String getFullAddress() {
+		Employee user = loginContainer.getCurrentUser();
+		if(user != null) {
+			return user.getAddress().getStreet() + " " + 
+					user.getAddress().getStreetNo() + ", " + 
+					user.getAddress().getCity() + ", " + 
+					user.getAddress().getPostalCode() + ", " + 
+					user.getAddress().getCountry();
+		}
+		return null;
+	}
+	
+	private String getEmail() {
+		Employee user = loginContainer.getCurrentUser();
+		if(user != null) {
+			return user.getEmail();
+		}
+		return null;
+	}
+	
+	private String getPhone() {
+		Employee user = loginContainer.getCurrentUser();
+		if(user != null) {
+			return user.getPhone();
+		}
+		return null;
 	}
 }

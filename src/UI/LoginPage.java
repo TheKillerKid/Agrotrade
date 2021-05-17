@@ -122,6 +122,7 @@ public class LoginPage extends JDialog {
 						@Override
 						public void mouseClicked(MouseEvent e) {
 							try {
+								
 								String password = String.valueOf(passwordField.getPassword());
 								boolean loggedIn = loginCtrl.login(emailField.getText(), password);
 								
@@ -130,8 +131,9 @@ public class LoginPage extends JDialog {
 									dispose();
 									homePage.start();
 								}
-								
-								messageLabel.setText("Wrong credentials. Please try again or contact the administrator.");
+								else {
+									messageLabel.setText("Wrong credentials. Please try again or contact the administrator.");
+								}
 							} catch (SQLException e1) {
 								messageLabel.setText("Wrong credentials. Please try again or contact the administrator.");
 							}

@@ -6,9 +6,11 @@ import Model.Model.Product;
 
 public interface ProductIF {
 	
-	Product getProduct(long barcode) throws SQLException;
+	Product getProductByBarcode(long barcode) throws SQLException;
 	
-	long createProduct(Product product) throws SQLException;
+	Product getProductById(long barcode) throws SQLException;
+	
+	long createProduct(Product product, int minStock, int maxStock) throws SQLException;
 	
 	void updateProduct(Product product) throws SQLException;
 	

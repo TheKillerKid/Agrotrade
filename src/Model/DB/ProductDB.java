@@ -19,8 +19,9 @@ public class ProductDB implements ProductIF {
 	
 	private PriceDB priceDb = new PriceDB();
 	private SupplierDB supplierDb = new SupplierDB();
+	private StockProductDB stockProductDb = new StockProductDB();
 	
-	public Product getProduct(long barcode) throws SQLException {
+	public Product getProductByBarcode(long barcode) throws SQLException {
 		Product product = null;
 		String sqlProduct = "SELECT * FROM Product WHERE barcode = ?";
 		
@@ -40,22 +41,30 @@ public class ProductDB implements ProductIF {
 		}
 		return product;
 	}
-
-	private Product buildProduct(ResultSet rsProduct) throws SQLException {
-		return new Product(rsProduct.getLong("id"), 
-						   rsProduct.getLong("barcode"), 
-						   rsProduct.getString("name"), 
-						   new Category(rsProduct.getLong("category_id"), rsProduct.getString("category_name")), 
-					       null, 
-						   null, 
-						   null, 
-						   new Unit(rsProduct.getLong("unit_id"), rsProduct.getString("unit_name")), 
-						   rsProduct.getInt("discount"), 
-						   new Supplier(rsProduct.getLong("supplier_id")));
+	
+	public Product getProductById(long id) throws SQLException {
+		Product product = null;
+		String sqlProduct = "SELECT * FROM Product WHERE id = ?";
+		
+		try (Connection con = DBConnection.getInstance().getConnection()) {
+			PreparedStatement preparedStmt = con.prepareStatement(sqlProduct);
+			preparedStmt.setLong(1, id);
+			ResultSet rsProduct = preparedStmt.executeQuery();
+			if (rsProduct.next()) {
+				product = buildProduct(rsProduct);
+				product.setSalePrice(priceDb.getPrice(product.getId(), PriceType.SALE));
+				product.setLeasePrice(priceDb.getPrice(product.getId(), PriceType.LEASE));
+				product.setPurchasePrice(priceDb.getPrice(product.getId(), PriceType.PURCHASE));
+				product.setSupplier(supplierDb.getSupplierById(product.getSupplier().getId()));
+			}
+		} catch (SQLException e) {
+			throw e;
+		}
+		return product;
 	}
 
 	@Override
-	public long createProduct(Product product) throws SQLException {
+	public long createProduct(Product product, int minStock, int maxStock) throws SQLException {
 		
 		String sqlCreate = "INSERT INTO Product (barcode, name, category_id, unit_id, supplier_id) VALUES (?,?,?,?,?)";
 		
@@ -82,6 +91,10 @@ public class ProductDB implements ProductIF {
 			priceDb.createPrice(purchasePrice, id);
 			priceDb.createPrice(salePrice, id);
 			priceDb.createPrice(leasePrice, id);
+			
+			
+			stockProductDb.createStockProducts(id, minStock, maxStock);
+			
 		} catch (SQLException e) {
 			throw e;
 		}
@@ -101,5 +114,18 @@ public class ProductDB implements ProductIF {
 	public ArrayList<Product> getProductList() throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	private Product buildProduct(ResultSet rsProduct) throws SQLException {
+		return new Product(rsProduct.getLong("id"), 
+						   rsProduct.getLong("barcode"), 
+						   rsProduct.getString("name"), 
+						   new Category(rsProduct.getLong("category_id"), rsProduct.getString("category_name")), 
+					       null, 
+						   null, 
+						   null, 
+						   new Unit(rsProduct.getLong("unit_id"), rsProduct.getString("unit_name")), 
+						   rsProduct.getInt("discount"), 
+						   new Supplier(rsProduct.getLong("supplier_id")));
 	}
 }

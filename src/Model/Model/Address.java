@@ -4,15 +4,17 @@ public class Address {
 
 	private long id;
 	private String street;
-	private int streetNo;
+	private String streetNo;
 	private String city;
+	private String postalCode;
 	private String country;
 	
-	public Address(long id, String street, int streetNo, String city, String country) {
+	public Address(long id, String street, String streetNo, String city, String postalCode, String country) {
 		this.id = id;
 		this.street = street;
 		this.streetNo = streetNo;
 		this.city = city;
+		this.postalCode = postalCode;
 		this.country = country;
 	}
 	
@@ -28,10 +30,10 @@ public class Address {
 	public void setStreet(String street) {
 		this.street = street;
 	}
-	public int getStreetNo() {
+	public String getStreetNo() {
 		return streetNo;
 	}
-	public void setStreetNo(int streetNo) {
+	public void setStreetNo(String streetNo) {
 		this.streetNo = streetNo;
 	}
 	public String getCity() {
@@ -39,6 +41,12 @@ public class Address {
 	}
 	public void setCity(String city) {
 		this.city = city;
+	}
+	public String getPostalCode() {
+		return postalCode;
+	}
+	public void setPostalCode(String postalCode) {
+		this.postalCode = postalCode;
 	}
 	public String getCountry() {
 		return country;

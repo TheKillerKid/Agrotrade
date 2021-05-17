@@ -2,14 +2,8 @@ package Model.DB;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
 
- 
-
-
-public class DBConnection {   
-    //Constants used to get access to the database
+public class DBConnection {
     
     private static final String  driver = "jdbc:sqlserver://hildur.ucn.dk:1433";
     private static final String  databaseName = ";databaseName=dmaj0920_1089350";
@@ -19,13 +13,9 @@ public class DBConnection {
    
     private DatabaseMetaData dma;
     private static Connection con;
-    
-    // an instance of the class is generated
+
     private static DBConnection  instance = null;
 
- 
-
-    // the constructor is private to ensure that only one object of this class is created
     private DBConnection()
     {
         String url = driver + databaseName + userName + password;
@@ -41,25 +31,23 @@ public class DBConnection {
             System.out.println(e.getMessage());
         }
         try{
-            //connection to the database
             con = DriverManager.getConnection(url);
             con.setAutoCommit(true);
-            dma = con.getMetaData(); // get meta data
+            dma = con.getMetaData();
             System.out.println("Connection to " + dma.getURL());
             System.out.println("Driver " + dma.getDriverName());
             System.out.println("Database product name " + dma.getDatabaseProductName());
-        }//end try
+        }
         catch(Exception e){
             System.out.println("Problems with the connection to the database:");
             System.out.println(e.getMessage());
             System.out.println(url);
-        }//end catch
-    }//end  constructor
+        }
+    }
        
-  //closeDb: closes the connection to the database
-    public static void closeConnection()
+	public static void closeConnection()
     {
-           try{
+       try{
             con.close();
             instance= null;
             System.out.println("The connection is closed");
@@ -67,19 +55,8 @@ public class DBConnection {
          catch (Exception e){
             System.out.println("Error trying to close the database " +  e.getMessage());
          }
-    }//end closeDB
-        
-    //getDBcon: returns the singleton instance of the DB connection
-    public Connection getDBcon()
-    {
-       return con;
     }
-    //getDBcon: returns the singleton instance of the DB connection
-    public static boolean instanceIsNull()
-    {
-       return (instance == null);
-    }    
-    //this method is used to get the instance of the connection
+	
     public static DBConnection getInstance()
     {
         if (instance == null)
@@ -92,19 +69,4 @@ public class DBConnection {
     public Connection getConnection() {
         return con;
     }
-    
-    public int executeUpdate(String sql) throws SQLException {
-        System.out.println("DBConnection, Updating: " + sql);
-        int res = -1;
-        try (Statement s = con.createStatement()){
-            res = s.executeUpdate(sql);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        }
-        return res;
-    }
-
- 
-
-}//end DbConnection
+}
