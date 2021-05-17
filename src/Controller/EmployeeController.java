@@ -28,7 +28,11 @@ public class EmployeeController {
 		return null;
 	}
 	
-	// needs create, update, delete and build object
+	public long createEmployee(Employee employee) throws SQLException {
+		return -1;
+	}
+	
+	//update, delete and build object
 	
 	public String generateRandomPassword(int len, int randNumOrigin, int randNumBound) {
 		 	SecureRandom random = new SecureRandom();

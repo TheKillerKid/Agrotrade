@@ -21,17 +21,20 @@ public class LoginController {
 		return loginContainer.isLogged();
 	}
 
-	public void login(String email, String password) throws SQLException{
+	public boolean login(String email, String password) throws SQLException{
 		Employee employee;
 		try {
 			employee = this.employeeController.getEmployee(email);
 			if(employee != null && employee.getPassword() == password) {
 				loginContainer.login(employee);
+				return true;
 			}
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+
+		return false;
 	}
 	
 	public void logout() {
