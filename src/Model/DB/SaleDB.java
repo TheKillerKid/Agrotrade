@@ -11,6 +11,7 @@ import Model.Model.Sale;
 public class SaleDB implements SaleIF {
 
 	private OrderDB orderDB = new OrderDB();
+	private OrderLine ordeLineDB = new OrderLineDB();
 	
 	@Override
 	public Sale createSale(Sale sale) throws SQLException {
@@ -28,7 +29,13 @@ public class SaleDB implements SaleIF {
 			preparedStmt.setLong(3, customerId);
 			int saleId= preparedStmt.executeUpdate();
 			sale.setId(saleId); 
-			sale.setOrderId(orderDB.createOrder(sale)); 
+			sale.setOrderId(orderDB.createOrder(sale));
+			
+			for (OrderLine ol : orderLines) {
+				ol.setId(orderLineDB.createOrderLine(ol));	
+			}
+			  
+			
 			//for (OrderLine o in orderLinesale.getOrderLines()) {
 			//orderLineDB.createOrderLine()
 		} catch (SQLException e) {
