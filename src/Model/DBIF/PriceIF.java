@@ -1,12 +1,12 @@
 package Model.DBIF;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import Model.Model.Price;
+import Model.Model.PriceType;
 
 public interface PriceIF {
 
-	public ArrayList<Price> getCurrentProductPrice(long productId) throws SQLException;
+	public Price getPrice(long productId, PriceType type) throws SQLException;
 	
-	public long createPrice(Price price) throws SQLException;
+	public long createPrice(Price price, long productId) throws SQLException;
 }

@@ -6,7 +6,9 @@ import Model.Model.Supplier;
 
 public interface SupplierIF {
 		
-		Supplier getSupplier(long cvrNo) throws SQLException;
+		Supplier getSupplierByCVRNumber(long cvrNo) throws SQLException;
+		
+		Supplier getSupplierById(long id) throws SQLException;
 		
 		long createSupplier(Supplier supplier) throws SQLException;
 
