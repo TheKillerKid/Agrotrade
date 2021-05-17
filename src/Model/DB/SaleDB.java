@@ -29,6 +29,8 @@ public class SaleDB implements SaleIF {
 			int saleId= preparedStmt.executeUpdate();
 			sale.setId(saleId); 
 			sale.setOrderId(orderDB.createOrder(sale)); 
+			//for (OrderLine o in orderLinesale.getOrderLines()) {
+			//orderLineDB.createOrderLine()
 		} catch (SQLException e) {
 			throw e;
 		}
