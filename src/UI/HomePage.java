@@ -25,6 +25,10 @@ import com.jgoodies.forms.layout.FormSpecs;
 import java.awt.Panel;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 
 public class HomePage extends JDialog {
 
@@ -64,6 +68,34 @@ public class HomePage extends JDialog {
 		
 		JMenu mnNewMenu_2 = new JMenu("Person");
 		menuBar.add(mnNewMenu_2);
+		
+		JMenuItem mntmNewMenuItem = new JMenuItem("Employee Overview");
+		mnNewMenu_2.add(mntmNewMenuItem);
+		
+		JMenuItem mntmCreateEmployee = new JMenuItem("Create Employee");
+		mnNewMenu_2.add(mntmCreateEmployee);
+		
+		JMenuItem mntmNewMenuItem_2 = new JMenuItem("Edit Employee");
+		mnNewMenu_2.add(mntmNewMenuItem_2);
+		
+		JMenuItem mntmNewMenuItem_3 = new JMenuItem("Customer Overview");
+		mnNewMenu_2.add(mntmNewMenuItem_3);
+		
+		JMenuItem mntmNewMenuItem_4 = new JMenuItem("Create Customer ");
+		mnNewMenu_2.add(mntmNewMenuItem_4);
+				
+		
+		JMenuItem mntmNewMenuItem_5 = new JMenuItem("Edit Customer");
+		mnNewMenu_2.add(mntmNewMenuItem_5);
+		
+		JMenuItem mntmNewMenuItem_7 = new JMenuItem("Supplier Overview");
+		mnNewMenu_2.add(mntmNewMenuItem_7);
+		
+		JMenuItem mntmNewMenuItem_6 = new JMenuItem("Create Supplier");
+		mnNewMenu_2.add(mntmNewMenuItem_6);
+		
+		JMenuItem mntmNewMenuItem_8 = new JMenuItem("Edit Employee");
+		mnNewMenu_2.add(mntmNewMenuItem_8);
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0, 0};
 		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0};
@@ -105,7 +137,12 @@ public class HomePage extends JDialog {
 		gbc_btnNewButton_2.gridy = 2;
 		panel.add(btnNewButton_2, gbc_btnNewButton_2);
 		
-		JButton btnNewButton_3 = new JButton("New button");
+		JButton btnNewButton_3 = new JButton("Create Employee");
+		btnNewButton_3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				CreateEmployeePage.start();
+			}
+		});
 		GridBagConstraints gbc_btnNewButton_3 = new GridBagConstraints();
 		gbc_btnNewButton_3.insets = new Insets(0, 0, 5, 0);
 		gbc_btnNewButton_3.gridx = 1;

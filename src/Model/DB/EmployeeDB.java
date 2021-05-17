@@ -240,7 +240,7 @@ public class EmployeeDB implements EmployeeIF{
 
 
 	private Employee buildEmployee(ResultSet rs, Address address) throws SQLException {
-		return new Employee(rs.getLong("id"), rs.getString("first_name"), rs.getString("last_name"), address, rs.getString("phone"), rs.getString("email"), null, rs.getLong("cpr_no"), rs.getString("department"), rs.getString("position"), null);
+		return new Employee(rs.getLong("id"), rs.getString("first_name"), rs.getString("last_name"), address, rs.getString("phone"), rs.getString("email"), rs.getString("password"), rs.getLong("cpr_no"), rs.getString("department"), rs.getString("position"), null);
 	}
 }
 
