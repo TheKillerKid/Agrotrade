@@ -1,18 +1,40 @@
 package Controller;
 
+import java.sql.SQLException;
+
 import Model.Model.Employee;
+import Model.Model.LoginContainer;
 
 public class LoginController {
 
-	private String email;
-	private String password;
-	//private EmployeeController employeeController = new EmployeeController();
+	private EmployeeController employeeController;
+	private LoginContainer loginContainer;
+	
 
 
-	public Employee login(String email, String password) {
-		this.email = email;
-		this.password = password;
-		
-		return null;
+	public LoginController() {
+		employeeController = new EmployeeController();
+		loginContainer = LoginContainer.getInstance();
+	}
+	
+	public boolean isLogged() {
+		return loginContainer.isLogged();
+	}
+
+	public void login(String email, String password) throws SQLException{
+		Employee employee;
+		try {
+			employee = this.employeeController.getEmployee(email);
+			if(employee != null && employee.getPassword() == password) {
+				loginContainer.login(employee);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void logout() {
+		loginContainer.logout();
 	}
 }

@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 import Model.DBIF.EmployeeIF;
@@ -14,18 +13,24 @@ import Model.Model.Employee;
 import Model.Model.Warehouse;
 
 public class EmployeeDB implements EmployeeIF{
+	
+	private AddressDB addressDB = new AddressDB();
 
 	@Override
 	public Employee getEmployee(long cprNo) throws SQLException {
 		Employee res = null;
-		String sqlEmployee = String.format("SELECT * FROM Employee WHERE cprNo = '%s'", cprNo);
+		String sqlEmployee = ("SELECT * FROM Employee WHERE cprNo = '%s = ?'" );
 		System.out.println(sqlEmployee);
 		
-		try(Statement s = DBConnection.getInstance().getConnection().createStatement()) {
-			ResultSet rsEmployee = s.executeQuery(sqlEmployee);
+		try(Connection con = DBConnection.getInstance().getConnection()) {
+			PreparedStatement preparedStmt = con.prepareStatement(sqlEmployee);
+				
+				preparedStmt.setLong(1, cprNo);
+				
+				ResultSet rsEmployee = preparedStmt.executeQuery();
 			
 			if(rsEmployee.next()) {
-				Address address = AddressDB.getAddress(rsEmployee.getLong("address_id"));
+				Address address = addressDB.getAddress(rsEmployee.getLong("address_id"));
 				res = buildEmployee(rsEmployee, address);
 			}
 
@@ -38,17 +43,21 @@ public class EmployeeDB implements EmployeeIF{
 	@Override
 	public Employee getEmployee(String email) throws SQLException {
 		Employee res = null;
-		String sqlEmployee = String.format("SELECT * FROM Employee WHERE email = '%s'", email);
+		String sqlEmployee = ("SELECT * FROM Employee WHERE email = '%s = ?'" );
 		System.out.println(sqlEmployee);
 		
-		try(Statement s = DBConnection.getInstance().getConnection().createStatement()) {
-			ResultSet rsEmployee = s.executeQuery(sqlEmployee);
+		try(Connection con = DBConnection.getInstance().getConnection()) {
+			PreparedStatement preparedStmt = con.prepareStatement(sqlEmployee);
+				
+				preparedStmt.setString(1, email);
+				
+				ResultSet rsEmployee = preparedStmt.executeQuery();
 			
 			if(rsEmployee.next()) {
-				Address address = AddressDB.getAddress(rsEmployee.getLong("address_id"));
+				Address address = addressDB.getAddress(rsEmployee.getLong("address_id"));
 				res = buildEmployee(rsEmployee, address);
 			}
-			
+
 		} catch (SQLException e) {
 			throw e;
 		}
@@ -58,7 +67,7 @@ public class EmployeeDB implements EmployeeIF{
 	String sqlCreate = "INSERT INTO Employee (firstName, lastName, address, phone, email, password, cprNo, department, position, warehouse) VALUES (?,?,?,?,?,?,?,?,?,?)";
 	@Override
 	public long createEmployee(Employee employee) throws SQLException {
-		long rowID = 0;
+		long id = 0;
 		String firstName = employee.getFirstName();
 		String lastName = employee.getLastName();
 		Address address = employee.getAddress();
@@ -83,11 +92,11 @@ public class EmployeeDB implements EmployeeIF{
 			preparedStmt.setString(9, position);
 			//preparedStmt.setWarehouse(10, warehouse);
 			
-			rowID = preparedStmt.executeUpdate();
+			id = preparedStmt.executeUpdate();
 		} catch (SQLException e) {
 			throw e;
 		}
-		return rowID;
+		return id;
 	}
 
 	
@@ -203,7 +212,24 @@ public class EmployeeDB implements EmployeeIF{
 	
 	@Override
 	public void deleteEmployee(long cprNo) throws SQLException {
-		// TODO Auto-generated method stub
+		 /* Connection connection = null;
+	       Statement stmt = null;
+		
+		try
+		{ (Statement s = DBConnection.getInstance().getConnection().createStatement()) {
+			
+			stmt.execute("DELETE FROM EMPLOYEE WHERE CPRNO >= 1");
+		}catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            try {   
+                stmt.close();
+                connection.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            	}
+        	}
+		}*/
 		
 	}
 

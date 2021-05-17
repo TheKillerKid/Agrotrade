@@ -29,11 +29,11 @@ public class Supplier extends Person{
 		this.supplierName = supplierName;
 	}
 	
-	public long getSupplierID() {
+	public long getSupplierId() {
 		return supplierID;
 	}
 	
-	public void setSupplierID(long supplierID) {
+	public void setSupplierId(long supplierID) {
 		this.supplierID = supplierID;
 	}
 }
