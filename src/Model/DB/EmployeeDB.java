@@ -43,7 +43,7 @@ public class EmployeeDB implements EmployeeIF{
 	@Override
 	public Employee getEmployee(String email) throws SQLException {
 		Employee res = null;
-		String sqlEmployee = ("SELECT * FROM Employee WHERE email = '%s = ?'" );
+		String sqlEmployee = ("SELECT * FROM Employee WHERE email = %s = ?" );
 		System.out.println(sqlEmployee);
 		
 		try(Connection con = DBConnection.getInstance().getConnection()) {

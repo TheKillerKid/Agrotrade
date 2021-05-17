@@ -4,38 +4,61 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.time.LocalDate;
 import Model.DBIF.PriceIF;
 import Model.Model.Price;
+import Model.Model.PriceType;
 
 public class PriceDB implements PriceIF {
 
 	@Override
-	public ArrayList<Price> getCurrentProductPrice(long productId) throws SQLException {
+	public Price getPrice(long productId, PriceType type) throws SQLException {
 		
-		ArrayList<Price> priceArray = new ArrayList<Price>();
-		String sqlPrice = "SELECT * FROM Price WHERE product_id = '?'";
+		Price price = null;
+		String sqlPrice = "SELECT * FROM Price WHERE product_id = ? AND price_type = ?";
 		
 		try (Connection con = DBConnection.getInstance().getConnection()) {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlPrice);
 			preparedStmt.setLong(1, productId);
 			ResultSet rsPrice = preparedStmt.executeQuery();
 			if (rsPrice.next()) {
-				priceArray.add(buildPrice(rsPrice));
+				price = buildPrice(rsPrice);
 			}
 		} catch (SQLException e) {
 			throw e;
 		}
-		return priceArray;
+		return price;
 	}
 
 	@Override
-	public long createPrice(Price price) throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
+	public long createPrice(Price price, long productId) throws SQLException {
+		
+		String sqlCreate = "INSERT INTO Price (product_id, amount, start_date, price_type)";
+				
+		long id;
+		double amount = price.getAmount();
+		LocalDate startDate = price.getStartDate();
+		String priceType = price.getPriceType();
+		
+		try (Connection con = DBConnection.getInstance().getConnection()) {
+			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate);
+			
+			preparedStmt.setLong(1, productId);
+			preparedStmt.setDouble(2, amount);
+			preparedStmt.setDate(3, java.sql.Date.valueOf(startDate));
+			preparedStmt.setString(4, priceType);
+			
+			id = preparedStmt.executeUpdate();
+		} catch (SQLException e) {
+			throw e;
+		}
+		return id;
 	}
 
 	public Price buildPrice(ResultSet rsPrice) throws SQLException{
-		return null;
+		return new Price(rsPrice.getLong("id"),
+						 rsPrice.getDouble("amount"),
+						 rsPrice.getDate("start_date").toLocalDate(),
+						 rsPrice.getString("price_type"));
 	}
 }

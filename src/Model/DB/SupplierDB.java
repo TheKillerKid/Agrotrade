@@ -12,9 +12,9 @@ import Model.Model.Supplier;
 public class SupplierDB implements SupplierIF{
 
 	@Override
-	public Supplier getSupplier(long cvrNo) throws SQLException {
+	public Supplier getSupplierByCVRNumber(long cvrNo) throws SQLException {
 		Supplier res = null;
-		String sqlSupplier = "SELECT * FROM Supplier WHERE cvrNo = '?'";
+		String sqlSupplier = "SELECT * FROM Supplier WHERE cvrNo = ?";
 		
 		try (Connection con = DBConnection.getInstance().getConnection()) {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlSupplier);
@@ -28,6 +28,26 @@ public class SupplierDB implements SupplierIF{
 		}
 		return res;
 	}
+	
+	@Override
+	public Supplier getSupplierById(long id) throws SQLException {
+		Supplier res = null;
+		String sqlSupplier = "SELECT * FROM Supplier WHERE id = ?";
+		
+		try (Connection con = DBConnection.getInstance().getConnection()) {
+			PreparedStatement preparedStmt = con.prepareStatement(sqlSupplier);
+			preparedStmt.setLong(1, id);
+			ResultSet rsSupplier = preparedStmt.executeQuery();
+			if (rsSupplier.next()) {
+				res = buildSupplier(rsSupplier);
+				
+			}
+		} catch (SQLException e) {
+			throw e;
+		}
+		return res;
+	}
+	
 	@Override
 	public long createSupplier(Supplier supplier) throws SQLException {
 		
@@ -77,6 +97,13 @@ public class SupplierDB implements SupplierIF{
 	}
 
 	public Supplier buildSupplier(ResultSet rsSupplier) throws SQLException{
-		return null;
+		return new Supplier(rsSupplier.getLong("id"),
+							rsSupplier.getString("first_name"),
+							rsSupplier.getString("last_name"),
+							null,
+							rsSupplier.getString("phone"),
+							rsSupplier.getString("email"),
+							rsSupplier.getLong("cvr_no"),
+							rsSupplier.getString("supplier_name"));
 	}
 }
