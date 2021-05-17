@@ -191,7 +191,7 @@ public class EmployeeDB implements EmployeeIF{
 		
 		 if ( columns.length() > 0 )
 		  {
-		    String sqlString = "update Employees SET " + columns.toString() + 
+		    String sqlString = "UPDATE Employees SET " + columns.toString() + 
 		            " WHERE employee cprNo = " + employee.getCprNo();
 		    System.out.println("\nExecuting: " + sqlString);
 		PreparedStatement preparedStmt = con.prepareStatement(sqlString);
