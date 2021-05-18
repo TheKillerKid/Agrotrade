@@ -150,6 +150,12 @@ public class HomePage extends JDialog {
 		gbc_orderListBtn.gridx = 1;
 		gbc_orderListBtn.gridy = 0;
 		panel.add(orderListBtn, gbc_orderListBtn);
+		orderListBtn.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+				OrderListPage.start();
+			}
+		});
+		
 		GridBagConstraints gbc_createEmployeeBtn = new GridBagConstraints();
 		gbc_createEmployeeBtn.insets = new Insets(0, 0, 5, 5);
 		gbc_createEmployeeBtn.gridx = 0;
