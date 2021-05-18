@@ -58,7 +58,7 @@ public class OrderPage extends JDialog {
 	 * Create the dialog.
 	 */
 	public OrderPage() {
-		setBounds(100, 100, 640, 480);
+		setBounds(100, 100, 740, 480);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);

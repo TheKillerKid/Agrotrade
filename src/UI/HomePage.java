@@ -90,7 +90,7 @@ public class HomePage extends JDialog {
 		mnNewMenu_2.add(registerEmployeeMntm);
 		registerEmployeeMntm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				EmployeePage.start();				
+				PersonPage.start();				
 			}
 		});
 		
@@ -139,7 +139,7 @@ public class HomePage extends JDialog {
 		JButton createEmployeeBtn = new JButton("Register employee");
 		createEmployeeBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				EmployeePage.start();
+				PersonPage.start();
 				dispose();
 			}
 		});
