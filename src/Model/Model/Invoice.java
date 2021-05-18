@@ -5,12 +5,12 @@ import java.time.LocalDate;
 public class Invoice {
 	private long id;
 	private LocalDate paymentDate;
-	private double totalPrice;
+	private double amount;
 	
-	public Invoice(long id, LocalDate paymentDate, double totalPrice) {
+	public Invoice(long id, LocalDate paymentDate, double amount) {
 		this.id = id;
 		this.paymentDate = paymentDate;
-		this.totalPrice = totalPrice;
+		this.amount = amount;
 	}
 
 	public long getId() {
@@ -29,11 +29,11 @@ public class Invoice {
 		this.paymentDate = paymentDate;
 	}
 
-	public double getTotalPrice() {
-		return totalPrice;
+	public double getAmount() {
+		return amount;
 	}
 
-	public void setTotalPrice(double totalPrice) {
-		this.totalPrice = totalPrice;
+	public void setAmount(double amount) {
+		this.amount = amount;
 	}
 }

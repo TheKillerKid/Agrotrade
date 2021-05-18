@@ -26,8 +26,8 @@ public class SaleDB implements SaleIF {
 		
 		try (Connection con = DBConnection.getInstance().getConnection()) {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate);
-			preparedStmt.setObject(1, shippingDate);
-			preparedStmt.setObject(2, deliveryDate);
+			preparedStmt.setObject(1, java.sql.Date.valueOf(shippingDate));
+			preparedStmt.setObject(2, java.sql.Date.valueOf(deliveryDate));
 			preparedStmt.setLong(3, customerId);
 			long saleId= preparedStmt.executeUpdate();
 			sale.setId(saleId); 
