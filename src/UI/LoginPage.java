@@ -77,9 +77,9 @@ public class LoginPage extends JDialog {
 		gbc_logo.insets = new Insets(0, 0, 5, 0);
 		gbc_logo.gridx = 2;
 		gbc_logo.gridy = 0;
-		contentPanel.add(logo, gbc_logo);
 		logo.setHorizontalAlignment(SwingConstants.CENTER);
-		logo.setIcon(new ImageIcon("/Users/adampetricek/eclipse-workspace/Agrotrade/logo.PNG"));
+		logo.setIcon(new ImageIcon(LoginPage.class.getResource("/Resources/logo.PNG")));
+		contentPanel.add(logo, gbc_logo);
 		
 		JLabel lblNewLabel = new JLabel("Email");
 		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
