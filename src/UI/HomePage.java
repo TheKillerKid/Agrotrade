@@ -1,31 +1,18 @@
 package UI;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
-import java.awt.FlowLayout;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JTextField;
-import javax.swing.JSplitPane;
-import javax.swing.JDesktopPane;
-import javax.swing.JToolBar;
 import javax.swing.JMenuBar;
 import java.awt.Color;
 import javax.swing.JMenu;
-import javax.swing.JInternalFrame;
 import java.awt.GridBagLayout;
-import javax.swing.BoxLayout;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
 
 import Model.Model.Employee;
 import Model.Model.LoginContainer;
 
-import com.jgoodies.forms.layout.FormSpecs;
 import java.awt.Panel;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -33,7 +20,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
-import javax.swing.SwingConstants;
 
 public class HomePage extends JDialog {
 	
@@ -90,7 +76,7 @@ public class HomePage extends JDialog {
 		mnNewMenu_2.add(registerEmployeeMntm);
 		registerEmployeeMntm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				EmployeePage.start();				
+				PersonPage.start();				
 			}
 		});
 		
@@ -140,7 +126,7 @@ public class HomePage extends JDialog {
 		JButton createEmployeeBtn = new JButton("Register employee");
 		createEmployeeBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				EmployeePage.start();
+				PersonPage.start();
 				dispose();
 			}
 		});
@@ -151,6 +137,12 @@ public class HomePage extends JDialog {
 		gbc_orderListBtn.gridx = 1;
 		gbc_orderListBtn.gridy = 0;
 		panel.add(orderListBtn, gbc_orderListBtn);
+		orderListBtn.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+				OrderListPage.start();
+			}
+		});
+		
 		GridBagConstraints gbc_createEmployeeBtn = new GridBagConstraints();
 		gbc_createEmployeeBtn.insets = new Insets(0, 0, 5, 5);
 		gbc_createEmployeeBtn.gridx = 0;
