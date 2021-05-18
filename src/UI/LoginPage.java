@@ -1,13 +1,11 @@
 package UI;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -17,15 +15,11 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import Controller.EmployeeController;
 import Controller.LoginController;
 
-import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
 import java.awt.Color;
 import javax.swing.ImageIcon;
-import java.awt.SystemColor;
-import javax.swing.JSplitPane;
 import javax.swing.UIManager;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -54,11 +48,30 @@ public class LoginPage extends JDialog {
 			e.printStackTrace();
 		}
 	}
+	
+	private void logIn() {
+		try {
+			
+			String password = String.valueOf(passwordField.getPassword());
+			boolean loggedIn = loginCtrl.login(emailField.getText(), password);
+			
+			System.out.println("Logged " + loggedIn);
+			if (loggedIn) {
+				dispose();
+				homePage.start();
+			}
+			else {
+				messageLabel.setText("Wrong credentials. Please try again or contact the administrator.");
+			}
+		} catch (SQLException e1) {
+			messageLabel.setText("Wrong credentials. Please try again or contact the administrator.");
+		}
+	}
 
 	/**
 	 * Create the dialog.
 	 */
-	public LoginPage() {
+	public LoginPage() {		
 		setBounds(300, 300, 740, 480);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(Color.WHITE);
@@ -121,22 +134,15 @@ public class LoginPage extends JDialog {
 		btnNewButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				try {
-					
-					String password = String.valueOf(passwordField.getPassword());
-					boolean loggedIn = loginCtrl.login(emailField.getText(), password);
-					
-					System.out.println("Logged " + loggedIn);
-					if (loggedIn) {
-						dispose();
-						homePage.start();
-					}
-					else {
-						messageLabel.setText("Wrong credentials. Please try again or contact the administrator.");
-					}
-				} catch (SQLException e1) {
-					messageLabel.setText("Wrong credentials. Please try again or contact the administrator.");
-				}
+				logIn();
+			}
+		});
+		btnNewButton.addKeyListener(new KeyAdapter() {						
+			@Override
+			public void keyPressed(KeyEvent e) {
+			    if (e.getKeyCode()==KeyEvent.VK_ENTER){
+				        logIn();
+			    }
 			}
 		});
 		btnNewButton.setBackground(Color.WHITE);

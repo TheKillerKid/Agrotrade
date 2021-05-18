@@ -17,5 +17,5 @@ public interface ProductIF {
 	
 	void updateProduct(Product product) throws SQLException;
 	
-	ArrayList<Product> getProductList() throws SQLException;
+	void getProductList() throws SQLException;
 }
