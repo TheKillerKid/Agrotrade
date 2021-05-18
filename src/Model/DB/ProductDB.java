@@ -77,6 +77,7 @@ public class ProductDB implements ProductIF {
 		Price leasePrice = product.getLeasePrice();
 		long unitId = product.getUnit().getId();
 		long supplierId = product.getSupplier().getId();
+
 		
 		try (Connection con = DBConnection.getInstance().getConnection()) {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate);
@@ -111,9 +112,19 @@ public class ProductDB implements ProductIF {
 	}
 
 	@Override
-	public ArrayList<Product> getProductList() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+	public void getProductList() throws SQLException {
+		String sqlGet = "SELECT p.barcode, p.name, s.first_name AS supplier_name, s.last_name AS supplier_last_name, c.name AS category_name, u.name AS unit_name from Product p LEFT JOIN Supplier s ON p.supplier_id = s.id LEFT JOIN Category c ON p.category_id = c.id LEFT JOIN Unit u ON p.unit_id = u.id";
+		ArrayList<Product> res = null;
+		
+		try (Connection con = DBConnection.getInstance().getConnection()) {
+			PreparedStatement preparedStmt = con.prepareStatement(sqlGet);
+			
+			ResultSet rs = preparedStmt.executeQuery();
+			
+			if (rs.next()) {
+				System.out.println(rs);
+			}
+		}
 	}
 	
 	private Product buildProduct(ResultSet rsProduct) throws SQLException {
