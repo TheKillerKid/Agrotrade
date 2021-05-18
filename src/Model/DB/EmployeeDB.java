@@ -20,7 +20,7 @@ public class EmployeeDB implements EmployeeIF{
 	@Override
 	public Employee getEmployee(long cprNo) throws SQLException {
 		Employee res = null;
-		String sqlEmployee = ("SELECT * FROM Employee WHERE cprNo = ?" );
+		String sqlEmployee = ("SELECT * FROM Employee WHERE cpr_no = ?" );
 		
 		try(Connection con = DBConnection.getInstance().getConnection()) {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlEmployee);
