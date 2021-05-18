@@ -29,7 +29,7 @@ public class SaleDB implements SaleIF {
 			preparedStmt.setObject(1, shippingDate);
 			preparedStmt.setObject(2, deliveryDate);
 			preparedStmt.setLong(3, customerId);
-			int saleId= preparedStmt.executeUpdate();
+			long saleId= preparedStmt.executeUpdate();
 			sale.setId(saleId); 
 			sale.setOrderId(orderDb.createOrder(sale));
 			
