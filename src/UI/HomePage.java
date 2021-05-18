@@ -1,31 +1,18 @@
 package UI;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
-import java.awt.FlowLayout;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JTextField;
-import javax.swing.JSplitPane;
-import javax.swing.JDesktopPane;
-import javax.swing.JToolBar;
 import javax.swing.JMenuBar;
 import java.awt.Color;
 import javax.swing.JMenu;
-import javax.swing.JInternalFrame;
 import java.awt.GridBagLayout;
-import javax.swing.BoxLayout;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
 
 import Model.Model.Employee;
 import Model.Model.LoginContainer;
 
-import com.jgoodies.forms.layout.FormSpecs;
 import java.awt.Panel;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -33,7 +20,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
-import javax.swing.SwingConstants;
 
 public class HomePage extends JDialog {
 	
