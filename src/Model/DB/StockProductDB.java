@@ -22,7 +22,7 @@ public class StockProductDB implements StockProductIF{
 		
 		String sqlWarehouse = "";
 		if(warehouseId != 0) {
-			 sqlWarehouse = ("SELECT * FROM StockProduct WHERE product_id = ?" );
+			 sqlWarehouse = ("SELECT * FROM StockProduct WHERE product_id = ?");
 		}
 		else {
 			sqlWarehouse = ("SELECT * FROM StockProduct");
@@ -50,35 +50,7 @@ public class StockProductDB implements StockProductIF{
 		return stockProducts;
 	}
 
-	@Override
-	public ArrayList<StockProduct> createStockProducts(long productId, int minStock, int maxStock) throws SQLException {
-
-		ArrayList<StockProduct> stockProducts = new ArrayList<StockProduct>();
-		
-		String sqlCreate = "INSERT INTO StockProducts (amount, min_stock, max_stock, product_id, warehouse_id) VALUES (?,?,?,?,?)";
-		
-		
-		try(Connection con = DBConnection.getInstance().getConnection()) {
-			ArrayList<Warehouse>warehouses = warehouseDb.getWarehouses();
-			
-			for(Warehouse warehouse : warehouses) {
-				PreparedStatement preparedStmt = con.prepareStatement(sqlCreate);
-				preparedStmt.setInt(1, 0);
-				preparedStmt.setInt(2, minStock);
-				preparedStmt.setInt(3, maxStock);
-				preparedStmt.setLong(4, productId);
-				preparedStmt.setLong(5, warehouse.getId());
-				
-				long id = preparedStmt.executeUpdate();
-				stockProducts.add(new StockProduct(id, 0, minStock, maxStock, null, warehouse.getId()));
-			}
-			
-		} catch(SQLException e) {
-			throw e;
-		}
-		
-		return stockProducts;
-	}
+	
 	
 	private StockProduct buildStockProduct(ResultSet rsStockProduct) throws SQLException {
 		return new StockProduct(rsStockProduct.getLong("id"),

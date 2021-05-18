@@ -3,6 +3,7 @@ package Model.DBIF;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import Model.Model.Product;
+import Model.Model.StockProduct;
 
 public interface ProductIF {
 	
@@ -12,7 +13,9 @@ public interface ProductIF {
 	
 	long createProduct(Product product, int minStock, int maxStock) throws SQLException;
 	
+	ArrayList<StockProduct> createStockProducts(long productId, int minStock, int maxStock) throws SQLException;
+	
 	void updateProduct(Product product) throws SQLException;
 	
-	ArrayList<Product> getProductList() throws SQLException;
+	void getProductList() throws SQLException;
 }

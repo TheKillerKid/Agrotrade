@@ -1,31 +1,18 @@
 package UI;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
-import java.awt.FlowLayout;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JTextField;
-import javax.swing.JSplitPane;
-import javax.swing.JDesktopPane;
-import javax.swing.JToolBar;
 import javax.swing.JMenuBar;
 import java.awt.Color;
 import javax.swing.JMenu;
-import javax.swing.JInternalFrame;
 import java.awt.GridBagLayout;
-import javax.swing.BoxLayout;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
 
 import Model.Model.Employee;
 import Model.Model.LoginContainer;
 
-import com.jgoodies.forms.layout.FormSpecs;
 import java.awt.Panel;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -33,7 +20,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
-import javax.swing.SwingConstants;
 
 public class HomePage extends JDialog {
 	
@@ -90,7 +76,7 @@ public class HomePage extends JDialog {
 		mnNewMenu_2.add(registerEmployeeMntm);
 		registerEmployeeMntm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				EmployeePage.start();				
+				PersonPage.start();				
 			}
 		});
 		
@@ -102,6 +88,7 @@ public class HomePage extends JDialog {
 		
 		JMenuItem peopleListMntm = new JMenuItem("People list");
 		mnNewMenu_2.add(peopleListMntm);
+		
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0, 0, 0, 0};
 		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0};
@@ -139,7 +126,7 @@ public class HomePage extends JDialog {
 		JButton createEmployeeBtn = new JButton("Register employee");
 		createEmployeeBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				EmployeePage.start();
+				PersonPage.start();
 				dispose();
 			}
 		});
@@ -182,12 +169,18 @@ public class HomePage extends JDialog {
 			}
 		});
 		
-		JButton btnNewButton_5 = new JButton("Product list");
-		GridBagConstraints gbc_btnNewButton_5 = new GridBagConstraints();
-		gbc_btnNewButton_5.insets = new Insets(0, 0, 5, 0);
-		gbc_btnNewButton_5.gridx = 1;
-		gbc_btnNewButton_5.gridy = 2;
-		panel.add(btnNewButton_5, gbc_btnNewButton_5);
+		JButton productListButton = new JButton("Product list");
+		GridBagConstraints gbc_productListButton = new GridBagConstraints();
+		gbc_productListButton.insets = new Insets(0, 0, 5, 0);
+		gbc_productListButton.gridx = 1;
+		gbc_productListButton.gridy = 2;
+		panel.add(productListButton, gbc_productListButton);
+		productListButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ProductListPage.start();
+				
+			}
+		});
 		
 		Panel loggedUserDetail = new Panel();
 		GridBagConstraints gbc_loggedUserDetail = new GridBagConstraints();
