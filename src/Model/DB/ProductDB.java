@@ -10,16 +10,17 @@ import Model.Model.Category;
 import Model.Model.Price;
 import Model.Model.PriceType;
 import Model.Model.Product;
+import Model.Model.StockProduct;
 import Model.Model.Supplier;
 import Model.Model.Unit;
-
+import Model.Model.Warehouse;
 import Model.DBIF.ProductIF;
 
 public class ProductDB implements ProductIF {
 	
 	private PriceDB priceDb = new PriceDB();
 	private SupplierDB supplierDb = new SupplierDB();
-	private StockProductDB stockProductDb = new StockProductDB();
+	private WarehouseDB warehouseDb = new WarehouseDB();
 	
 	public Product getProductByBarcode(long barcode) throws SQLException {
 		Product product = null;
@@ -93,7 +94,7 @@ public class ProductDB implements ProductIF {
 			priceDb.createPrice(leasePrice, id);
 			
 			
-			stockProductDb.createStockProducts(id, minStock, maxStock);
+			createStockProducts(id, minStock, maxStock);
 			
 		} catch (SQLException e) {
 			throw e;
@@ -107,7 +108,36 @@ public class ProductDB implements ProductIF {
 		try (Connection con = DBConnection.getInstance().getConnection()) {
 			  
 		}
-	//	getProduct()
+	}
+	
+	@Override
+	public ArrayList<StockProduct> createStockProducts(long productId, int minStock, int maxStock) throws SQLException {
+
+		ArrayList<StockProduct> stockProducts = new ArrayList<StockProduct>();
+		
+		String sqlCreate = "INSERT INTO StockProducts (amount, min_stock, max_stock, product_id, warehouse_id) VALUES (?,?,?,?,?)";
+		
+		
+		try(Connection con = DBConnection.getInstance().getConnection()) {
+			ArrayList<Warehouse>warehouses = warehouseDb.getWarehouses();
+			
+			for(Warehouse warehouse : warehouses) {
+				PreparedStatement preparedStmt = con.prepareStatement(sqlCreate);
+				preparedStmt.setInt(1, 0);
+				preparedStmt.setInt(2, minStock);
+				preparedStmt.setInt(3, maxStock);
+				preparedStmt.setLong(4, productId);
+				preparedStmt.setLong(5, warehouse.getId());
+				
+				long id = preparedStmt.executeUpdate();
+				stockProducts.add(new StockProduct(id, 0, minStock, maxStock, null, warehouse.getId()));
+			}
+			
+		} catch(SQLException e) {
+			throw e;
+		}
+		
+		return stockProducts;
 	}
 
 	@Override
