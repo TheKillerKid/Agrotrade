@@ -129,6 +129,12 @@ public class HomePage extends JDialog {
 		gbc_createOrderBtn.gridx = 0;
 		gbc_createOrderBtn.gridy = 0;
 		panel.add(createOrderBtn, gbc_createOrderBtn);
+		createOrderBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				OrderPage.start();
+				
+			}
+		});
 		
 		JButton createEmployeeBtn = new JButton("Register employee");
 		createEmployeeBtn.addActionListener(new ActionListener() {
@@ -163,6 +169,12 @@ public class HomePage extends JDialog {
 		gbc_createProductBtn.gridx = 0;
 		gbc_createProductBtn.gridy = 2;
 		panel.add(createProductBtn, gbc_createProductBtn);
+		createProductBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ProductPage.start();
+				
+			}
+		});
 		
 		JButton btnNewButton_5 = new JButton("Product list");
 		GridBagConstraints gbc_btnNewButton_5 = new GridBagConstraints();
