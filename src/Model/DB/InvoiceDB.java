@@ -9,11 +9,7 @@ import Model.DBIF.InvoiceIF;
 
 import Model.Model.Invoice;
 
-import Model.Model.Order;
-
 public class InvoiceDB implements InvoiceIF {
-
-	private OrderDB orderDB = new OrderDB();
 	
 	@Override
 	public long createInvoice(Invoice invoice) throws SQLException {
