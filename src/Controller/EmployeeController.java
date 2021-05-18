@@ -8,20 +8,19 @@ import Model.Model.Employee;
 
 public class EmployeeController {
 	
-	private EmployeeDB employeeDB = new EmployeeDB();
+	private EmployeeDB employeeDb = new EmployeeDB();
 	
 	public Employee getEmployee(long cprNo) throws SQLException{
 		try {
-			return employeeDB.getEmployee(cprNo);
+			return employeeDb.getEmployee(cprNo);
 		} catch (SQLException e) {
-			e.printStackTrace();
-		} 
-		return null;	
+			throw e;
+		}	
 	}
 	
 	public Employee getEmployee(String email) throws SQLException {
 		try {
-			return employeeDB.getEmployee(email);
+			return employeeDb.getEmployee(email);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

@@ -11,6 +11,7 @@ import Model.Model.Sale;
 
 public class OrderDB implements OrderIF {
 	
+	public InvoiceDB invoiceDb = new InvoiceDB();
 	public long createOrder(Order order) throws SQLException {
 		String sqlCreate = "INSERT INTO Order (total_price, note, creation_date, warehouse_id, sale_id, lease_id, purchase_id) VALUES (?,?,?,?,?,?,?)";
 		
@@ -39,6 +40,9 @@ public class OrderDB implements OrderIF {
 			preparedStmt.setLong(7, purchaseId);
 			
 			id = preparedStmt.executeUpdate();
+			long invoiceId = invoiceDb.createInvoice(order.getInvoice(), id);
+			order.getInvoice().setId(invoiceId);
+			
 		} catch(SQLException e) {
 			throw e;
 		}
