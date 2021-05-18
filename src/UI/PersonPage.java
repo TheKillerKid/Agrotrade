@@ -33,14 +33,13 @@ public class PersonPage extends JDialog {
 	private Panel buttonsPanel;
 	private JButton backBtn;
 	private JButton saveBtn;
-
 	private HomePage homePage = new HomePage();
 
-	public static void start() {
+	public static void start(PersonPageType employee) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					PersonPage dialog = new PersonPage(null);
+					PersonPage dialog = new PersonPage(employee);
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.setVisible(true);
 				} catch (Exception e) {
@@ -49,8 +48,9 @@ public class PersonPage extends JDialog {
 			}
 		});
 	}
-
 	
+	public PersonPage() {}
+
 	/**
 	 * Create the dialog.
 	 */

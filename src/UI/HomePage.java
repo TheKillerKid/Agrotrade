@@ -12,6 +12,7 @@ import java.awt.GridBagLayout;
 
 import Model.Model.Employee;
 import Model.Model.LoginContainer;
+import Model.Model.PersonPageType;
 
 import java.awt.Panel;
 import java.awt.GridBagConstraints;
@@ -76,7 +77,9 @@ public class HomePage extends JDialog {
 		mnNewMenu_2.add(registerEmployeeMntm);
 		registerEmployeeMntm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				PersonPage.start();				
+				PersonPageType kkk = PersonPageType.EMPLOYEE;
+				PersonPage personPage = new PersonPage();
+				personPage.start(kkk);
 			}
 		});
 		
@@ -126,7 +129,7 @@ public class HomePage extends JDialog {
 		JButton createEmployeeBtn = new JButton("Register employee");
 		createEmployeeBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				PersonPage.start();
+				PersonPage.start(PersonPageType.EMPLOYEE);
 				dispose();
 			}
 		});
