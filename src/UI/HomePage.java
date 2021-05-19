@@ -78,6 +78,7 @@ public class HomePage extends JDialog {
 		registerEmployeeMntm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				PersonPage.start(PersonPageType.EMPLOYEE);
+				dispose();
 			}
 		});
 		
@@ -86,6 +87,7 @@ public class HomePage extends JDialog {
 		registerCustomerMntm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				PersonPage.start(PersonPageType.CUSTOMER);
+				dispose();
 				
 			}
 		});
@@ -95,6 +97,7 @@ public class HomePage extends JDialog {
 		registerSupplierMntm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				PersonPage.start(PersonPageType.SUPPLIER);
+				dispose();
 				
 			}
 		});
@@ -178,7 +181,7 @@ public class HomePage extends JDialog {
 		createProductBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ProductPage.start();
-				
+				dispose();
 			}
 		});
 		
