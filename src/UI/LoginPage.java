@@ -33,7 +33,6 @@ public class LoginPage extends JDialog {
 	private JPasswordField passwordField;
 	private JLabel messageLabel;
 	private JLabel logo;
-	private static HomePage homePage = new HomePage(); 
 	private LoginController loginCtrl = new LoginController();
 
 	/**
@@ -58,7 +57,7 @@ public class LoginPage extends JDialog {
 			System.out.println("Logged " + loggedIn);
 			if (loggedIn) {
 				dispose();
-				homePage.start();
+				HomePage.start();
 			}
 			else {
 				messageLabel.setText("Wrong credentials. Please try again or contact the administrator.");

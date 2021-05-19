@@ -34,18 +34,13 @@ public class HomePage extends JDialog {
 	/**
 	 * Launch the application.
 	 */
-	public void start() {
+	public static void start() {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					HomePage dialog = new HomePage();
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.setVisible(true);
-				
-					nameValue.setText(getFullname());
-					addressValue.setText(getFullAddress());
-					emailValue.setText(getEmail());
-					phoneValue.setText(getPhone());
 					
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -72,6 +67,11 @@ public class HomePage extends JDialog {
 		
 		JMenu mnNewMenu_2 = new JMenu("Person");
 		menuBar.add(mnNewMenu_2);
+		
+		nameValue.setText(getFullname());
+		addressValue.setText(getFullAddress());
+		emailValue.setText(getEmail());
+		phoneValue.setText(getPhone());
 		
 		JMenuItem registerEmployeeMntm = new JMenuItem("Register employee");
 		mnNewMenu_2.add(registerEmployeeMntm);
