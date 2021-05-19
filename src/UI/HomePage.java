@@ -181,7 +181,7 @@ public class HomePage extends JDialog {
 		createProductBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ProductPage.start();
-				
+				dispose();
 			}
 		});
 		
