@@ -94,7 +94,7 @@ public class ProductPage extends JDialog {
 				saveBtn = new JButton("Save");
 				saveBtn.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent e) {
-						omePage.start();
+						HomePage.start();
 						dispose();
 					}
 				});
@@ -177,8 +177,7 @@ public class ProductPage extends JDialog {
 				panel.add(lblNewLabel_2, gbc_lblNewLabel_2);
 			}
 			{
-				JComboBox categoryComboBox = new JComboBox((ComboBoxModel) null);
-				categoryComboBox.setSelectedIndex(0);
+				JComboBox categoryComboBox = new JComboBox();
 				GridBagConstraints gbc_categoryComboBox = new GridBagConstraints();
 				gbc_categoryComboBox.insets = new Insets(0, 0, 5, 5);
 				gbc_categoryComboBox.fill = GridBagConstraints.HORIZONTAL;
