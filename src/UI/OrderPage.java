@@ -25,6 +25,7 @@ public class OrderPage extends JDialog {
 	private JTextField textField;
 	private JTextField textField_1;
 	private JTextField textField_4;
+	private JTextField textField_2;
 	
 	public static void start() {
 		EventQueue.invokeLater(new Runnable() {
@@ -64,7 +65,7 @@ public class OrderPage extends JDialog {
 		GridBagLayout gbl_contentPanel = new GridBagLayout();
 		gbl_contentPanel.columnWidths = new int[]{0, 100, 259, 84, 0};
 		gbl_contentPanel.rowHeights = new int[]{73, 0, 0, 0, 0, 0, 0, 0, 0};
-		gbl_contentPanel.columnWeights = new double[]{1.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
+		gbl_contentPanel.columnWeights = new double[]{1.0, 0.0, 1.0, 1.0, Double.MIN_VALUE};
 		gbl_contentPanel.rowWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 		contentPanel.setLayout(gbl_contentPanel);
 		{
@@ -141,7 +142,7 @@ public class OrderPage extends JDialog {
 			contentPanel.add(comboBox, gbc_comboBox);
 		}
 		{
-			JLabel lblNewLabel_5 = new JLabel("Quantity");
+			JLabel lblNewLabel_5 = new JLabel("Quantitiy");
 			GridBagConstraints gbc_lblNewLabel_5 = new GridBagConstraints();
 			gbc_lblNewLabel_5.anchor = GridBagConstraints.WEST;
 			gbc_lblNewLabel_5.insets = new Insets(0, 0, 5, 5);
@@ -166,6 +167,25 @@ public class OrderPage extends JDialog {
 			gbc_btnAdd.gridx = 3;
 			gbc_btnAdd.gridy = 5;
 			contentPanel.add(btnAdd, gbc_btnAdd);
+		}
+		{
+			JLabel lblNewLabel_5 = new JLabel("On Stock");
+			GridBagConstraints gbc_lblNewLabel_5 = new GridBagConstraints();
+			gbc_lblNewLabel_5.anchor = GridBagConstraints.WEST;
+			gbc_lblNewLabel_5.insets = new Insets(0, 0, 5, 5);
+			gbc_lblNewLabel_5.gridx = 1;
+			gbc_lblNewLabel_5.gridy = 6;
+			contentPanel.add(lblNewLabel_5, gbc_lblNewLabel_5);
+		}
+		{
+			textField_2 = new JTextField();
+			textField_2.setColumns(10);
+			GridBagConstraints gbc_textField_2 = new GridBagConstraints();
+			gbc_textField_2.insets = new Insets(0, 0, 5, 5);
+			gbc_textField_2.fill = GridBagConstraints.HORIZONTAL;
+			gbc_textField_2.gridx = 2;
+			gbc_textField_2.gridy = 6;
+			contentPanel.add(textField_2, gbc_textField_2);
 		}
 		{
 			JPanel buttonPane = new JPanel();
