@@ -10,6 +10,8 @@ import Model.DBIF.SupplierIF;
 import Model.Model.Supplier;
 
 public class SupplierDB implements SupplierIF{
+	
+private AddressDB addressDb =  new AddressDB();
 
 	@Override
 	public Supplier getSupplierByCVRNumber(long cvrNo) throws SQLException {
@@ -92,7 +94,23 @@ public class SupplierDB implements SupplierIF{
 
 	@Override
 	public ArrayList<Supplier> getSupplierList() throws SQLException {
-		// TODO Auto-generated method stub
+		ArrayList<Supplier> suppliers = new ArrayList<Supplier>();
+		String sqlSupplier = ("SELECT * FROM Supplier");
+		
+		try(Connection con = DBConnection.getInstance().getConnection()) {
+			PreparedStatement preparedStmt = con.prepareStatement(sqlSupplier);
+			
+			ResultSet rsSupplier = preparedStmt.executeQuery();
+			
+		while(rsSupplier.next()) {
+			Supplier res = buildSupplier(rsSupplier);
+			res.setAddress(addressDb.getAddress(rsSupplier.getLong("address_id")));
+			suppliers.add(res);
+			}
+		
+		} catch (SQLException e) {
+			throw e;
+			}			
 		return null;
 	}
 
