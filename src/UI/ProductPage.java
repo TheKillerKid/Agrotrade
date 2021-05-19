@@ -3,14 +3,11 @@ package UI;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
-
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-
 import Controller.ProductController;
-
 import java.awt.GridBagLayout;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;

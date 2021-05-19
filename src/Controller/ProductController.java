@@ -2,7 +2,6 @@ package Controller;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import Model.DB.ProductDB;
