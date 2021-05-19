@@ -1,6 +1,6 @@
 package UI;
 
-import java.awt.EventQueue;
+import java.awt.EventQueue; 
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -21,7 +21,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
-
+ 
 public class HomePage extends JDialog {
 	
 	private LoginContainer loginContainer = LoginContainer.getInstance();
@@ -77,9 +77,7 @@ public class HomePage extends JDialog {
 		mnNewMenu_2.add(registerEmployeeMntm);
 		registerEmployeeMntm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				PersonPageType kkk = PersonPageType.EMPLOYEE;
-				PersonPage personPage = new PersonPage();
-				personPage.start(kkk);
+				PersonPage.start(PersonPageType.EMPLOYEE);
 			}
 		});
 		
