@@ -107,6 +107,7 @@ public class PersonPage extends JDialog {
 		}
 		{
 			firstNameField = new JTextField();
+			
 			GridBagConstraints gbc_firstNameField = new GridBagConstraints();
 			gbc_firstNameField.fill = GridBagConstraints.HORIZONTAL;
 			gbc_firstNameField.insets = new Insets(0, 0, 5, 0);
