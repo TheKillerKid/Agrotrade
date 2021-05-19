@@ -17,7 +17,7 @@ public class OrderController {
 		
 		order.setTotalPrice(calculateTotalPrice(order));
 		
-		order.setInvoice(new Invoice(0, LocalDate.now(), calculateTotalPrice(order)));
+		order.setInvoice(new Invoice(0, LocalDate.now().plusDays(30), calculateTotalPrice(order)));
 		
 		try {
 			if(order instanceof Sale) {
@@ -30,6 +30,7 @@ public class OrderController {
 		return null;
 	}
 	
+		//calculates total price for invoice
 	private double calculateTotalPrice(Order order) {
 		
 		double totalPrice = 0;
