@@ -1,6 +1,6 @@
 package UI;
 
-import java.awt.BorderLayout;
+import java.awt.BorderLayout; 
 
 import java.awt.EventQueue;
 
@@ -9,25 +9,18 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.GridBagLayout;
-import javax.swing.JTextField;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
 import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.Panel;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.JList;
-import java.awt.Choice;
 
 import Model.Model.PersonPageType;
 
 public class PersonPage extends JDialog {
-	
-	enum PersonPageType {EMPLOYEE, SUPPLIER, CUSTOMER}
 
 	private final JPanel contentPanel = new JPanel();
 	private Panel buttonsPanel;
@@ -35,11 +28,11 @@ public class PersonPage extends JDialog {
 	private JButton saveBtn;
 	private HomePage homePage = new HomePage();
 
-	public static void start(PersonPageType employee) {
+	public static void start(PersonPageType type) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					PersonPage dialog = new PersonPage(employee);
+					PersonPage dialog = new PersonPage(type);
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.setVisible(true);
 				} catch (Exception e) {
@@ -48,9 +41,8 @@ public class PersonPage extends JDialog {
 			}
 		});
 	}
-	
-	public PersonPage() {}
 
+	
 	/**
 	 * Create the dialog.
 	 */
@@ -67,7 +59,7 @@ public class PersonPage extends JDialog {
 			gbl_contentPanel.rowWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 			contentPanel.setLayout(gbl_contentPanel); 
 			{
-				JLabel lblNewLabel = new JLabel("Create Customer");
+				JLabel lblNewLabel = new JLabel("Create Employee");
 				lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
 				GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
 				gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);

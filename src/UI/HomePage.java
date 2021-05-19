@@ -1,6 +1,6 @@
 package UI;
 
-import java.awt.EventQueue;
+import java.awt.EventQueue; 
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -21,7 +21,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
-
+ 
 public class HomePage extends JDialog {
 	
 	private LoginContainer loginContainer = LoginContainer.getInstance();
@@ -34,18 +34,13 @@ public class HomePage extends JDialog {
 	/**
 	 * Launch the application.
 	 */
-	public void start() {
+	public static void start() {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					HomePage dialog = new HomePage();
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.setVisible(true);
-				
-					nameValue.setText(getFullname());
-					addressValue.setText(getFullAddress());
-					emailValue.setText(getEmail());
-					phoneValue.setText(getPhone());
 					
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -73,21 +68,36 @@ public class HomePage extends JDialog {
 		JMenu mnNewMenu_2 = new JMenu("Person");
 		menuBar.add(mnNewMenu_2);
 		
+		nameValue.setText(getFullname());
+		addressValue.setText(getFullAddress());
+		emailValue.setText(getEmail());
+		phoneValue.setText(getPhone());
+		
 		JMenuItem registerEmployeeMntm = new JMenuItem("Register employee");
 		mnNewMenu_2.add(registerEmployeeMntm);
 		registerEmployeeMntm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				PersonPageType kkk = PersonPageType.EMPLOYEE;
-				PersonPage personPage = new PersonPage();
-				personPage.start(kkk);
+				PersonPage.start(PersonPageType.EMPLOYEE);
 			}
 		});
 		
 		JMenuItem registerCustomerMntm = new JMenuItem("Register customer ");
 		mnNewMenu_2.add(registerCustomerMntm);
+		registerCustomerMntm.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				PersonPage.start(PersonPageType.CUSTOMER);
+				
+			}
+		});
 		
 		JMenuItem registerSupplierMntm = new JMenuItem("Register supplier");
 		mnNewMenu_2.add(registerSupplierMntm);
+		registerSupplierMntm.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				PersonPage.start(PersonPageType.SUPPLIER);
+				
+			}
+		});
 		
 		JMenuItem peopleListMntm = new JMenuItem("People list");
 		mnNewMenu_2.add(peopleListMntm);
