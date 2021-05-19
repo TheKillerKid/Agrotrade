@@ -17,6 +17,7 @@ import javax.swing.JTextField;
 public class CreateCustomerTest extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
+	JPanel panel = new JPanel();
 	private JTextField firstNameField;
 	private JTextField lastNameField;
 	private JTextField emailField;
@@ -54,7 +55,6 @@ public class CreateCustomerTest extends JDialog {
 		gbl_contentPanel.rowWeights = new double[]{1.0, 0.0, 1.0, Double.MIN_VALUE};
 		contentPanel.setLayout(gbl_contentPanel);
 		{
-			JPanel panel = new JPanel();
 			GridBagConstraints gbc_panel = new GridBagConstraints();
 			gbc_panel.insets = new Insets(0, 0, 5, 5);
 			gbc_panel.fill = GridBagConstraints.BOTH;
