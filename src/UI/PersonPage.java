@@ -59,7 +59,7 @@ public class PersonPage extends JDialog {
 			gbl_contentPanel.rowWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 			contentPanel.setLayout(gbl_contentPanel); 
 			{
-				JLabel lblNewLabel = new JLabel("Create Customer");
+				JLabel lblNewLabel = new JLabel("Create Employee");
 				lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
 				GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
 				gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
