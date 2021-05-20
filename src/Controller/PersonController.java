@@ -27,28 +27,35 @@ public class PersonController {
 		try {
 			return employeeCtrl.getEmployee(email);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw e;
 		}
-		return null;
 	}
 	
-	/*public Customer getCustomer(long cvrNo) throws SQLException {
+	public Customer getCustomer(long cvrNo) throws SQLException {
 		try {
 			return customerCtrl.getCustomer(cvrNo);
-			return null;
 		} catch (SQLException e) {
 			throw e;
 		}	
-	}*/
+	}
 	
-	/*public Supplier getSupplier(long cvrNo) throws SQLException {
-			try {
-		return supplierCtrl.getSupplierByCVRNumber(cvrNo);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	public Supplier getSupplierByCVRNumber(long cvrNo) throws SQLException {
+		try {
+			return supplierCtrl.getSupplierByCVRNumber(cvrNo);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		return null;
-	}*/
+	}
+
+	public Supplier getSupplierById(long id) throws SQLException {
+		try {
+			return supplierCtrl.getSupplierById(id);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		return null;
+	}
 	
 	public long createPerson(Person person) throws SQLException {
 		try {
@@ -80,10 +87,10 @@ public class PersonController {
 			}
 		}
 		if(filter.isCustomer()) {
-			/* ArrayList<Customer> customers = customerCtrl.getCustomers();
+			ArrayList<Customer> customers = customerCtrl.getCustomers();
 			for(Customer customer : customers) {
 				list.add(customer);
-			}*/
+			}
 		}
 		if(filter.isEmployee()) {
 			ArrayList<Employee> employees = employeeCtrl.getEmployees();
@@ -94,6 +101,3 @@ public class PersonController {
 		return list;
 	}
 }
-
-	
-
