@@ -1,6 +1,6 @@
 package UI;
 
-import java.awt.BorderLayout;
+import java.awt.BorderLayout; 
 import java.awt.EventQueue;
 
 import javax.swing.JButton;
@@ -18,12 +18,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import Model.Model.PersonPageType;
+import Controller.EmployeeController;
 
 public class PersonPage extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	JPanel panel = new JPanel();
 	JPanel buttonPane = new JPanel();
+	private EmployeeController employeeCtrl = new EmployeeController();
 	private JTextField cprNoField;
 	private JTextField firstNameField;
 	private JTextField lastNameField;
