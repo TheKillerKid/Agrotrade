@@ -11,7 +11,12 @@ public class StockProductContoller {
 	private StockProductDB stockProductDb = new StockProductDB();
 	
 	public ArrayList<StockProduct> getStockProducts(long warehouseId) throws SQLException {
-		return stockProductDb.getStockProducts(warehouseId);
-	}
+		try {
+			return stockProductDb.getStockProducts(warehouseId);
+		
+		} catch (SQLException e) {
+			throw e;
+		}
 	
+	}
 }
