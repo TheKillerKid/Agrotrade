@@ -16,6 +16,6 @@ public interface EmployeeIF {
 	
 	public void deleteEmployee(long cprNo) throws SQLException;
 	
-	public ArrayList<Employee> getEmployeeList(long warehouseId) throws SQLException;
+	public ArrayList<Employee> getEmployeeList() throws SQLException;
 
 }

@@ -1,20 +1,13 @@
 package Controller;
 
-
-
 import java.sql.SQLException;
+import java.util.ArrayList;
 
-import Controller.EmployeeController;
-import Controller.CustomerController;
-import Controller.SupplierController;
 import Model.Model.Employee;
 import Model.Model.Person;
-import Model.Model.Sale;
+import Model.Model.PersonFilter;
 import Model.Model.Customer;
 import Model.Model.Supplier;
-import Model.DB.EmployeeDB;
-import Model.DB.CustomerDB;
-import Model.DB.SupplierDB;
 
 public class PersonController {
 
@@ -76,6 +69,31 @@ public class PersonController {
 			throw e;
 		}
 	}
+	
+	public ArrayList<Person> getPeople(PersonFilter filter) throws SQLException {
+		ArrayList<Person> list = new ArrayList<Person>(); 
+		
+		if(filter.isSupplier()) {
+			ArrayList<Supplier> suppliers = supplierCtrl.getSuppliers();
+			for(Supplier supplier : suppliers) {
+				list.add(supplier);
+			}
+		}
+		if(filter.isCustomer()) {
+			/* ArrayList<Customer> customers = customerCtrl.getCustomers();
+			for(Customer customer : customers) {
+				list.add(customer);
+			}*/
+		}
+		if(filter.isEmployee()) {
+			ArrayList<Employee> employees = employeeCtrl.getEmployees();
+			for(Employee employee : employees) {
+				list.add(employee);
+			}
+		}
+		return list;
+	}
 }
+
 	
 

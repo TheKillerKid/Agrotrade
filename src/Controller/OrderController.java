@@ -9,9 +9,12 @@ import Model.Model.Invoice;
 import Model.Model.Order;
 import Model.Model.Sale;
 import Model.Model.OrderLine;
+import Model.Model.Product;
 
 public class OrderController {
 	private SaleController saleCtrl = new SaleController();
+	private ProductController prorductCtrl = new ProductController();
+	
 	
 	public Order createOrder(Order order) throws SQLException{
 		
@@ -51,4 +54,7 @@ public class OrderController {
 		return totalPrice;
 		
 	}
+	
+	//saleCtrl.getStockProducts
+	
 }
