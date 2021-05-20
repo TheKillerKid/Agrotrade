@@ -8,12 +8,14 @@ import java.util.ArrayList;
 import Model.Model.Invoice;
 import Model.Model.Order;
 import Model.Model.Sale;
+import Model.Model.StockProduct;
 import Model.Model.OrderLine;
 import Model.Model.Product;
+import Controller.StockProductContoller;
 
 public class OrderController {
 	private SaleController saleCtrl = new SaleController();
-	private ProductController prorductCtrl = new ProductController();
+	private StockProductContoller stockProrductCtrl = new StockProductContoller();
 	
 	
 	public Order createOrder(Order order) throws SQLException{
@@ -55,6 +57,14 @@ public class OrderController {
 		
 	}
 	
-	//saleCtrl.getStockProducts
-	
+	public ArrayList<StockProduct> getStockProducts(long warehouseId) throws SQLException {
+		try {
+			return this.stockProrductCtrl.getStockProducts(warehouseId);
+		
+		} catch (SQLException e) {
+			throw e;
+		}
+
+	}
+		
 }
