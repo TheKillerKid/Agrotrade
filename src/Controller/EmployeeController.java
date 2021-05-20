@@ -28,7 +28,11 @@ public class EmployeeController {
 	}
 	
 	public long createEmployee(Employee employee) throws SQLException {
-		return -1;
+		try {
+			return employeeDb.createEmployee(employee);
+		} catch (SQLException e) {
+			throw e;
+		}
 	}
 	
 	//update, delete and build object
