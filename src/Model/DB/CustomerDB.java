@@ -10,6 +10,7 @@ import Model.Model.Address;
 import Model.DB.AddressDB;
 import Model.Model.Customer;
 import Model.Model.Employee;
+import Model.Model.Supplier;
 import Model.Model.Warehouse;
 
 public class CustomerDB {
@@ -171,13 +172,36 @@ public class CustomerDB {
 //	}
 
 //	@Override
-//	public ArrayList<Employee> getCustomerList(long cvrNo) throws SQLException {
-		// TODO Auto-generated method stub
-//		return null;
-//	}
+	public ArrayList<Customer> getCustomerList() throws SQLException {
+		ArrayList<Customer> customers = new ArrayList<Customer>();
+		String sqlCustomer = ("SELECT * FROM Customer");
+		
+		try(Connection con = DBConnection.getInstance().getConnection()) {
+			PreparedStatement preparedStmt = con.prepareStatement(sqlCustomer);
+			
+			ResultSet rsCustomer = preparedStmt.executeQuery();
+			
+			while(rsCustomer.next()) {
+				Customer res = buildCustomer(rsCustomer);
+				res.setAddress(addressDb.getAddress(rsCustomer.getLong("address_id")));
+				customers.add(res);
+			}
+		
+		} catch (SQLException e) {
+			throw e;
+		}			
+		return customers;
+	}
 
 
 	private Customer buildCustomer(ResultSet rs) throws SQLException {
-		return new Customer(rs.getLong("id"), rs.getString("first_name"), rs.getString("last_name"), null, rs.getString("phone"), rs.getString("email"), rs.getLong("cvr_no"), 0);
+		return new Customer(rs.getLong("id"), 
+							rs.getString("first_name"), 
+							rs.getString("last_name"), 
+							null, 
+							rs.getString("phone"), 
+							rs.getString("email"), 
+							rs.getLong("cvr_no"), 
+							0);
 	}
 }
