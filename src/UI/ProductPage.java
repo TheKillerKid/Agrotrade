@@ -39,6 +39,9 @@ public class ProductPage extends JDialog {
 	private JTextField salePriceField;
 	private JTextField leasePriceField;
 	
+	private ProductController productCtrl = new ProductController();
+	//arraylist of categories, units, suppliers
+	
 	public static void start() {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -54,8 +57,6 @@ public class ProductPage extends JDialog {
 	}
 
 	public ProductPage() {
-		
-		ProductController productCtrl = new ProductController();
 		
 		getContentPane().setBackground(SystemColor.menu);
 		setBounds(100, 100, 740, 480);

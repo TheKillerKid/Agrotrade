@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import Model.DBIF.EmployeeIF;
 import Model.Model.Address;
 import Model.Model.Employee;
+import Model.Model.Supplier;
 import Model.Model.Warehouse;
 
 public class EmployeeDB implements EmployeeIF{
@@ -234,10 +235,27 @@ public class EmployeeDB implements EmployeeIF{
 	}
 
 	@Override
-	public ArrayList<Employee> getEmployeeList(long warehouseId) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+	public ArrayList<Employee> getEmployeeList() throws SQLException {
+		ArrayList<Employee> employees = new ArrayList<Employee>();
+		String sqlEmployee = ("SELECT * FROM Employee");
+		
+		try(Connection con = DBConnection.getInstance().getConnection()) {
+			PreparedStatement preparedStmt = con.prepareStatement(sqlEmployee);
+			
+			ResultSet rsEmployee = preparedStmt.executeQuery();
+			
+			while(rsEmployee.next()) {
+				Employee res = buildEmployee(rsEmployee);
+				res.setAddress(addressDb.getAddress(rsEmployee.getLong("address_id")));
+				employees.add(res);
+			}
+		
+		} catch (SQLException e) {
+			throw e;
+		}			
+		return employees;
 	}
+	
 
 
 	private Employee buildEmployee(ResultSet rs) throws SQLException {

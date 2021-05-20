@@ -2,6 +2,7 @@ package Controller;
 
 import java.security.SecureRandom ;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import Model.DB.EmployeeDB;
 import Model.Model.Employee;
@@ -49,4 +50,12 @@ public class EmployeeController {
 	 
 	        System.out.println(generateRandomPassword(len, randNumOrigin, randNumBound));
 	} 
+	
+	public ArrayList<Employee> getEmployees() throws SQLException {
+		try {
+			return employeeDb.getEmployeeList();
+		} catch (SQLException e) {
+			throw e;
+		}
+	}
 }
