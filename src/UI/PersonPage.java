@@ -16,9 +16,16 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
+import Model.Model.Address;
+import Model.Model.Customer;
+import Model.Model.Employee;
+import Model.Model.LoginContainer;
 import Model.Model.PersonPageType;
+import Model.Model.Supplier;
 import Controller.EmployeeController;
+import Controller.ParsingHelper;
 
 public class PersonPage extends JDialog {
 
@@ -26,18 +33,23 @@ public class PersonPage extends JDialog {
 	JPanel panel = new JPanel();
 	JPanel buttonPane = new JPanel();
 	private EmployeeController employeeCtrl = new EmployeeController();
+	private JLabel messageLabel;
 	private JTextField cprNoField;
 	private JTextField firstNameField;
 	private JTextField lastNameField;
 	private JTextField emailField;
+	private JTextField passwordField;
 	private JTextField phoneField;
 	private JTextField cityField;
 	private JTextField streetField;
 	private JTextField streetNoField;
+	private JTextField postalCodeField;
+	private JTextField countryField;
 	private JTextField departmentField;
 	private JTextField positionField;
 	private JTextField cvrNoField;
 	private JTextField companyNameField;
+	private JTextField staticDiscountField;
 	private JButton btnBack;
 	private JButton btnSave;
 	
@@ -232,7 +244,44 @@ public class PersonPage extends JDialog {
 			panel.add(streetNoField, gbc_streetNoField);
 			streetNoField.setColumns(10);
 		}
-	
+		{
+			JLabel lblPostalCode = new JLabel("Postal Code");
+			GridBagConstraints gbc_lblPostalCode = new GridBagConstraints();
+			gbc_lblPostalCode.anchor = GridBagConstraints.WEST;
+			gbc_lblPostalCode.insets = new Insets(0, 0, 5, 5);
+			gbc_lblPostalCode.gridx = 0;
+			gbc_lblPostalCode.gridy = 8;
+			panel.add(lblPostalCode, gbc_lblPostalCode);
+		}
+		{
+			postalCodeField = new JTextField();
+			GridBagConstraints gbc_postalCodeField = new GridBagConstraints();
+			gbc_postalCodeField.fill = GridBagConstraints.HORIZONTAL;
+			gbc_postalCodeField.insets = new Insets(0, 0, 5, 0);
+			gbc_postalCodeField.gridx = 1;
+			gbc_postalCodeField.gridy = 8;
+			panel.add(postalCodeField, gbc_postalCodeField);
+			postalCodeField.setColumns(10);
+		}
+		{
+			JLabel lblCountry = new JLabel("Country");
+			GridBagConstraints gbc_lblCountry = new GridBagConstraints();
+			gbc_lblCountry.anchor = GridBagConstraints.WEST;
+			gbc_lblCountry.insets = new Insets(0, 0, 5, 5);
+			gbc_lblCountry.gridx = 0;
+			gbc_lblCountry.gridy = 9;
+			panel.add(lblCountry, gbc_lblCountry);
+		}
+		{
+			countryField = new JTextField();
+			GridBagConstraints gbc_countryField = new GridBagConstraints();
+			gbc_countryField.fill = GridBagConstraints.HORIZONTAL;
+			gbc_countryField.insets = new Insets(0, 0, 5, 0);
+			gbc_countryField.gridx = 1;
+			gbc_countryField.gridy = 9;
+			panel.add(countryField, gbc_countryField);
+			countryField.setColumns(10);
+		}
 		{
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			GridBagLayout gbl_buttonPane = new GridBagLayout();
@@ -261,6 +310,79 @@ public class PersonPage extends JDialog {
 					public void actionPerformed(ActionEvent e) {
 						HomePage.start();
 						dispose();
+						if(type == PersonPageType.EMPLOYEE) {	
+							try {
+								long cprNo = ParsingHelper.tryParseLong(cprNoField.getText());
+								
+								Employee employee = new Employee(0,
+										firstNameField.getText(),
+										lastNameField.getText(), 
+										new Address(0, 
+												streetField.getText(), 
+												streetNoField.getText(), 
+												cityField.getText(), 
+												positionField.getText(),
+												countryField.getText()),
+										phoneField.getText(),
+										emailField.getText(),
+										passwordField.getText(),
+										cprNo,
+										departmentField.getText(),
+										positionField.getText(), 
+										LoginContainer.getInstance().getCurrentUser().getWarehouse());
+								System.out.println("First Name" + "");
+								
+								} catch (SQLException e1) {
+									messageLabel.setText("Wrong credentials. Please try again or contact the administrator.");
+							}
+						}
+						if(type == PersonPageType.CUSTOMER) {
+							long cvrNo;
+							int staticDiscount;
+							try {
+								cvrNo = ParsingHelper.tryParseLong(cvrNoField.getText());
+								staticDiscount = ParsingHelper.tryParseInt(staticDiscountField.getText());
+								Customer customer = new Customer(0,
+										firstNameField.getText(),
+										lastNameField.getText(), 
+										new Address(0, 
+												streetField.getText(), 
+												streetNoField.getText(), 
+												cityField.getText(), 
+												positionField.getText(),
+												countryField.getText()),
+										phoneField.getText(),
+										emailField.getText(),
+										cvrNo,
+										staticDiscount);
+							} catch (SQLException e1) {
+								messageLabel.setText("Wrong credentials. Please try again or contact the administrator.");
+
+							}
+							
+						}
+						if(type == PersonPageType.SUPPLIER) {
+							long cvrNo;
+							try {
+								cvrNo = ParsingHelper.tryParseLong(cvrNoField.getText());
+								Supplier supplier = new Supplier(0,
+										firstNameField.getText(),
+										lastNameField.getText(), 
+										new Address(0, 
+												streetField.getText(), 
+												streetNoField.getText(), 
+												cityField.getText(), 
+												positionField.getText(),
+												countryField.getText()),
+										phoneField.getText(),
+										emailField.getText(),
+										cvrNo,
+										companyNameField.getText());
+							} catch (SQLException e1) {
+								messageLabel.setText("Wrong credentials. Please try again or contact the administrator.");
+							}
+							
+						}
 					}
 				});
 				GridBagConstraints gbc_btnSave = new GridBagConstraints();
@@ -287,7 +409,7 @@ public class PersonPage extends JDialog {
 				gbc_lblCprNo.anchor = GridBagConstraints.WEST;
 				gbc_lblCprNo.insets = new Insets(0, 0, 5, 5);
 				gbc_lblCprNo.gridx = 0;
-				gbc_lblCprNo.gridy = 8;
+				gbc_lblCprNo.gridy = 10;
 				panel.add(lblCprNo, gbc_lblCprNo);
 			}
 			{
@@ -296,7 +418,7 @@ public class PersonPage extends JDialog {
 				gbc_cprNoField.insets = new Insets(0, 0, 5, 0);
 				gbc_cprNoField.fill = GridBagConstraints.HORIZONTAL;
 				gbc_cprNoField.gridx = 1;
-				gbc_cprNoField.gridy = 8;
+				gbc_cprNoField.gridy = 10;
 				panel.add(cprNoField, gbc_cprNoField);
 				cprNoField.setColumns(10);
 			}
@@ -306,7 +428,7 @@ public class PersonPage extends JDialog {
 				gbc_lblDepartment.anchor = GridBagConstraints.WEST;
 				gbc_lblDepartment.insets = new Insets(0, 0, 5, 5);
 				gbc_lblDepartment.gridx = 0;
-				gbc_lblDepartment.gridy = 9;
+				gbc_lblDepartment.gridy = 11;
 				panel.add(lblDepartment, gbc_lblDepartment);
 			}
 			{
@@ -315,7 +437,7 @@ public class PersonPage extends JDialog {
 				gbc_departmentField.insets = new Insets(0, 0, 5, 0);
 				gbc_departmentField.fill = GridBagConstraints.HORIZONTAL;
 				gbc_departmentField.gridx = 1;
-				gbc_departmentField.gridy = 9;
+				gbc_departmentField.gridy = 11;
 				panel.add(departmentField, gbc_departmentField);
 				departmentField.setColumns(10);
 			}
@@ -325,7 +447,7 @@ public class PersonPage extends JDialog {
 				gbc_lblPosition.anchor = GridBagConstraints.WEST;
 				gbc_lblPosition.insets = new Insets(0, 0, 0, 5);
 				gbc_lblPosition.gridx = 0;
-				gbc_lblPosition.gridy = 10;
+				gbc_lblPosition.gridy = 12;
 				panel.add(lblPosition, gbc_lblPosition);
 			}
 			{
@@ -333,9 +455,28 @@ public class PersonPage extends JDialog {
 				GridBagConstraints gbc_positionField = new GridBagConstraints();
 				gbc_positionField.fill = GridBagConstraints.HORIZONTAL;
 				gbc_positionField.gridx = 1;
-				gbc_positionField.gridy = 10;
+				gbc_positionField.gridy = 12;
 				panel.add(positionField, gbc_positionField);
 				positionField.setColumns(10);
+			}
+			{
+				JLabel lblPassword = new JLabel("Password");
+				GridBagConstraints gbc_lblPassword = new GridBagConstraints();
+				gbc_lblPassword.anchor = GridBagConstraints.WEST;
+				gbc_lblPassword.insets = new Insets(0, 0, 5, 5);
+				gbc_lblPassword.gridx = 0;
+				gbc_lblPassword.gridy = 13;
+				panel.add(lblPassword, gbc_lblPassword);
+			}
+			{
+				passwordField = new JTextField();
+				GridBagConstraints gbc_passwordField = new GridBagConstraints();
+				gbc_passwordField.fill = GridBagConstraints.HORIZONTAL;
+				gbc_passwordField.insets = new Insets(0, 0, 5, 0);
+				gbc_passwordField.gridx = 1;
+				gbc_passwordField.gridy = 13;
+				panel.add(passwordField, gbc_passwordField);
+				passwordField.setColumns(10);
 			}
 		}
 		
@@ -355,7 +496,7 @@ public class PersonPage extends JDialog {
 				gbc_lblCvrNo.anchor = GridBagConstraints.WEST;
 				gbc_lblCvrNo.insets = new Insets(0, 0, 5, 5);
 				gbc_lblCvrNo.gridx = 0;
-				gbc_lblCvrNo.gridy = 8;
+				gbc_lblCvrNo.gridy = 10;
 				panel.add(lblCvrNo, gbc_lblCvrNo);
 			}
 			{
@@ -364,30 +505,49 @@ public class PersonPage extends JDialog {
 				gbc_cvrNoField.insets = new Insets(0, 0, 5, 0);
 				gbc_cvrNoField.fill = GridBagConstraints.HORIZONTAL;
 				gbc_cvrNoField.gridx = 1;
-				gbc_cvrNoField.gridy = 8;
+				gbc_cvrNoField.gridy = 10;
 				panel.add(cvrNoField, gbc_cvrNoField);
 				cvrNoField.setColumns(10);
 			}
 		{
-			JLabel lblCompanyName = new JLabel("Company Name");
-			GridBagConstraints gbc_lblCompanyName = new GridBagConstraints();
-			gbc_lblCompanyName.anchor = GridBagConstraints.WEST;
-			gbc_lblCompanyName.insets = new Insets(0, 0, 5, 5);
-			gbc_lblCompanyName.gridx = 0;
-			gbc_lblCompanyName.gridy = 9;
-			panel.add(lblCompanyName, gbc_lblCompanyName);
-		}
-		{
-			companyNameField = new JTextField();
-			GridBagConstraints gbc_companyNameField = new GridBagConstraints();
-			gbc_companyNameField.insets = new Insets(0, 0, 5, 0);
-			gbc_companyNameField.fill = GridBagConstraints.HORIZONTAL;
-			gbc_companyNameField.gridx = 1;
-			gbc_companyNameField.gridy = 9;
-			panel.add(companyNameField, gbc_companyNameField);
-			companyNameField.setColumns(10);
-		}
-		}
+				JLabel lblCompanyName = new JLabel("Company Name");
+				GridBagConstraints gbc_lblCompanyName = new GridBagConstraints();
+				gbc_lblCompanyName.anchor = GridBagConstraints.WEST;
+				gbc_lblCompanyName.insets = new Insets(0, 0, 5, 5);
+				gbc_lblCompanyName.gridx = 0;
+				gbc_lblCompanyName.gridy = 11;
+				panel.add(lblCompanyName, gbc_lblCompanyName);
+			}
+			{
+				companyNameField = new JTextField();
+				GridBagConstraints gbc_companyNameField = new GridBagConstraints();
+				gbc_companyNameField.insets = new Insets(0, 0, 5, 0);
+				gbc_companyNameField.fill = GridBagConstraints.HORIZONTAL;
+				gbc_companyNameField.gridx = 1;
+				gbc_companyNameField.gridy = 11;
+				panel.add(companyNameField, gbc_companyNameField);
+				companyNameField.setColumns(10);
+			}
+			{
+				JLabel lblstaticDiscount = new JLabel("static Discount");
+				GridBagConstraints gbc_lblstaticDiscount = new GridBagConstraints();
+				gbc_lblstaticDiscount.anchor = GridBagConstraints.WEST;
+				gbc_lblstaticDiscount.insets = new Insets(0, 0, 5, 5);
+				gbc_lblstaticDiscount.gridx = 0;
+				gbc_lblstaticDiscount.gridy = 12;
+				panel.add(lblstaticDiscount, gbc_lblstaticDiscount);
+			}
+			{
+				staticDiscountField = new JTextField();
+				GridBagConstraints gbc_staticDiscountField = new GridBagConstraints();
+				gbc_staticDiscountField.insets = new Insets(0, 0, 5, 0);
+				gbc_staticDiscountField.fill = GridBagConstraints.HORIZONTAL;
+				gbc_staticDiscountField.gridx = 1;
+				gbc_staticDiscountField.gridy = 12;
+				panel.add(staticDiscountField, gbc_staticDiscountField);
+				staticDiscountField.setColumns(10);
+			}
+			}
 			
 		if(type == PersonPageType.CUSTOMER) {
 			
@@ -407,7 +567,7 @@ public class PersonPage extends JDialog {
 				gbc_lblCvrNo.anchor = GridBagConstraints.WEST;
 				gbc_lblCvrNo.insets = new Insets(0, 0, 0, 5);
 				gbc_lblCvrNo.gridx = 0;
-				gbc_lblCvrNo.gridy = 8;
+				gbc_lblCvrNo.gridy = 10;
 				panel.add(lblCvrNo, gbc_lblCvrNo);
 			}
 			{
@@ -415,7 +575,7 @@ public class PersonPage extends JDialog {
 				GridBagConstraints gbc_cvrNoField = new GridBagConstraints();
 				gbc_cvrNoField.fill = GridBagConstraints.HORIZONTAL;
 				gbc_cvrNoField.gridx = 1;
-				gbc_cvrNoField.gridy = 8;
+				gbc_cvrNoField.gridy = 10;
 				panel.add(cvrNoField, gbc_cvrNoField);
 				cvrNoField.setColumns(10);
 			}
