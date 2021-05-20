@@ -15,4 +15,6 @@ public class SaleController {
 			throw e;
 		}
 	}
+	
+	//stockProductCtlr.getStockProducts
 }
