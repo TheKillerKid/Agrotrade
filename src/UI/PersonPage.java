@@ -55,7 +55,7 @@ public class PersonPage extends JDialog {
 	private JTextField cvrNoField;
 	private JTextField companyNameField;
 	private JTextField staticDiscountField;
-	private JRadioButton rdbtnGeneratePassword;
+	private JButton btnGeneratePassword;
 	private JButton btnBack;
 	private JButton btnSave;
 	
@@ -88,14 +88,6 @@ public class PersonPage extends JDialog {
 		gbl_contentPanel.columnWeights = new double[]{1.0, 0.0, 1.0, Double.MIN_VALUE};
 		gbl_contentPanel.rowWeights = new double[]{1.0, 0.0, 1.0, Double.MIN_VALUE};
 		contentPanel.setLayout(gbl_contentPanel);
-		
-		messageLabel = new JLabel("");
-		messageLabel.setForeground(Color.RED);
-		GridBagConstraints gbc_messageLabel = new GridBagConstraints();
-		gbc_messageLabel.anchor = GridBagConstraints.WEST;
-		gbc_messageLabel.gridx = 2;
-		gbc_messageLabel.gridy = 4;
-		contentPanel.add(messageLabel, gbc_messageLabel);
 		{
 			GridBagConstraints gbc_panel = new GridBagConstraints();
 			gbc_panel.insets = new Insets(0, 0, 5, 5);
@@ -322,8 +314,6 @@ public class PersonPage extends JDialog {
 				btnSave = new JButton("Save");
 				btnSave.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						HomePage.start();
-						dispose();
 						if(type == PersonPageType.EMPLOYEE) {	
 							try {
 								long cprNo = ParsingHelper.tryParseLong(cprNoField.getText());
@@ -345,8 +335,9 @@ public class PersonPage extends JDialog {
 										positionField.getText(), 
 										LoginContainer.getInstance().getCurrentUser().getWarehouse());
 								
-								} catch (SQLException e1) {
-									messageLabel.setText("Wrong credentials. Please try again or contact the administrator.");
+							} catch(NumberFormatException e1) {
+								messageLabel.setText("Wrong input please input numbers.");
+								return;
 							}
 						}
 						if(type == PersonPageType.CUSTOMER) {
@@ -368,8 +359,9 @@ public class PersonPage extends JDialog {
 										emailField.getText(),
 										cvrNo,
 										staticDiscount);
-								} catch (SQLException e1) {
-								    messageLabel.setText("Wrong credentials. Please try again or contact the administrator.");
+							} catch (NumberFormatException e1) {
+							    messageLabel.setText("Wrong credentials. Please try again or contact the administrator.");
+							    return;
 							}	
 						}
 						if(type == PersonPageType.SUPPLIER) {
@@ -389,10 +381,14 @@ public class PersonPage extends JDialog {
 										emailField.getText(),
 										cvrNo,
 										companyNameField.getText());
-							} catch (SQLException e1) {
+							} catch (NumberFormatException e1) {
 								messageLabel.setText("Wrong credentials. Please try again or contact the administrator.");
+								return;
 							}	
 						}
+						
+						HomePage.start();
+						dispose();
 					}
 				});
 				GridBagConstraints gbc_btnSave = new GridBagConstraints();
@@ -480,11 +476,6 @@ public class PersonPage extends JDialog {
 			}
 			{
 				passwordField = new JTextField();
-				passwordField.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						System.out.println(rdbtnGeneratePassword);
-					}
-				});
 				GridBagConstraints gbc_passwordField = new GridBagConstraints();
 				gbc_passwordField.fill = GridBagConstraints.HORIZONTAL;
 				gbc_passwordField.insets = new Insets(0, 0, 5, 0);
@@ -494,17 +485,16 @@ public class PersonPage extends JDialog {
 				passwordField.setColumns(10);
 			}
 			{
-				rdbtnGeneratePassword = new JRadioButton("Generate Password");
-				rdbtnGeneratePassword.addActionListener(new ActionListener() {
+				btnGeneratePassword = new JButton("Generate");
+				btnGeneratePassword.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						employeeCtrl.generateRandomPassword(0, 0, 0);
-						System.out.println(rdbtnGeneratePassword.getText() + "" + passwordField);
+						passwordField.setText(employeeCtrl.generateRandomPassword());
 					}
 				});
-				GridBagConstraints gbc_rdbtnGeneratePassword = new GridBagConstraints();
-				gbc_rdbtnGeneratePassword.gridx = 2;
-				gbc_rdbtnGeneratePassword.gridy = 13;
-				panel.add(rdbtnGeneratePassword, gbc_rdbtnGeneratePassword);
+				GridBagConstraints gbc_btnGeneratePassword = new GridBagConstraints();
+				gbc_btnGeneratePassword.gridx = 2;
+				gbc_btnGeneratePassword.gridy = 13;
+				panel.add(btnGeneratePassword, gbc_btnGeneratePassword);
 			}
 		}
 		
@@ -608,6 +598,13 @@ public class PersonPage extends JDialog {
 				cvrNoField.setColumns(10);
 			}
 		}
+			messageLabel = new JLabel("");
+			messageLabel.setForeground(Color.RED);
+			GridBagConstraints gbc_messageLabel = new GridBagConstraints();
+			gbc_messageLabel.anchor = GridBagConstraints.WEST;
+			gbc_messageLabel.gridx = 1;
+			gbc_messageLabel.gridy = 4;
+			contentPanel.add(messageLabel, gbc_messageLabel);
 	}
 			
 }
