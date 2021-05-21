@@ -32,7 +32,7 @@ public class ProductController {
 			return -1;
 		}
 		
-		public long generateBarcode() throws SQLException{
+		public String generateBarcode() throws SQLException{
 		long barcode = 0;
 			
 			try {
@@ -42,12 +42,12 @@ public class ProductController {
 					if (product == null) {
 						barcode = pregeneratedBarcode;
 					}
-				}
+				}				
 			} catch (SQLException e) {
 				throw e;
 			} 
 			
-			return barcode;
+			return String.valueOf(barcode);
 		}
 		
 		public ArrayList<StockProduct> getProductList() {

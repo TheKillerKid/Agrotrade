@@ -25,8 +25,9 @@ public class ProductDB implements ProductIF {
 	public Product getProductByBarcode(long barcode) throws SQLException {
 		Product product = null;
 		String sqlProduct = "SELECT * FROM Product WHERE barcode = ?";
-		
-		try (Connection con = DBConnection.getInstance().getConnection()) {
+		Connection con = DBConnection.getInstance().getConnection();
+		 
+		try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlProduct);
 			preparedStmt.setLong(1, barcode);
 			ResultSet rsProduct = preparedStmt.executeQuery();
