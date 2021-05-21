@@ -28,8 +28,12 @@ public class ProductController {
 			}
 		}
 		
-		public long createProduct(Product product) throws SQLException {
-			return -1;
+		public long createProduct(Product product, int minStock, int maxStock) throws SQLException {
+			try {
+				return productDb.createProduct(product, minStock, maxStock);
+			} catch (SQLException e) {
+				throw e;
+			}
 		}
 		
 		public String generateBarcode() throws SQLException{

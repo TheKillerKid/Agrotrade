@@ -18,7 +18,9 @@ private AddressDB addressDb =  new AddressDB();
 		Supplier res = null;
 		String sqlSupplier = "SELECT * FROM Supplier WHERE cvrNo = ?";
 		
-		try (Connection con = DBConnection.getInstance().getConnection()) {
+     Connection con = DBConnection.getInstance().getConnection();
+
+     try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlSupplier);
 			preparedStmt.setLong(1, cvrNo);
 			ResultSet rsSupplier = preparedStmt.executeQuery();
@@ -36,7 +38,9 @@ private AddressDB addressDb =  new AddressDB();
 		Supplier res = null;
 		String sqlSupplier = "SELECT * FROM Supplier WHERE id = ?";
 		
-		try (Connection con = DBConnection.getInstance().getConnection()) {
+     Connection con = DBConnection.getInstance().getConnection();
+
+     try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlSupplier);
 			preparedStmt.setLong(1, id);
 			ResultSet rsSupplier = preparedStmt.executeQuery();
@@ -64,7 +68,9 @@ private AddressDB addressDb =  new AddressDB();
 		String email = supplier.getEmail();
 		long cvrNo = supplier.getCvrNo();
 		String companyName = supplier.getSupplierName();
-		try (Connection con = DBConnection.getInstance().getConnection()) {
+     Connection con = DBConnection.getInstance().getConnection();
+
+     try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate);
 			preparedStmt.setString(1, firstName);
 			preparedStmt.setString(2, lastName);

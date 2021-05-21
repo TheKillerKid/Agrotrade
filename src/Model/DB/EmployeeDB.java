@@ -81,7 +81,7 @@ public class EmployeeDB implements EmployeeIF{
 		return res;
 	}
 
-	String sqlCreate = "INSERT INTO Employee (firstName, lastName, address, phone, email, password, cpr_no, department, position, warehouse_id) VALUES (?,?,?,?,?,?,?,?,?,?)";
+	String sqlCreate = "INSERT INTO Employee (first_name, last_name, address_id, phone, email, password, cpr_no, department, position, warehouse_id) VALUES (?,?,?,?,?,?,?,?,?,?)";
 	@Override
 	public long createEmployee(Employee employee) throws SQLException {
 		long id = 0;
@@ -96,7 +96,9 @@ public class EmployeeDB implements EmployeeIF{
 		String position = employee.getPosition();
 		Warehouse warehouse = employee.getWarehouse();
 		
-		try (Connection con = DBConnection.getInstance().getConnection()) {
+     Connection con = DBConnection.getInstance().getConnection();
+
+     try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate);
 			preparedStmt.setString(1, firstName);
 			preparedStmt.setString(2, lastName);

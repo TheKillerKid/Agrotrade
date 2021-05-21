@@ -17,7 +17,9 @@ public class PriceDB implements PriceIF {
 		Price price = null;
 		String sqlPrice = "SELECT * FROM Price WHERE product_id = ? AND price_type = ?";
 		
-		try (Connection con = DBConnection.getInstance().getConnection()) {
+     Connection con = DBConnection.getInstance().getConnection();
+
+     try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlPrice);
 			preparedStmt.setLong(1, productId);
 			ResultSet rsPrice = preparedStmt.executeQuery();
@@ -40,7 +42,9 @@ public class PriceDB implements PriceIF {
 		LocalDate startDate = price.getStartDate();
 		String priceType = price.getPriceType();
 		
-		try (Connection con = DBConnection.getInstance().getConnection()) {
+     Connection con = DBConnection.getInstance().getConnection();
+
+     try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate);
 			
 			preparedStmt.setLong(1, productId);

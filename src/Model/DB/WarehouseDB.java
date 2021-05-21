@@ -37,8 +37,8 @@ public class WarehouseDB implements WarehouseIF {
 			throw e;
 		}
 
-		// Address address = addressDb.getAddress(addressId);
-		// res.setAddress(address);
+		Address address = addressDb.getAddress(addressId);
+		res.setAddress(address);
 
 		return res;
 	}
