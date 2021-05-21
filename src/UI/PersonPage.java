@@ -1,13 +1,18 @@
 package UI;
 
-import java.awt.BorderLayout; 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.EventQueue;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
+
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -50,6 +55,7 @@ public class PersonPage extends JDialog {
 	private JTextField cvrNoField;
 	private JTextField companyNameField;
 	private JTextField staticDiscountField;
+	private JRadioButton rdbtnGeneratePassword;
 	private JButton btnBack;
 	private JButton btnSave;
 	
@@ -82,6 +88,14 @@ public class PersonPage extends JDialog {
 		gbl_contentPanel.columnWeights = new double[]{1.0, 0.0, 1.0, Double.MIN_VALUE};
 		gbl_contentPanel.rowWeights = new double[]{1.0, 0.0, 1.0, Double.MIN_VALUE};
 		contentPanel.setLayout(gbl_contentPanel);
+		
+		messageLabel = new JLabel("");
+		messageLabel.setForeground(Color.RED);
+		GridBagConstraints gbc_messageLabel = new GridBagConstraints();
+		gbc_messageLabel.anchor = GridBagConstraints.WEST;
+		gbc_messageLabel.gridx = 2;
+		gbc_messageLabel.gridy = 4;
+		contentPanel.add(messageLabel, gbc_messageLabel);
 		{
 			GridBagConstraints gbc_panel = new GridBagConstraints();
 			gbc_panel.insets = new Insets(0, 0, 5, 5);
@@ -330,7 +344,6 @@ public class PersonPage extends JDialog {
 										departmentField.getText(),
 										positionField.getText(), 
 										LoginContainer.getInstance().getCurrentUser().getWarehouse());
-								System.out.println("First Name" + "");
 								
 								} catch (SQLException e1) {
 									messageLabel.setText("Wrong credentials. Please try again or contact the administrator.");
@@ -355,11 +368,9 @@ public class PersonPage extends JDialog {
 										emailField.getText(),
 										cvrNo,
 										staticDiscount);
-							} catch (SQLException e1) {
-								messageLabel.setText("Wrong credentials. Please try again or contact the administrator.");
-
-							}
-							
+								} catch (SQLException e1) {
+								    messageLabel.setText("Wrong credentials. Please try again or contact the administrator.");
+							}	
 						}
 						if(type == PersonPageType.SUPPLIER) {
 							long cvrNo;
@@ -380,8 +391,7 @@ public class PersonPage extends JDialog {
 										companyNameField.getText());
 							} catch (SQLException e1) {
 								messageLabel.setText("Wrong credentials. Please try again or contact the administrator.");
-							}
-							
+							}	
 						}
 					}
 				});
@@ -470,6 +480,11 @@ public class PersonPage extends JDialog {
 			}
 			{
 				passwordField = new JTextField();
+				passwordField.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						System.out.println(rdbtnGeneratePassword);
+					}
+				});
 				GridBagConstraints gbc_passwordField = new GridBagConstraints();
 				gbc_passwordField.fill = GridBagConstraints.HORIZONTAL;
 				gbc_passwordField.insets = new Insets(0, 0, 5, 0);
@@ -477,6 +492,19 @@ public class PersonPage extends JDialog {
 				gbc_passwordField.gridy = 13;
 				panel.add(passwordField, gbc_passwordField);
 				passwordField.setColumns(10);
+			}
+			{
+				rdbtnGeneratePassword = new JRadioButton("Generate Password");
+				rdbtnGeneratePassword.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						employeeCtrl.generateRandomPassword(0, 0, 0);
+						System.out.println(rdbtnGeneratePassword.getText() + "" + passwordField);
+					}
+				});
+				GridBagConstraints gbc_rdbtnGeneratePassword = new GridBagConstraints();
+				gbc_rdbtnGeneratePassword.gridx = 2;
+				gbc_rdbtnGeneratePassword.gridy = 13;
+				panel.add(rdbtnGeneratePassword, gbc_rdbtnGeneratePassword);
 			}
 		}
 		

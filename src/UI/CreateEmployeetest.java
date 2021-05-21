@@ -13,6 +13,7 @@ import java.awt.Insets;
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JTextField;
+import javax.swing.JRadioButton;
 
 public class CreateEmployeetest extends JDialog {
 
@@ -28,6 +29,7 @@ public class CreateEmployeetest extends JDialog {
 	private JTextField cprNoField;
 	private JTextField departmentField;
 	private JTextField positionField;
+	private JTextField passwordField;
 
 	/**
 	 * Launch the application.
@@ -64,15 +66,15 @@ public class CreateEmployeetest extends JDialog {
 			gbc_panel.gridy = 1;
 			contentPanel.add(panel, gbc_panel);
 			GridBagLayout gbl_panel = new GridBagLayout();
-			gbl_panel.columnWidths = new int[]{90, 300, 0};
+			gbl_panel.columnWidths = new int[]{90, 300, 0, 0};
 			gbl_panel.rowHeights = new int[]{45, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-			gbl_panel.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
+			gbl_panel.columnWeights = new double[]{0.0, 1.0, 0.0, Double.MIN_VALUE};
 			gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 			panel.setLayout(gbl_panel);
 			{
 				JLabel lblCreateEmployee = new JLabel("Create Employee");
 				GridBagConstraints gbc_lblCreateEmployee = new GridBagConstraints();
-				gbc_lblCreateEmployee.insets = new Insets(0, 0, 5, 0);
+				gbc_lblCreateEmployee.insets = new Insets(0, 0, 5, 5);
 				gbc_lblCreateEmployee.gridx = 1;
 				gbc_lblCreateEmployee.gridy = 0;
 				panel.add(lblCreateEmployee, gbc_lblCreateEmployee);
@@ -91,7 +93,7 @@ public class CreateEmployeetest extends JDialog {
 				firstNameField = new JTextField();
 				GridBagConstraints gbc_firstNameField = new GridBagConstraints();
 				gbc_firstNameField.fill = GridBagConstraints.HORIZONTAL;
-				gbc_firstNameField.insets = new Insets(0, 0, 5, 0);
+				gbc_firstNameField.insets = new Insets(0, 0, 5, 5);
 				gbc_firstNameField.gridx = 1;
 				gbc_firstNameField.gridy = 1;
 				panel.add(firstNameField, gbc_firstNameField);
@@ -110,7 +112,7 @@ public class CreateEmployeetest extends JDialog {
 				lastNameField = new JTextField();
 				GridBagConstraints gbc_lastNameField = new GridBagConstraints();
 				gbc_lastNameField.fill = GridBagConstraints.HORIZONTAL;
-				gbc_lastNameField.insets = new Insets(0, 0, 5, 0);
+				gbc_lastNameField.insets = new Insets(0, 0, 5, 5);
 				gbc_lastNameField.gridx = 1;
 				gbc_lastNameField.gridy = 2;
 				panel.add(lastNameField, gbc_lastNameField);
@@ -129,7 +131,7 @@ public class CreateEmployeetest extends JDialog {
 				emailField = new JTextField();
 				GridBagConstraints gbc_emailField = new GridBagConstraints();
 				gbc_emailField.fill = GridBagConstraints.HORIZONTAL;
-				gbc_emailField.insets = new Insets(0, 0, 5, 0);
+				gbc_emailField.insets = new Insets(0, 0, 5, 5);
 				gbc_emailField.gridx = 1;
 				gbc_emailField.gridy = 3;
 				panel.add(emailField, gbc_emailField);
@@ -148,7 +150,7 @@ public class CreateEmployeetest extends JDialog {
 				phoneField = new JTextField();
 				GridBagConstraints gbc_phoneField = new GridBagConstraints();
 				gbc_phoneField.fill = GridBagConstraints.HORIZONTAL;
-				gbc_phoneField.insets = new Insets(0, 0, 5, 0);
+				gbc_phoneField.insets = new Insets(0, 0, 5, 5);
 				gbc_phoneField.gridx = 1;
 				gbc_phoneField.gridy = 4;
 				panel.add(phoneField, gbc_phoneField);
@@ -167,7 +169,7 @@ public class CreateEmployeetest extends JDialog {
 				textField_4 = new JTextField();
 				GridBagConstraints gbc_textField_4 = new GridBagConstraints();
 				gbc_textField_4.fill = GridBagConstraints.HORIZONTAL;
-				gbc_textField_4.insets = new Insets(0, 0, 5, 0);
+				gbc_textField_4.insets = new Insets(0, 0, 5, 5);
 				gbc_textField_4.gridx = 1;
 				gbc_textField_4.gridy = 5;
 				panel.add(textField_4, gbc_textField_4);
@@ -186,7 +188,7 @@ public class CreateEmployeetest extends JDialog {
 				streetField = new JTextField();
 				GridBagConstraints gbc_streetField = new GridBagConstraints();
 				gbc_streetField.fill = GridBagConstraints.HORIZONTAL;
-				gbc_streetField.insets = new Insets(0, 0, 5, 0);
+				gbc_streetField.insets = new Insets(0, 0, 5, 5);
 				gbc_streetField.gridx = 1;
 				gbc_streetField.gridy = 6;
 				panel.add(streetField, gbc_streetField);
@@ -205,7 +207,7 @@ public class CreateEmployeetest extends JDialog {
 				streetNoField = new JTextField();
 				GridBagConstraints gbc_streetNoField = new GridBagConstraints();
 				gbc_streetNoField.fill = GridBagConstraints.HORIZONTAL;
-				gbc_streetNoField.insets = new Insets(0, 0, 5, 0);
+				gbc_streetNoField.insets = new Insets(0, 0, 5, 5);
 				gbc_streetNoField.gridx = 1;
 				gbc_streetNoField.gridy = 7;
 				panel.add(streetNoField, gbc_streetNoField);
@@ -223,7 +225,7 @@ public class CreateEmployeetest extends JDialog {
 			{
 				cprNoField = new JTextField();
 				GridBagConstraints gbc_cprNoField = new GridBagConstraints();
-				gbc_cprNoField.insets = new Insets(0, 0, 5, 0);
+				gbc_cprNoField.insets = new Insets(0, 0, 5, 5);
 				gbc_cprNoField.fill = GridBagConstraints.HORIZONTAL;
 				gbc_cprNoField.gridx = 1;
 				gbc_cprNoField.gridy = 8;
@@ -243,7 +245,7 @@ public class CreateEmployeetest extends JDialog {
 		{
 			departmentField = new JTextField();
 			GridBagConstraints gbc_departmentField = new GridBagConstraints();
-			gbc_departmentField.insets = new Insets(0, 0, 5, 0);
+			gbc_departmentField.insets = new Insets(0, 0, 5, 5);
 			gbc_departmentField.fill = GridBagConstraints.HORIZONTAL;
 			gbc_departmentField.gridx = 1;
 			gbc_departmentField.gridy = 9;
@@ -254,7 +256,7 @@ public class CreateEmployeetest extends JDialog {
 			JLabel lblPosition = new JLabel("Position");
 			GridBagConstraints gbc_lblPosition = new GridBagConstraints();
 			gbc_lblPosition.anchor = GridBagConstraints.WEST;
-			gbc_lblPosition.insets = new Insets(0, 0, 0, 5);
+			gbc_lblPosition.insets = new Insets(0, 0, 5, 5);
 			gbc_lblPosition.gridx = 0;
 			gbc_lblPosition.gridy = 10;
 			panel.add(lblPosition, gbc_lblPosition);
@@ -262,11 +264,38 @@ public class CreateEmployeetest extends JDialog {
 		{
 			positionField = new JTextField();
 			GridBagConstraints gbc_positionField = new GridBagConstraints();
+			gbc_positionField.insets = new Insets(0, 0, 5, 5);
 			gbc_positionField.fill = GridBagConstraints.HORIZONTAL;
 			gbc_positionField.gridx = 1;
 			gbc_positionField.gridy = 10;
 			panel.add(positionField, gbc_positionField);
 			positionField.setColumns(10);
+		}
+		{
+			JLabel lblPassword = new JLabel("Password");
+			GridBagConstraints gbc_lblPassword = new GridBagConstraints();
+			gbc_lblPassword.anchor = GridBagConstraints.WEST;
+			gbc_lblPassword.insets = new Insets(0, 0, 0, 5);
+			gbc_lblPassword.gridx = 0;
+			gbc_lblPassword.gridy = 13;
+			panel.add(lblPassword, gbc_lblPassword);
+		}
+		{
+			passwordField = new JTextField();
+			GridBagConstraints gbc_passwordField = new GridBagConstraints();
+			gbc_passwordField.fill = GridBagConstraints.HORIZONTAL;
+			gbc_passwordField.insets = new Insets(0, 0, 0, 5);
+			gbc_passwordField.gridx = 1;
+			gbc_passwordField.gridy = 13;
+			panel.add(passwordField, gbc_passwordField);
+			passwordField.setColumns(10);
+		}
+		{
+			JRadioButton rdbtnGeneratePassword = new JRadioButton("Generate Password");
+			GridBagConstraints gbc_rdbtnGeneratePassword = new GridBagConstraints();
+			gbc_rdbtnGeneratePassword.gridx = 2;
+			gbc_rdbtnGeneratePassword.gridy = 13;
+			panel.add(rdbtnGeneratePassword, gbc_rdbtnGeneratePassword);
 		}
 		{
 			JPanel buttonPane = new JPanel();
