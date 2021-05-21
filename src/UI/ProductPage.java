@@ -24,7 +24,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.awt.event.ActionEvent;
 import java.awt.GridBagConstraints;
 import java.awt.Panel;
@@ -73,6 +75,12 @@ public class ProductPage extends JDialog {
 	}
 
 	public ProductPage() {
+		try {
+			loadData();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 		
 		getContentPane().setBackground(SystemColor.menu);
 		setBounds(100, 100, 740, 480);
@@ -288,8 +296,12 @@ public class ProductPage extends JDialog {
 			}
 			{
 				
-				//ArrayList<String> stringSuppliers = suppliers.stream().map(supplier -> String.valueOf(supplier.getCvrNo()) + " - " + supplier.getSupplierName());
-				JComboBox supplierComboBox = new JComboBox();
+				List<String> stringSuppliers = 
+						suppliers.stream().map(supplier -> String.valueOf(supplier.getCvrNo()) + " - " + supplier.getSupplierName()).distinct().collect(Collectors.toList());
+				
+				DefaultComboBoxModel<String> suppliersDefaultModel = new DefaultComboBoxModel<String>();
+				suppliers.stream().forEach(supplier -> suppliersDefaultModel.addElement(String.valueOf(supplier.getCvrNo()) + " - " + supplier.getSupplierName()));
+				JComboBox<String> supplierComboBox = new JComboBox<String>(suppliersDefaultModel);
 				
 				GridBagConstraints gbc_supplierComboBox = new GridBagConstraints();
 				gbc_supplierComboBox.insets = new Insets(0, 0, 5, 5);
