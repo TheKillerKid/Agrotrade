@@ -96,7 +96,9 @@ public class EmployeeDB implements EmployeeIF{
 		String position = employee.getPosition();
 		Warehouse warehouse = employee.getWarehouse();
 		
-		try (Connection con = DBConnection.getInstance().getConnection()) {
+     Connection con = DBConnection.getInstance().getConnection();
+
+     try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate);
 			preparedStmt.setString(1, firstName);
 			preparedStmt.setString(2, lastName);

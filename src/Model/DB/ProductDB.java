@@ -48,17 +48,19 @@ public class ProductDB implements ProductIF {
 		Product product = null;
 		String sqlProduct = "SELECT * FROM Product WHERE id = ?";
 		
-		try (Connection con = DBConnection.getInstance().getConnection()) {
-			PreparedStatement preparedStmt = con.prepareStatement(sqlProduct);
-			preparedStmt.setLong(1, id);
-			ResultSet rsProduct = preparedStmt.executeQuery();
-			if (rsProduct.next()) {
-				product = buildProduct(rsProduct);
-				product.setSalePrice(priceDb.getPrice(product.getId(), PriceType.SALE));
-				product.setLeasePrice(priceDb.getPrice(product.getId(), PriceType.LEASE));
-				product.setPurchasePrice(priceDb.getPrice(product.getId(), PriceType.PURCHASE));
-				product.setSupplier(supplierDb.getSupplierById(product.getSupplier().getId()));
-			}
+     Connection con = DBConnection.getInstance().getConnection();
+
+     try {
+				PreparedStatement preparedStmt = con.prepareStatement(sqlProduct);
+				preparedStmt.setLong(1, id);
+				ResultSet rsProduct = preparedStmt.executeQuery();
+				if (rsProduct.next()) {
+					product = buildProduct(rsProduct);
+					product.setSalePrice(priceDb.getPrice(product.getId(), PriceType.SALE));
+					product.setLeasePrice(priceDb.getPrice(product.getId(), PriceType.LEASE));
+					product.setPurchasePrice(priceDb.getPrice(product.getId(), PriceType.PURCHASE));
+					product.setSupplier(supplierDb.getSupplierById(product.getSupplier().getId()));
+				}
 		} catch (SQLException e) {
 			throw e;
 		}
@@ -81,7 +83,9 @@ public class ProductDB implements ProductIF {
 		long supplierId = product.getSupplier().getId();
 
 		
-		try (Connection con = DBConnection.getInstance().getConnection()) {
+     Connection con = DBConnection.getInstance().getConnection();
+
+     try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate);
 			preparedStmt.setLong(1, barcode);
 			preparedStmt.setString(2, name);
@@ -106,10 +110,6 @@ public class ProductDB implements ProductIF {
 
 	@Override
 	public void updateProduct(Product product) throws SQLException {
-		
-		try (Connection con = DBConnection.getInstance().getConnection()) {
-			  
-		}
 	}
 	
 	@Override

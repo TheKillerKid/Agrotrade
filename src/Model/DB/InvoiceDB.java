@@ -20,7 +20,9 @@ public class InvoiceDB implements InvoiceIF {
 		LocalDate paymentDate = invoice.getPaymentDate();
 		double amount = invoice.getAmount();
 		
-		try (Connection con = DBConnection.getInstance().getConnection()) {
+     Connection con = DBConnection.getInstance().getConnection();
+
+     try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate);
 			preparedStmt.setObject(1, java.sql.Date.valueOf(paymentDate));
 			preparedStmt.setDouble(2, amount);
