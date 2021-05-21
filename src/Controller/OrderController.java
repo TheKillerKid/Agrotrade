@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+import Model.Model.Customer;
 import Model.Model.Invoice;
 import Model.Model.Order;
 import Model.Model.Sale;
@@ -13,6 +14,7 @@ import Model.Model.OrderLine;
 public class OrderController {
 	private SaleController saleCtrl = new SaleController();
 	private StockProductContoller stockProrductCtrl = new StockProductContoller();
+	private CustomerController customerCtrl = new CustomerController();
 	
 	
 	public Order createOrder(Order order) throws SQLException{
@@ -57,11 +59,18 @@ public class OrderController {
 	public ArrayList<StockProduct> getStockProducts(long warehouseId) throws SQLException {
 		try {
 			return this.stockProrductCtrl.getStockProducts(warehouseId);
-		
 		} catch (SQLException e) {
 			throw e;
 		}
 
+	}
+	
+	public Customer getCustomer(long cvrNo) throws SQLException {
+		try {
+			return customerCtrl.getCustomer(cvrNo);
+		} catch (SQLException e) {
+			throw e;
+		}
 	}
 		
 }

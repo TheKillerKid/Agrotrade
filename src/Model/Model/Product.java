@@ -10,10 +10,9 @@ public class Product {
 	private Price salePrice;
 	private Price leasePrice;
 	private Unit unit;
-	private int discount;
 	private Supplier supplier;
 	
-	public Product(long id, long barcode, String name, Category category, Price purchasePrice, Price salePrice, Price leasePrice, Unit unit, int discount, Supplier supplier) {				//need of adding prices
+	public Product(long id, long barcode, String name, Category category, Price purchasePrice, Price salePrice, Price leasePrice, Unit unit, Supplier supplier) {
 		this.id = id;
 		this.barcode = barcode;
 		this.name = name;
@@ -22,7 +21,6 @@ public class Product {
 		this.salePrice = salePrice;
 		this.leasePrice = leasePrice;
 		this.unit = unit;
-		this.discount = discount;
 	}
 	
 	public Price getPurchasePrice() {
@@ -91,14 +89,6 @@ public class Product {
 
 	public void setUnit(Unit unit) {
 		this.unit = unit;
-	}
-
-	public int getDiscount() {
-		return discount;
-	}
-
-	public void setDiscount(int discount) {
-		this.discount = discount;
 	}
 
 	public Supplier getSupplier() {

@@ -4,14 +4,12 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
 
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -22,6 +20,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import Model.Model.Address;
 import Model.Model.Customer;
@@ -29,15 +28,21 @@ import Model.Model.Employee;
 import Model.Model.LoginContainer;
 import Model.Model.PersonPageType;
 import Model.Model.Supplier;
+import Controller.CustomerController;
 import Controller.EmployeeController;
 import Controller.ParsingHelper;
+import Controller.PersonController;
+import Controller.SupplierController;
 
 public class PersonPage extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	JPanel panel = new JPanel();
 	JPanel buttonPane = new JPanel();
+	
+	private PersonController personCtrl = new PersonController();
 	private EmployeeController employeeCtrl = new EmployeeController();
+	
 	private JLabel messageLabel;
 	private JTextField cprNoField;
 	private JTextField firstNameField;
@@ -317,16 +322,16 @@ public class PersonPage extends JDialog {
 						if(type == PersonPageType.EMPLOYEE) {	
 							try {
 								long cprNo = ParsingHelper.tryParseLong(cprNoField.getText());
+								Address address = new Address(0, streetField.getText(), 
+										streetNoField.getText(), 
+										cityField.getText(), 
+										positionField.getText(),
+										countryField.getText());
 								
 								Employee employee = new Employee(0,
 										firstNameField.getText(),
 										lastNameField.getText(), 
-										new Address(0, 
-												streetField.getText(), 
-												streetNoField.getText(), 
-												cityField.getText(), 
-												positionField.getText(),
-												countryField.getText()),
+										address,
 										phoneField.getText(),
 										emailField.getText(),
 										passwordField.getText(),
@@ -334,9 +339,14 @@ public class PersonPage extends JDialog {
 										departmentField.getText(),
 										positionField.getText(), 
 										LoginContainer.getInstance().getCurrentUser().getWarehouse());
-								
+								personCtrl.createPerson(employee);
 							} catch(NumberFormatException e1) {
 								messageLabel.setText("Wrong input please input numbers.");
+								e1.printStackTrace();
+								return;
+							}  catch(SQLException e2) {
+								messageLabel.setText("Something went wrong with database, please try again.");
+								e2.printStackTrace();
 								return;
 							}
 						}
@@ -359,9 +369,15 @@ public class PersonPage extends JDialog {
 										emailField.getText(),
 										cvrNo,
 										staticDiscount);
+								personCtrl.createPerson(customer);
 							} catch (NumberFormatException e1) {
-							    messageLabel.setText("Wrong credentials. Please try again or contact the administrator.");
+							    messageLabel.setText("Wrong input please input numbers.");
+								e1.printStackTrace();
 							    return;
+							} catch (SQLException e2) {
+								messageLabel.setText("Something went wrong with database, please try again.");
+								e2.printStackTrace();
+								return;
 							}	
 						}
 						if(type == PersonPageType.SUPPLIER) {
@@ -381,10 +397,16 @@ public class PersonPage extends JDialog {
 										emailField.getText(),
 										cvrNo,
 										companyNameField.getText());
+								personCtrl.createPerson(supplier);
 							} catch (NumberFormatException e1) {
-								messageLabel.setText("Wrong credentials. Please try again or contact the administrator.");
+								messageLabel.setText("Wrong input please input numbers.");
+								e1.printStackTrace();
 								return;
-							}	
+							} catch (SQLException e2) {
+								messageLabel.setText("Something went wrong with database, please try again.");
+								e2.printStackTrace();
+								return;	
+							}
 						}
 						
 						HomePage.start();
@@ -605,6 +627,7 @@ public class PersonPage extends JDialog {
 			gbc_messageLabel.gridx = 1;
 			gbc_messageLabel.gridy = 4;
 			contentPanel.add(messageLabel, gbc_messageLabel);
-	}
-			
+		}
 }
+			
+
