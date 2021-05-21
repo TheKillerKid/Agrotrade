@@ -20,6 +20,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import Model.Model.Address;
@@ -330,7 +331,8 @@ public class PersonPage extends JDialog {
 								
 								Employee employee = new Employee(0,
 										firstNameField.getText(),
-										lastNameField.getText(), 
+										lastNameField.getText(),
+										LocalDate.now(), //change to field
 										address,
 										phoneField.getText(),
 										emailField.getText(),
@@ -451,12 +453,21 @@ public class PersonPage extends JDialog {
 				cprNoField.setColumns(10);
 			}
 			{
+				JLabel lblDateOfBirth = new JLabel("Date of Birth");
+				GridBagConstraints gbc_lblDateOfBirth = new GridBagConstraints();
+				gbc_lblDateOfBirth.anchor = GridBagConstraints.WEST;
+				gbc_lblDateOfBirth.insets = new Insets(0, 0, 5, 5);
+				gbc_lblDateOfBirth.gridx = 0;
+				gbc_lblDateOfBirth.gridy = 11;
+				panel.add(lblDateOfBirth, gbc_lblDateOfBirth);
+			}
+			{
 				JLabel lblDepartment = new JLabel("Department");
 				GridBagConstraints gbc_lblDepartment = new GridBagConstraints();
 				gbc_lblDepartment.anchor = GridBagConstraints.WEST;
 				gbc_lblDepartment.insets = new Insets(0, 0, 5, 5);
 				gbc_lblDepartment.gridx = 0;
-				gbc_lblDepartment.gridy = 11;
+				gbc_lblDepartment.gridy = 12;
 				panel.add(lblDepartment, gbc_lblDepartment);
 			}
 			{
@@ -465,7 +476,7 @@ public class PersonPage extends JDialog {
 				gbc_departmentField.insets = new Insets(0, 0, 5, 0);
 				gbc_departmentField.fill = GridBagConstraints.HORIZONTAL;
 				gbc_departmentField.gridx = 1;
-				gbc_departmentField.gridy = 11;
+				gbc_departmentField.gridy = 12;
 				panel.add(departmentField, gbc_departmentField);
 				departmentField.setColumns(10);
 			}
@@ -475,7 +486,7 @@ public class PersonPage extends JDialog {
 				gbc_lblPosition.anchor = GridBagConstraints.WEST;
 				gbc_lblPosition.insets = new Insets(0, 0, 0, 5);
 				gbc_lblPosition.gridx = 0;
-				gbc_lblPosition.gridy = 12;
+				gbc_lblPosition.gridy = 13;
 				panel.add(lblPosition, gbc_lblPosition);
 			}
 			{
@@ -483,7 +494,7 @@ public class PersonPage extends JDialog {
 				GridBagConstraints gbc_positionField = new GridBagConstraints();
 				gbc_positionField.fill = GridBagConstraints.HORIZONTAL;
 				gbc_positionField.gridx = 1;
-				gbc_positionField.gridy = 12;
+				gbc_positionField.gridy = 13;
 				panel.add(positionField, gbc_positionField);
 				positionField.setColumns(10);
 			}
@@ -493,7 +504,7 @@ public class PersonPage extends JDialog {
 				gbc_lblPassword.anchor = GridBagConstraints.WEST;
 				gbc_lblPassword.insets = new Insets(0, 0, 5, 5);
 				gbc_lblPassword.gridx = 0;
-				gbc_lblPassword.gridy = 13;
+				gbc_lblPassword.gridy = 14;
 				panel.add(lblPassword, gbc_lblPassword);
 			}
 			{
@@ -502,7 +513,7 @@ public class PersonPage extends JDialog {
 				gbc_passwordField.fill = GridBagConstraints.HORIZONTAL;
 				gbc_passwordField.insets = new Insets(0, 0, 5, 0);
 				gbc_passwordField.gridx = 1;
-				gbc_passwordField.gridy = 13;
+				gbc_passwordField.gridy = 14;
 				panel.add(passwordField, gbc_passwordField);
 				passwordField.setColumns(10);
 			}
@@ -515,7 +526,7 @@ public class PersonPage extends JDialog {
 				});
 				GridBagConstraints gbc_btnGeneratePassword = new GridBagConstraints();
 				gbc_btnGeneratePassword.gridx = 2;
-				gbc_btnGeneratePassword.gridy = 13;
+				gbc_btnGeneratePassword.gridy = 14;
 				panel.add(btnGeneratePassword, gbc_btnGeneratePassword);
 			}
 		}

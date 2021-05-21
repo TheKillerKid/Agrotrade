@@ -3,8 +3,10 @@ package Model.DB;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Date;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import Model.DBIF.EmployeeIF;
@@ -81,12 +83,13 @@ public class EmployeeDB implements EmployeeIF{
 		return res;
 	}
 
-	String sqlCreate = "INSERT INTO Employee (first_name, last_name, address_id, phone, email, password, cpr_no, department, position, warehouse_id) VALUES (?,?,?,?,?,?,?,?,?,?)";
+	String sqlCreate = "INSERT INTO Employee (first_name, last_name, date_of_birth, address_id, phone, email, password, cpr_no, department, position, warehouse_id) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
 	@Override
 	public long createEmployee(Employee employee) throws SQLException {
 		long id = 0;
 		String firstName = employee.getFirstName();
 		String lastName = employee.getLastName();
+		LocalDate dateOfBirth = employee.getDateOfBirth();
 		Address address = employee.getAddress();
 		String phone = employee.getPhone();
 		String email = employee.getEmail();
@@ -102,14 +105,15 @@ public class EmployeeDB implements EmployeeIF{
 			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate);
 			preparedStmt.setString(1, firstName);
 			preparedStmt.setString(2, lastName);
-			preparedStmt.setLong(3, address.getId());
-			preparedStmt.setString(4, phone);
-			preparedStmt.setString(5, email);
-			preparedStmt.setString(6, password);
-			preparedStmt.setLong(7, cprNo);
-			preparedStmt.setString(8, department);
-			preparedStmt.setString(9, position);
-			preparedStmt.setLong(10, warehouse.getId());
+			preparedStmt.setDate(3, java.sql.Date.valueOf(dateOfBirth));
+			preparedStmt.setLong(4, address.getId());
+			preparedStmt.setString(5, phone);
+			preparedStmt.setString(6, email);
+			preparedStmt.setString(7, password);
+			preparedStmt.setLong(8, cprNo);
+			preparedStmt.setString(9, department);
+			preparedStmt.setString(10, position);
+			preparedStmt.setLong(11, warehouse.getId());
 			
 			id = preparedStmt.executeUpdate();
 		} catch (SQLException e) {
@@ -126,6 +130,7 @@ public class EmployeeDB implements EmployeeIF{
 		
 		String firstName = employee.getFirstName();
 		String lastName = employee.getLastName();
+		LocalDate dateOfBirth = employee.getDateOfBirth();
 		Address address = employee.getAddress();
 		String phone = employee.getPhone();
 		String email = employee.getEmail();
@@ -150,6 +155,14 @@ public class EmployeeDB implements EmployeeIF{
 			      columns.append( ", " );
 			    }
 			    columns.append( "last name = '" + lastName + "'" );
+			  }
+		
+		if ( dateOfBirth != null && 
+			      !dateOfBirth.equals(oldEmployee.getDateOfBirth() ) ) {
+			    if ( columns.length() > 0 ) {
+			      columns.append( ", " );
+			    }
+			    columns.append( "date of birth = '" + dateOfBirth + "'" );
 			  }
 		
 		if ( address != null && 
@@ -276,7 +289,18 @@ public class EmployeeDB implements EmployeeIF{
 
 
 	private Employee buildEmployee(ResultSet rs) throws SQLException {
-		return new Employee(rs.getLong("id"), rs.getString("first_name"), rs.getString("last_name"), null, rs.getString("phone"), rs.getString("email"), rs.getString("password"), rs.getLong("cpr_no"), rs.getString("department"), rs.getString("position"), null);
+		return new Employee(rs.getLong("id"), 
+							rs.getString("first_name"), 
+							rs.getString("last_name"), 
+							rs.getDate("date_of_birth").toLocalDate(), 
+							null, 
+							rs.getString("phone"), 
+							rs.getString("email"), 
+							rs.getString("password"), 
+							rs.getLong("cpr_no"), 
+							rs.getString("department"), 
+							rs.getString("position"), 
+							null);
 	}
 }
 
