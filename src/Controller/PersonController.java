@@ -92,6 +92,7 @@ public class PersonController {
 				list.add(customer);
 			}
 		}
+		
 		if(filter.isEmployee()) {
 			ArrayList<Employee> employees = employeeCtrl.getEmployees();
 			for(Employee employee : employees) {
