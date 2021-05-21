@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 import java.awt.FlowLayout;
 
 import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -34,11 +35,15 @@ import Model.Model.LoginContainer;
 
 public class OrderPage extends JDialog {
 	private OrderController orderCtrl = new OrderController();
+	
 	private final JPanel contentPanel = new JPanel();
 	private JTextField customerCVRLbl;
 	private JTextField textField_2;
 	private JTextField textField_3;
 	
+	private ArrayList<StockProduct> stockProducts = new ArrayList<StockProduct>();
+	
+	private DefaultComboBoxModel<String> stockProductsDefaultModel = new DefaultComboBoxModel<String>();
 	
 	public static void start() {
 		EventQueue.invokeLater(new Runnable() {
@@ -131,7 +136,11 @@ public class OrderPage extends JDialog {
 			contentPanel.add(lblNewLabel_2, gbc_lblNewLabel_2);
 		}
 		{
-			JLabel customerNameLbl = new JLabel("New label");
+			String customerName = null;
+			JLabel customerNameLbl = new JLabel(customerName);
+		
+			//customerName
+			
 			GridBagConstraints gbc_customerNameLbl = new GridBagConstraints();
 			gbc_customerNameLbl.anchor = GridBagConstraints.WEST;
 			gbc_customerNameLbl.insets = new Insets(0, 0, 5, 5);
@@ -165,16 +174,14 @@ public class OrderPage extends JDialog {
 				panel.add(lblNewLabel_4, gbc_lblNewLabel_4);
 			}
 			{
-				// How to get name from product ArrayList<StockProduct> stockProducts here into combobox
-				// new JComboBox(array);
-				JComboBox comboBox = new JComboBox();
-				//comboBox.setModel(new ComboBoxModel());
+
+				JComboBox<String> stockProductsComboBox = new JComboBox<String>(stockProductsDefaultModel);
 				GridBagConstraints gbc_comboBox = new GridBagConstraints();
 				gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
 				gbc_comboBox.insets = new Insets(0, 0, 5, 5);
 				gbc_comboBox.gridx = 1;
 				gbc_comboBox.gridy = 0;
-				panel.add(comboBox, gbc_comboBox);
+				panel.add(stockProductsComboBox, gbc_comboBox);
 			}
 			{
 				JLabel lblNewLabel_5 = new JLabel("On Stock");
@@ -273,13 +280,22 @@ public class OrderPage extends JDialog {
 				buttonPane.add(saveBtn, gbc_saveBtn);
 			}
 		}
+		
+		try {
+			loadData();
+			
+			stockProducts.stream().forEach(stockProduct -> stockProductsDefaultModel.addElement(String.valueOf(stockProduct.getProduct().getBarcode()) + " - " + stockProduct.getProduct().getName()));
+		} catch (SQLException e) {
+			e.printStackTrace();
+			//errorMsgLbl.setText("Something went wrong with database. Try it again later.");
+		}
 	}
 	
-	//loadData method. Is this the right way?
-	public void loadData () {		
-	//how to get the warehouseId from LoginContainer
-		
-	//long warehouseId = loginContainer get  
-	//orderCtrl.getStockProducts(warehouseId);
+	public void loadData () throws SQLException {	
+		try {
+			stockProducts = orderCtrl.getStockProducts(LoginContainer.getInstance().getCurrentUser().getWarehouse().getId());
+		} catch (SQLException e) {
+			throw e;
+		}
 	}
 }
