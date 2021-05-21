@@ -119,10 +119,9 @@ public class ProductDB implements ProductIF {
 		
 		String sqlCreate = "INSERT INTO StockProducts (amount, min_stock, max_stock, product_id, warehouse_id) VALUES (?,?,?,?,?)";
 		
-		
 		Connection con = DBConnection.getInstance().getConnection();
 
-    try {
+		try {
 			ArrayList<Warehouse>warehouses = warehouseDb.getWarehouses();
 			
 			for(Warehouse warehouse : warehouses) {
@@ -169,7 +168,6 @@ public class ProductDB implements ProductIF {
 						   null, 
 						   null, 
 						   new Unit(rsProduct.getLong("unit_id"), rsProduct.getString("unit_name")), 
-						   rsProduct.getInt("discount"), 
 						   new Supplier(rsProduct.getLong("supplier_id")));
 	}
 }
