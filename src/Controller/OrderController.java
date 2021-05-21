@@ -1,6 +1,5 @@
 package Controller;
 
-import java.rmi.dgc.Lease; 
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -10,8 +9,6 @@ import Model.Model.Order;
 import Model.Model.Sale;
 import Model.Model.StockProduct;
 import Model.Model.OrderLine;
-import Model.Model.Product;
-import Controller.StockProductContoller;
 
 public class OrderController {
 	private SaleController saleCtrl = new SaleController();

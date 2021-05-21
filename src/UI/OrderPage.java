@@ -48,10 +48,23 @@ public class OrderPage extends JDialog {
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.setVisible(true);
 				} catch (Exception e) {
-					e.printStackTrace();
+					throw e;
 				}
 			}
 		});
+	}
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		try {
+			OrderPage dialog = new OrderPage();
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 
 	/**

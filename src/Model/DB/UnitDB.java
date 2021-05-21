@@ -16,7 +16,9 @@ public class UnitDB implements UnitIF{
 		ArrayList<Unit> units = new ArrayList<Unit>();
 		String sqlUnit = ("SELECT * FROM Unit");
 		
-		try(Connection con = DBConnection.getInstance().getConnection()) {
+		Connection con = DBConnection.getInstance().getConnection();
+
+    try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlUnit);
 			
 			ResultSet rsUnit = preparedStmt.executeQuery();

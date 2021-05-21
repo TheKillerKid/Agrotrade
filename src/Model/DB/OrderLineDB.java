@@ -18,7 +18,9 @@ public class OrderLineDB implements OrderLineIF {
 		long stockProductId = orderLine.getStockProduct().getId();
 		long orderId = orderLine.getOrder().getOrderId();
 		
-		try(Connection con = DBConnection.getInstance().getConnection()) {
+		Connection con = DBConnection.getInstance().getConnection();
+
+    try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate);
 			preparedStmt.setInt(1,requestedAmount);
 			preparedStmt.setInt(2, amount);

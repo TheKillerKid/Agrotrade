@@ -29,7 +29,9 @@ public class StockProductDB implements StockProductIF{
 		}
 		
 		
-		try(Connection con = DBConnection.getInstance().getConnection()) {
+		Connection con = DBConnection.getInstance().getConnection();
+
+    try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlWarehouse);
 			
 			if(warehouseId != 0) {

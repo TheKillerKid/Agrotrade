@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import Model.DBIF.WarehouseIF;
+import Model.Model.Address;
 import Model.Model.Warehouse;
 
 public class WarehouseDB implements WarehouseIF {
@@ -16,23 +17,29 @@ public class WarehouseDB implements WarehouseIF {
 	@Override
 	public Warehouse getWarehouse(long id) throws SQLException {
 		Warehouse res = null;
+		long addressId = -1;
 		String sqlWarehouse = ("SELECT * FROM Warehouse WHERE id = ?" );
-		
-		try(Connection con = DBConnection.getInstance().getConnection()) {
+
+		Connection con = DBConnection.getInstance().getConnection();
+
+		try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlWarehouse);
-				
-				preparedStmt.setLong(1, id);
-				
-				ResultSet rsWarehouse = preparedStmt.executeQuery();
-			
+	
+			preparedStmt.setLong(1, id);
+	
+			ResultSet rsWarehouse = preparedStmt.executeQuery();
+	
 			if(rsWarehouse.next()) {
 				res = buildWarehouse(rsWarehouse);
-				res.setAddress(addressDb.getAddress(rsWarehouse.getLong("address_id")));
+				addressId = rsWarehouse.getLong("address_id");		
 			}
-
 		} catch (SQLException e) {
 			throw e;
 		}
+
+		// Address address = addressDb.getAddress(addressId);
+		// res.setAddress(address);
+
 		return res;
 	}
 	
@@ -40,12 +47,14 @@ public class WarehouseDB implements WarehouseIF {
 	public ArrayList<Warehouse> getWarehouses() throws SQLException {
 		ArrayList<Warehouse> warehouses = new ArrayList<Warehouse>();
 		String sqlWarehouse = ("SELECT * FROM Warehouse" );
-		
-		try(Connection con = DBConnection.getInstance().getConnection()) {
+
+		Connection con = DBConnection.getInstance().getConnection();
+
+    try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlWarehouse);
-				
+
 				ResultSet rsWarehouse = preparedStmt.executeQuery();
-			
+
 			while(rsWarehouse.next()) {
 				Warehouse res = buildWarehouse(rsWarehouse);
 				res.setAddress(addressDb.getAddress(rsWarehouse.getLong("address_id")));

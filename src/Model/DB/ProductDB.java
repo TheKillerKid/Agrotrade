@@ -119,7 +119,9 @@ public class ProductDB implements ProductIF {
 		String sqlCreate = "INSERT INTO StockProducts (amount, min_stock, max_stock, product_id, warehouse_id) VALUES (?,?,?,?,?)";
 		
 		
-		try(Connection con = DBConnection.getInstance().getConnection()) {
+		Connection con = DBConnection.getInstance().getConnection();
+
+    try {
 			ArrayList<Warehouse>warehouses = warehouseDb.getWarehouses();
 			
 			for(Warehouse warehouse : warehouses) {

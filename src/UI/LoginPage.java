@@ -44,17 +44,15 @@ public class LoginPage extends JDialog {
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw e;
 		}
 	}
 	
 	private void logIn() {
 		try {
-			
 			String password = String.valueOf(passwordField.getPassword());
 			boolean loggedIn = loginCtrl.login(emailField.getText(), password);
-			
-			System.out.println("Logged " + loggedIn);
+
 			if (loggedIn) {
 				dispose();
 				HomePage.start();
@@ -62,8 +60,9 @@ public class LoginPage extends JDialog {
 			else {
 				messageLabel.setText("Wrong credentials. Please try again or contact the administrator.");
 			}
-		} catch (SQLException e1) {
-			messageLabel.setText("Wrong credentials. Please try again or contact the administrator.");
+		} catch (SQLException e) {
+				e.printStackTrace();
+				messageLabel.setText("Wrong credentials. Please try again or contact the administrator.");
 		}
 	}
 
