@@ -360,12 +360,13 @@ public class PersonPage extends JDialog {
 										cvrNo,
 										staticDiscount);
 							} catch (NumberFormatException e1) {
-							    messageLabel.setText("Wrong credentials. Please try again or contact the administrator.");
+							    messageLabel.setText("Wrong input please input numbers.");
 							    return;
 							}	
 						}
 						if(type == PersonPageType.SUPPLIER) {
 							long cvrNo;
+							int streetNo;
 							try {
 								cvrNo = ParsingHelper.tryParseLong(cvrNoField.getText());
 								Supplier supplier = new Supplier(0,
@@ -382,7 +383,7 @@ public class PersonPage extends JDialog {
 										cvrNo,
 										companyNameField.getText());
 							} catch (NumberFormatException e1) {
-								messageLabel.setText("Wrong credentials. Please try again or contact the administrator.");
+								messageLabel.setText("Wrong input please input numbers.");
 								return;
 							}	
 						}
