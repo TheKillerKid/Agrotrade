@@ -16,11 +16,11 @@ public class AddressDB {
 		Connection con = DBConnection.getInstance().getConnection();
 
 		try {
-				PreparedStatement preparedStmt = con.prepareStatement(sqlAddress);
-				
-				preparedStmt.setLong(1, id);
-				
-				ResultSet rsAddress = preparedStmt.executeQuery();
+			PreparedStatement preparedStmt = con.prepareStatement(sqlAddress);
+			
+			preparedStmt.setLong(1, id);
+			
+			ResultSet rsAddress = preparedStmt.executeQuery();
 			
 			if(rsAddress.next()) {
 				res = buildAddress(rsAddress);

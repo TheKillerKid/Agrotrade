@@ -15,6 +15,7 @@ import Controller.ProductController;
 import Controller.SupplierController;
 import Controller.UnitController;
 import Model.Model.Category;
+import Model.Model.Product;
 import Model.Model.Supplier;
 import Model.Model.Unit;
 
@@ -63,6 +64,7 @@ public class ProductPage extends JDialog {
 	private ArrayList<Unit> units = new ArrayList<Unit>();
 	private ArrayList<Category> categories = new ArrayList<Category>();
 	private ArrayList<Supplier> suppliers = new ArrayList<Supplier>();
+	private ArrayList<Product> products = new ArrayList<Product>();
 	
 	private DefaultComboBoxModel<String> suppliersDefaultModel = new DefaultComboBoxModel<String>();
 	
@@ -338,7 +340,7 @@ public class ProductPage extends JDialog {
 			errorMsgLbl.setText("Something went wrong with database. Try it again later.");
 		}
 	}
-	
+
 	public void loadData() throws SQLException {
 		try {
 			units = unitCtrl.getUnits();

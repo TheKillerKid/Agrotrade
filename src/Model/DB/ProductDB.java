@@ -143,22 +143,6 @@ public class ProductDB implements ProductIF {
 		
 		return stockProducts;
 	}
-
-	@Override
-	public void getProductList() throws SQLException {
-		String sqlGet = "SELECT p.barcode, p.name, s.first_name AS supplier_name, s.last_name AS supplier_last_name, c.name AS category_name, u.name AS unit_name from Product p LEFT JOIN Supplier s ON p.supplier_id = s.id LEFT JOIN Category c ON p.category_id = c.id LEFT JOIN Unit u ON p.unit_id = u.id";
-		ArrayList<Product> res = null;
-		
-		try (Connection con = DBConnection.getInstance().getConnection()) {
-			PreparedStatement preparedStmt = con.prepareStatement(sqlGet);
-			
-			ResultSet rs = preparedStmt.executeQuery();
-			
-			if (rs.next()) {
-				System.out.println(rs);
-			}
-		}
-	}
 	
 	private Product buildProduct(ResultSet rsProduct) throws SQLException {
 		return new Product(rsProduct.getLong("id"), 
