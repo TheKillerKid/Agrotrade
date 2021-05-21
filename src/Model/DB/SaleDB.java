@@ -24,7 +24,9 @@ public class SaleDB implements SaleIF {
 		LocalDate deliveryDate = null;
 		long customerId = sale.getCustomer().getId();
 		
-		try (Connection con = DBConnection.getInstance().getConnection()) {
+     Connection con = DBConnection.getInstance().getConnection();
+
+     try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate);
 			preparedStmt.setObject(1, java.sql.Date.valueOf(shippingDate));
 			preparedStmt.setObject(2, java.sql.Date.valueOf(deliveryDate));

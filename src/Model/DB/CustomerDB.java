@@ -48,7 +48,9 @@ public class CustomerDB {
 		long cvrNo = customer.getCvrNo();
 		int staticDiscount = customer.getStaticDiscount();
 		
-		try (Connection con = DBConnection.getInstance().getConnection()) {
+     Connection con = DBConnection.getInstance().getConnection();
+
+     try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate);
 			preparedStmt.setString(1, firstName);
 			preparedStmt.setString(2, lastName);

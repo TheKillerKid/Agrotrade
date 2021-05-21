@@ -51,8 +51,6 @@ public class StockProductDB implements StockProductIF{
 		}
 		return stockProducts;
 	}
-
-	
 	
 	private StockProduct buildStockProduct(ResultSet rsStockProduct) throws SQLException {
 		return new StockProduct(rsStockProduct.getLong("id"),

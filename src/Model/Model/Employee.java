@@ -1,5 +1,7 @@
 package Model.Model;
 
+import java.time.LocalDate;
+
 public class Employee extends Person {
 	
 	private String password;
@@ -7,10 +9,12 @@ public class Employee extends Person {
 	private String department;
 	private String position;
 	private Warehouse warehouse;
+	private LocalDate dateOfBirth;
 	
 
-	public Employee(long id, String firstName, String lastName, Address address, String phone, String email, String password, long cprNo, String department, String position, Warehouse warehouse) {
+	public Employee(long id, String firstName, String lastName, LocalDate dateOfBirth, Address address, String phone, String email, String password, long cprNo, String department, String position, Warehouse warehouse) {
 		super(id, firstName, lastName, address, phone, email);
+		this.dateOfBirth = dateOfBirth;
 		this.password = password;
 		this.cprNo = cprNo;
 		this.department = department;
@@ -63,5 +67,14 @@ public class Employee extends Person {
 	
 	public void setWarehouse(Warehouse warehouse) {
 		this.warehouse = warehouse;
+	}
+	
+	public LocalDate getDateOfBirth() {
+		return dateOfBirth;
+	}
+
+
+	public void setDateOfBirth(LocalDate dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
 	}
 }
