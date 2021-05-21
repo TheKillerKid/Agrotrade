@@ -114,7 +114,7 @@ private AddressDB addressDb =  new AddressDB();
 			throw e;
 		}
 
-		return null;
+		return suppliers;
 	}
 
 	public Supplier buildSupplier(ResultSet rsSupplier) throws SQLException{
@@ -125,6 +125,6 @@ private AddressDB addressDb =  new AddressDB();
 							rsSupplier.getString("phone"),
 							rsSupplier.getString("email"),
 							rsSupplier.getLong("cvr_no"),
-							rsSupplier.getString("supplier_name"));
+							rsSupplier.getString("company_name"));
 	}
 }
