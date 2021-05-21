@@ -11,10 +11,12 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import Controller.CategoryController;
+import Controller.ParsingHelper;
 import Controller.ProductController;
 import Controller.SupplierController;
 import Controller.UnitController;
 import Model.Model.Category;
+import Model.Model.Product;
 import Model.Model.Supplier;
 import Model.Model.Unit;
 
@@ -51,6 +53,9 @@ public class ProductPage extends JDialog {
 	private JTextField purchasePriceField;
 	private JTextField salePriceField;
 	private JTextField leasePriceField;
+	private JComboBox<String> categoryComboBox;
+	private JComboBox<String> unitComboBox;
+	private JComboBox<String> supplierComboBox;
 	
 	private JLabel errorBarcodeLbl;
 	private JLabel errorMsgLbl;
@@ -67,6 +72,8 @@ public class ProductPage extends JDialog {
 	private DefaultComboBoxModel<String> suppliersDefaultModel = new DefaultComboBoxModel<String>();
 	private DefaultComboBoxModel<String> unitsDefaultModel = new DefaultComboBoxModel<String>();
 	private DefaultComboBoxModel<String> categoriesDefaultModel = new DefaultComboBoxModel<String>();
+	private JTextField minStockTextField;
+	private JTextField maxStockTextField;
 	
 	public static void start() {
 		EventQueue.invokeLater(new Runnable() {
@@ -92,57 +99,15 @@ public class ProductPage extends JDialog {
 		}
 		
 		getContentPane().setLayout(new BorderLayout(0, 0));
-		{
-			buttonsPanel = new Panel();
-			getContentPane().add(buttonsPanel);
-			GridBagLayout gbl_buttonsPanel = new GridBagLayout();
-			gbl_buttonsPanel.columnWidths = new int[]{0, 75, 242, 75, 0, 0};
-			gbl_buttonsPanel.rowHeights = new int[]{29, 0};
-			gbl_buttonsPanel.columnWeights = new double[]{1.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
-			gbl_buttonsPanel.rowWeights = new double[]{0.0, Double.MIN_VALUE};
-			buttonsPanel.setLayout(gbl_buttonsPanel);
-			{
-				backBtn = new JButton("Back");
-				backBtn.addMouseListener(new MouseAdapter() {
-					@Override
-					public void mouseClicked(MouseEvent e) {
-						HomePage.start();
-						dispose();
-					}
-				});
-				GridBagConstraints gbc_backBtn = new GridBagConstraints();
-				gbc_backBtn.anchor = GridBagConstraints.NORTH;
-				gbc_backBtn.insets = new Insets(0, 0, 0, 5);
-				gbc_backBtn.gridx = 1;
-				gbc_backBtn.gridy = 0;
-				buttonsPanel.add(backBtn, gbc_backBtn);
-			}
-			{
-				saveBtn = new JButton("Save");
-				saveBtn.addMouseListener(new MouseAdapter() {
-					public void mouseClicked(MouseEvent e) {
-						
-						
-						HomePage.start();
-						dispose();
-					}
-				});
-				GridBagConstraints gbc_saveBtn = new GridBagConstraints();
-				gbc_saveBtn.insets = new Insets(0, 0, 0, 5);
-				gbc_saveBtn.anchor = GridBagConstraints.NORTH;
-				gbc_saveBtn.gridx = 3;
-				gbc_saveBtn.gridy = 0;
-				buttonsPanel.add(saveBtn, gbc_saveBtn);
-			}
-		}
+		
 		{
 			Panel panel = new Panel();
 			getContentPane().add(panel, BorderLayout.NORTH);
 			GridBagLayout gbl_panel = new GridBagLayout();
-			gbl_panel.columnWidths = new int[]{-29, 0, 276, 0, 0};
-			gbl_panel.rowHeights = new int[]{73, 0, 0, -2, 0, 0, 0, 0, 0, 0, 0, 25, 68, 0};
-			gbl_panel.columnWeights = new double[]{1.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
-			gbl_panel.rowWeights = new double[]{1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, Double.MIN_VALUE};
+			gbl_panel.columnWidths = new int[]{8, 89, 127, 0, 0};
+			gbl_panel.rowHeights = new int[]{38, 0, 0, -2, 0, 0, 0, 0, 0, 25, 25, 0, 0, 25, 55, 0};
+			gbl_panel.columnWeights = new double[]{1.0, 0.0, 1.0, 1.0, Double.MIN_VALUE};
+			gbl_panel.rowWeights = new double[]{1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, Double.MIN_VALUE};
 			panel.setLayout(gbl_panel);
 			{
 				JTextPane txtpnRegisterProduct = new JTextPane();
@@ -213,14 +178,14 @@ public class ProductPage extends JDialog {
 			{
 				JLabel lblNewLabel_2 = new JLabel("Category");
 				GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
-				gbc_lblNewLabel_2.fill = GridBagConstraints.HORIZONTAL;
+				gbc_lblNewLabel_2.anchor = GridBagConstraints.WEST;
 				gbc_lblNewLabel_2.insets = new Insets(0, 0, 5, 5);
 				gbc_lblNewLabel_2.gridx = 1;
 				gbc_lblNewLabel_2.gridy = 5;
 				panel.add(lblNewLabel_2, gbc_lblNewLabel_2);
 			}
 			{
-				JComboBox<String> categoryComboBox = new JComboBox<String>(categoriesDefaultModel);
+				categoryComboBox = new JComboBox<String>(categoriesDefaultModel);
 				GridBagConstraints gbc_categoryComboBox = new GridBagConstraints();
 				gbc_categoryComboBox.insets = new Insets(0, 0, 5, 5);
 				gbc_categoryComboBox.fill = GridBagConstraints.HORIZONTAL;
@@ -231,7 +196,7 @@ public class ProductPage extends JDialog {
 			{
 				JLabel lblNewLabel_3 = new JLabel("Purchase price:");
 				GridBagConstraints gbc_lblNewLabel_3 = new GridBagConstraints();
-				gbc_lblNewLabel_3.fill = GridBagConstraints.HORIZONTAL;
+				gbc_lblNewLabel_3.anchor = GridBagConstraints.WEST;
 				gbc_lblNewLabel_3.insets = new Insets(0, 0, 5, 5);
 				gbc_lblNewLabel_3.gridx = 1;
 				gbc_lblNewLabel_3.gridy = 6;
@@ -250,7 +215,7 @@ public class ProductPage extends JDialog {
 			{
 				JLabel lblNewLabel_4 = new JLabel("Sale price:");
 				GridBagConstraints gbc_lblNewLabel_4 = new GridBagConstraints();
-				gbc_lblNewLabel_4.fill = GridBagConstraints.HORIZONTAL;
+				gbc_lblNewLabel_4.anchor = GridBagConstraints.WEST;
 				gbc_lblNewLabel_4.insets = new Insets(0, 0, 5, 5);
 				gbc_lblNewLabel_4.gridx = 1;
 				gbc_lblNewLabel_4.gridy = 7;
@@ -269,7 +234,7 @@ public class ProductPage extends JDialog {
 			{
 				JLabel lblNewLabel_5 = new JLabel("Lease price:");
 				GridBagConstraints gbc_lblNewLabel_5 = new GridBagConstraints();
-				gbc_lblNewLabel_5.fill = GridBagConstraints.HORIZONTAL;
+				gbc_lblNewLabel_5.anchor = GridBagConstraints.WEST;
 				gbc_lblNewLabel_5.insets = new Insets(0, 0, 5, 5);
 				gbc_lblNewLabel_5.gridx = 1;
 				gbc_lblNewLabel_5.gridy = 8;
@@ -286,39 +251,77 @@ public class ProductPage extends JDialog {
 				panel.add(leasePriceField, gbc_leasePriceField);
 			}
 			{
+				JLabel minStockLbl = new JLabel("Minimum Stock:");
+				GridBagConstraints gbc_minStockLbl = new GridBagConstraints();
+				gbc_minStockLbl.anchor = GridBagConstraints.WEST;
+				gbc_minStockLbl.insets = new Insets(0, 0, 5, 5);
+				gbc_minStockLbl.gridx = 1;
+				gbc_minStockLbl.gridy = 9;
+				panel.add(minStockLbl, gbc_minStockLbl);
+			}
+			{
+				minStockTextField = new JTextField();
+				GridBagConstraints gbc_minStockTextField = new GridBagConstraints();
+				gbc_minStockTextField.insets = new Insets(0, 0, 5, 5);
+				gbc_minStockTextField.fill = GridBagConstraints.HORIZONTAL;
+				gbc_minStockTextField.gridx = 2;
+				gbc_minStockTextField.gridy = 9;
+				panel.add(minStockTextField, gbc_minStockTextField);
+				minStockTextField.setColumns(10);
+			}
+			{
+				JLabel maxStockLbl = new JLabel("Maximum Stock:");
+				GridBagConstraints gbc_maxStockLbl = new GridBagConstraints();
+				gbc_maxStockLbl.anchor = GridBagConstraints.WEST;
+				gbc_maxStockLbl.insets = new Insets(0, 0, 5, 5);
+				gbc_maxStockLbl.gridx = 1;
+				gbc_maxStockLbl.gridy = 10;
+				panel.add(maxStockLbl, gbc_maxStockLbl);
+			}
+			{
+				maxStockTextField = new JTextField();
+				GridBagConstraints gbc_maxStockTextField = new GridBagConstraints();
+				gbc_maxStockTextField.insets = new Insets(0, 0, 5, 5);
+				gbc_maxStockTextField.fill = GridBagConstraints.HORIZONTAL;
+				gbc_maxStockTextField.gridx = 2;
+				gbc_maxStockTextField.gridy = 10;
+				panel.add(maxStockTextField, gbc_maxStockTextField);
+				maxStockTextField.setColumns(10);
+			}
+			{
 				JLabel lblNewLabel_6 = new JLabel("Unit:");
 				GridBagConstraints gbc_lblNewLabel_6 = new GridBagConstraints();
-				gbc_lblNewLabel_6.fill = GridBagConstraints.HORIZONTAL;
+				gbc_lblNewLabel_6.anchor = GridBagConstraints.WEST;
 				gbc_lblNewLabel_6.insets = new Insets(0, 0, 5, 5);
 				gbc_lblNewLabel_6.gridx = 1;
-				gbc_lblNewLabel_6.gridy = 9;
+				gbc_lblNewLabel_6.gridy = 11;
 				panel.add(lblNewLabel_6, gbc_lblNewLabel_6);
 			}
 			{
-				JComboBox<String> unitComboBox = new JComboBox<String>(unitsDefaultModel);
+				unitComboBox = new JComboBox<String>(unitsDefaultModel);
 				GridBagConstraints gbc_unitComboBox = new GridBagConstraints();
 				gbc_unitComboBox.insets = new Insets(0, 0, 5, 5);
 				gbc_unitComboBox.fill = GridBagConstraints.HORIZONTAL;
 				gbc_unitComboBox.gridx = 2;
-				gbc_unitComboBox.gridy = 9;
+				gbc_unitComboBox.gridy = 11;
 				panel.add(unitComboBox, gbc_unitComboBox);
 			}
 			{
 				JLabel lblNewLabel_7 = new JLabel("Supplier:");
 				GridBagConstraints gbc_lblNewLabel_7 = new GridBagConstraints();
-				gbc_lblNewLabel_7.fill = GridBagConstraints.HORIZONTAL;
+				gbc_lblNewLabel_7.anchor = GridBagConstraints.WEST;
 				gbc_lblNewLabel_7.insets = new Insets(0, 0, 5, 5);
 				gbc_lblNewLabel_7.gridx = 1;
-				gbc_lblNewLabel_7.gridy = 10;
+				gbc_lblNewLabel_7.gridy = 12;
 				panel.add(lblNewLabel_7, gbc_lblNewLabel_7);
 			}
 			{			
-				JComboBox<String> supplierComboBox = new JComboBox<String>(suppliersDefaultModel);
+				supplierComboBox = new JComboBox<String>(suppliersDefaultModel);
 				GridBagConstraints gbc_supplierComboBox = new GridBagConstraints();
 				gbc_supplierComboBox.insets = new Insets(0, 0, 5, 5);
 				gbc_supplierComboBox.fill = GridBagConstraints.HORIZONTAL;
 				gbc_supplierComboBox.gridx = 2;
-				gbc_supplierComboBox.gridy = 10;
+				gbc_supplierComboBox.gridy = 12;
 				panel.add(supplierComboBox, gbc_supplierComboBox);
 			}
 			{
@@ -328,11 +331,75 @@ public class ProductPage extends JDialog {
 				gbc_errorMsgLbl.fill = GridBagConstraints.VERTICAL;
 				gbc_errorMsgLbl.insets = new Insets(0, 0, 5, 5);
 				gbc_errorMsgLbl.gridx = 2;
-				gbc_errorMsgLbl.gridy = 11;
+				gbc_errorMsgLbl.gridy = 13;
 				panel.add(errorMsgLbl, gbc_errorMsgLbl);
 			}
 		}
-		
+		{
+			buttonsPanel = new Panel();
+			getContentPane().add(buttonsPanel);
+			GridBagLayout gbl_buttonsPanel = new GridBagLayout();
+			gbl_buttonsPanel.columnWidths = new int[]{0, 75, 242, 75, 0, 0};
+			gbl_buttonsPanel.rowHeights = new int[]{29, 0};
+			gbl_buttonsPanel.columnWeights = new double[]{1.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
+			gbl_buttonsPanel.rowWeights = new double[]{0.0, Double.MIN_VALUE};
+			buttonsPanel.setLayout(gbl_buttonsPanel);
+			{
+				backBtn = new JButton("Back");
+				backBtn.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						HomePage.start();
+						dispose();
+					}
+				});
+				GridBagConstraints gbc_backBtn = new GridBagConstraints();
+				gbc_backBtn.anchor = GridBagConstraints.NORTH;
+				gbc_backBtn.insets = new Insets(0, 0, 0, 5);
+				gbc_backBtn.gridx = 1;
+				gbc_backBtn.gridy = 0;
+				buttonsPanel.add(backBtn, gbc_backBtn);
+			}
+			{
+				saveBtn = new JButton("Save");
+				saveBtn.addMouseListener(new MouseAdapter() {
+					public void mouseClicked(MouseEvent e) {
+						try {
+							long barcode = ParsingHelper.tryParseLong(textField.getText());
+							String stringCategory = String.valueOf(categoryComboBox.getSelectedItem());
+							Category category = categories.stream()
+														  .filter(cat -> stringCategory.equals(cat.getName()))
+														  .findAny()
+														  .orElse(null);
+							
+							/*Product product = new Product(-1, 
+													  barcode, 
+													  nameField.getText(),
+													  categoryComboBox.getSelectedItem(),
+													  purchasePriceField.getText(),
+													  salePriceField.getText(),
+													  leasePriceField.getText(),
+													  unitComboBox.getSelectedItem(),
+													  supplierComboBox.getSelectedItem());
+							productCtrl.createProduct(product, minStock, maxStock)
+						*/
+							HomePage.start();
+							dispose();
+						} catch (NumberFormatException e1) {
+							
+						}/* catch {
+							
+						}*/
+					}
+				});
+				GridBagConstraints gbc_saveBtn = new GridBagConstraints();
+				gbc_saveBtn.insets = new Insets(0, 0, 0, 5);
+				gbc_saveBtn.anchor = GridBagConstraints.NORTH;
+				gbc_saveBtn.gridx = 3;
+				gbc_saveBtn.gridy = 0;
+				buttonsPanel.add(saveBtn, gbc_saveBtn);
+			}
+		}
 		try {
 			loadData();
 			
