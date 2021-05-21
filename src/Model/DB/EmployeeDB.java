@@ -22,20 +22,23 @@ public class EmployeeDB implements EmployeeIF{
 		Employee res = null;
 		String sqlEmployee = ("SELECT * FROM Employee WHERE cpr_no = ?" );
 		
-		try(Connection con = DBConnection.getInstance().getConnection()) {
+		Connection con = DBConnection.getInstance().getConnection();
+
+		try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlEmployee);
-				
-				preparedStmt.setLong(1, cprNo);
-				
-				ResultSet rsEmployee = preparedStmt.executeQuery();
-			
+
+			preparedStmt.setLong(1, cprNo);
+
+			ResultSet rsEmployee = preparedStmt.executeQuery();
+
 			if(rsEmployee.next()) {
 				res = buildEmployee(rsEmployee);
-				res.setAddress(addressDb.getAddress(rsEmployee.getLong("address_id")));
-				res.setWarehouse(warehouseDb.getWarehouse(rsEmployee.getLong("warehouse_id")));
+				// res.setAddress(addressDb.getAddress(rsEmployee.getLong("address_id")));
+				// res.setWarehouse(warehouseDb.getWarehouse(rsEmployee.getLong("warehouse_id")));
 			}
+		}
 
-		} catch (SQLException e) {
+		catch (SQLException e) {
 			throw e;
 		}
 		return res;
@@ -44,28 +47,40 @@ public class EmployeeDB implements EmployeeIF{
 	@Override
 	public Employee getEmployee(String email) throws SQLException {
 		Employee res = null;
+
 		String sqlEmployee = ("SELECT * FROM Employee WHERE email = ?" );
+		long warehouseId = -1;
+		long addressId = -1;
+		Connection con = DBConnection.getInstance().getConnection();
 		
-		try(Connection con = DBConnection.getInstance().getConnection()) {
+		try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlEmployee);
 				
-				preparedStmt.setString(1, email);
+			preparedStmt.setString(1, email);
 				
-				ResultSet rsEmployee = preparedStmt.executeQuery();
+			ResultSet rsEmployee = preparedStmt.executeQuery();
 			
 			if(rsEmployee.next()) {
-				res = buildEmployee(rsEmployee);
-				res.setAddress(addressDb.getAddress(rsEmployee.getLong("address_id")));
-				//res.setWarehouse(warehouseDb.getWarehouse(rsEmployee.getLong("warehouse_id")));
+				res = buildEmployee(rsEmployee);					
+				warehouseId = rsEmployee.getInt("warehouse_id");
+				addressId = rsEmployee.getInt("address_id");
 			}
-
 		} catch (SQLException e) {
 			throw e;
 		}
+	
+		if (res != null) {
+			Warehouse warehouse = warehouseDb.getWarehouse(warehouseId);
+			Address address = addressDb.getAddress(addressId);
+			
+			res.setWarehouse(warehouse);			
+			res.setAddress(address);
+		}
+		
 		return res;
 	}
 
-	String sqlCreate = "INSERT INTO Employee (firstName, lastName, address, phone, email, password, cpr_no, department, position, warehouse) VALUES (?,?,?,?,?,?,?,?,?,?)";
+	String sqlCreate = "INSERT INTO Employee (firstName, lastName, address, phone, email, password, cpr_no, department, position, warehouse_id) VALUES (?,?,?,?,?,?,?,?,?,?)";
 	@Override
 	public long createEmployee(Employee employee) throws SQLException {
 		long id = 0;
@@ -220,13 +235,13 @@ public class EmployeeDB implements EmployeeIF{
 			
 			stmt.execute("DELETE FROM EMPLOYEE WHERE CPRNO >= 1");
 		}catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         }finally {
-            try {   
+ try {   
                 stmt.close();
                 connection.close();
             } catch (Exception e) {
-                e.printStackTrace();
+                throw e;
             	}
         	}
 		}*/

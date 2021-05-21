@@ -37,7 +37,7 @@ public class CreateSupplierTest extends JDialog {
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw e;
 		}
 	}
 

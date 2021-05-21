@@ -1,10 +1,7 @@
 package Controller;
 
-import java.rmi.dgc.Lease;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-
 import Model.Model.Invoice;
 import Model.Model.Order;
 import Model.Model.Sale;

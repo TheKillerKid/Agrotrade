@@ -11,10 +11,12 @@ public class AddressDB {
 
 	public Address getAddress(long id) throws SQLException {
 		Address res = null;
+
 		String sqlAddress = ("SELECT * FROM AddressView WHERE id = ?" );
-		
-		try(Connection con = DBConnection.getInstance().getConnection()) {
-			PreparedStatement preparedStmt = con.prepareStatement(sqlAddress);
+		Connection con = DBConnection.getInstance().getConnection();
+
+		try {
+				PreparedStatement preparedStmt = con.prepareStatement(sqlAddress);
 				
 				preparedStmt.setLong(1, id);
 				
@@ -27,6 +29,7 @@ public class AddressDB {
 		} catch (SQLException e) {
 			throw e;
 		}
+		
 		return res;
 	}
 	

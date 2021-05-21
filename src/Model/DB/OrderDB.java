@@ -29,7 +29,9 @@ public class OrderDB implements OrderIF {
 		Long leaseId = null;
 		Long purchaseId = null;
 		
-		try(Connection con = DBConnection.getInstance().getConnection()) {
+		Connection con = DBConnection.getInstance().getConnection();
+
+    try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate);
 			preparedStmt.setDouble(1, totalPrice);
 			preparedStmt.setString(2, note);
@@ -38,11 +40,11 @@ public class OrderDB implements OrderIF {
 			preparedStmt.setLong(5, saleId);
 			preparedStmt.setLong(6, leaseId);
 			preparedStmt.setLong(7, purchaseId);
-			
+
 			id = preparedStmt.executeUpdate();
 			long invoiceId = invoiceDb.createInvoice(order.getInvoice(), id);
 			order.getInvoice().setId(invoiceId);
-			
+
 		} catch(SQLException e) {
 			throw e;
 		}

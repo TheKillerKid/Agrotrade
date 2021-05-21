@@ -22,9 +22,8 @@ public class EmployeeController {
 		try {
 			return employeeDb.getEmployee(email);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw e;
 		}
-		return null;
 	}
 	
 	public long createEmployee(Employee employee) throws SQLException {

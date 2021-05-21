@@ -96,21 +96,23 @@ private AddressDB addressDb =  new AddressDB();
 	public ArrayList<Supplier> getSupplierList() throws SQLException {
 		ArrayList<Supplier> suppliers = new ArrayList<Supplier>();
 		String sqlSupplier = ("SELECT * FROM Supplier");
-		
-		try(Connection con = DBConnection.getInstance().getConnection()) {
+
+		Connection con = DBConnection.getInstance().getConnection();
+
+    try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlSupplier);
-			
+
 			ResultSet rsSupplier = preparedStmt.executeQuery();
-			
+
 		while(rsSupplier.next()) {
 			Supplier res = buildSupplier(rsSupplier);
 			res.setAddress(addressDb.getAddress(rsSupplier.getLong("address_id")));
 			suppliers.add(res);
 			}
-		
+
 		} catch (SQLException e) {
 			throw e;
-			}			
+		}
 		return null;
 	}
 

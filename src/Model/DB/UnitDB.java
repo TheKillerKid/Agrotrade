@@ -15,12 +15,14 @@ public class UnitDB implements UnitIF{
 	public Unit getUnit(long id) throws SQLException {
 		Unit res = null;
 		String sqlUnit = ("SELECT * FROM Unit WHERE id = ?");
-		
-		try(Connection con = DBConnection.getInstance().getConnection()) {
+
+		Connection con = DBConnection.getInstance().getConnection();
+
+    try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlUnit);
-			
+
 			preparedStmt.setLong(1, id);
-				
+
 			ResultSet rsUnit = preparedStmt.executeQuery();
 			if(rsUnit.next()) {
 				res = buildUnit(rsUnit);
@@ -36,7 +38,9 @@ public class UnitDB implements UnitIF{
 		ArrayList<Unit> units = new ArrayList<Unit>();
 		String sqlUnit = ("SELECT * FROM Unit");
 		
-		try(Connection con = DBConnection.getInstance().getConnection()) {
+		Connection con = DBConnection.getInstance().getConnection();
+
+    try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlUnit);
 			
 			ResultSet rsUnit = preparedStmt.executeQuery();

@@ -16,7 +16,9 @@ public class CategoryDB implements CategoryIF{
 		Category res = null;
 		String sqlCategory = ("SELECT * FROM Category WHERE id = ?");
 		
-		try(Connection con = DBConnection.getInstance().getConnection()) {
+		Connection con = DBConnection.getInstance().getConnection();
+
+    try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlCategory);
 			
 			preparedStmt.setLong(1, id);
@@ -42,7 +44,9 @@ public class CategoryDB implements CategoryIF{
 		ArrayList<Category> categories = new ArrayList<Category>();
 		String sqlCategory = ("SELECT * FROM Category" );
 		
-		try(Connection con = DBConnection.getInstance().getConnection()) {
+		Connection con = DBConnection.getInstance().getConnection();
+
+    try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlCategory);
 			
 				ResultSet rsCategory = preparedStmt.executeQuery();
