@@ -7,11 +7,8 @@ import java.awt.EventQueue;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
 
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -21,7 +18,6 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
 
 import Model.Model.Address;
 import Model.Model.Customer;
@@ -360,7 +356,7 @@ public class PersonPage extends JDialog {
 										cvrNo,
 										staticDiscount);
 							} catch (NumberFormatException e1) {
-							    messageLabel.setText("Wrong credentials. Please try again or contact the administrator.");
+							    messageLabel.setText("Wrong input please input numbers.");
 							    return;
 							}	
 						}
@@ -382,7 +378,7 @@ public class PersonPage extends JDialog {
 										cvrNo,
 										companyNameField.getText());
 							} catch (NumberFormatException e1) {
-								messageLabel.setText("Wrong credentials. Please try again or contact the administrator.");
+								messageLabel.setText("Wrong input please input numbers.");
 								return;
 							}	
 						}
