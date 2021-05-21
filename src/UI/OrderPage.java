@@ -14,24 +14,31 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.border.TitledBorder;
+
+import Model.Model.StockProduct;
+
 import javax.swing.border.EtchedBorder;
 import java.awt.Color;
 import javax.swing.JList;
 
-public class OrderPage extends JDialog {
+import Controller.OrderController;
+import Model.Model.LoginContainer;
 
+public class OrderPage extends JDialog {
+	private OrderController orderCtrl = new OrderController();
 	private final JPanel contentPanel = new JPanel();
 	private JTextField customerCVRLbl;
 	private JTextField textField_2;
 	private JTextField textField_3;
 	
-	//orderCtrl.getStockProducts
 	
 	public static void start() {
 		EventQueue.invokeLater(new Runnable() {
@@ -145,6 +152,8 @@ public class OrderPage extends JDialog {
 				panel.add(lblNewLabel_4, gbc_lblNewLabel_4);
 			}
 			{
+				// How to get name from product ArrayList<StockProduct> stockProducts here into combobox
+				// new JComboBox(array);
 				JComboBox comboBox = new JComboBox();
 				//comboBox.setModel(new ComboBoxModel());
 				GridBagConstraints gbc_comboBox = new GridBagConstraints();
@@ -253,8 +262,11 @@ public class OrderPage extends JDialog {
 		}
 	}
 	
-	//loadData method
+	//loadData method. Is this the right way?
+	public void loadData () {		
+	//how to get the warehouseId from LoginContainer
+		
+	//long warehouseId = loginContainer get  
+	//orderCtrl.getStockProducts(warehouseId);
+	}
 }
-	
-
-	

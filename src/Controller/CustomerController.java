@@ -8,7 +8,7 @@ import Model.Model.Customer;
 
 public class CustomerController {
 
-	CustomerDB customerDb = new CustomerDB();
+	private CustomerDB customerDb = new CustomerDB();
 	
 	public Customer getCustomer(long cvrNo) throws SQLException{
 		try {
