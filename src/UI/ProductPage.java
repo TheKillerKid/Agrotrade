@@ -65,6 +65,8 @@ public class ProductPage extends JDialog {
 	private ArrayList<Supplier> suppliers = new ArrayList<Supplier>();
 	
 	private DefaultComboBoxModel<String> suppliersDefaultModel = new DefaultComboBoxModel<String>();
+	private DefaultComboBoxModel<String> unitsDefaultModel = new DefaultComboBoxModel<String>();
+	private DefaultComboBoxModel<String> categoriesDefaultModel = new DefaultComboBoxModel<String>();
 	
 	public static void start() {
 		EventQueue.invokeLater(new Runnable() {
@@ -119,6 +121,8 @@ public class ProductPage extends JDialog {
 				saveBtn = new JButton("Save");
 				saveBtn.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent e) {
+						
+						
 						HomePage.start();
 						dispose();
 					}
@@ -136,7 +140,7 @@ public class ProductPage extends JDialog {
 			getContentPane().add(panel, BorderLayout.NORTH);
 			GridBagLayout gbl_panel = new GridBagLayout();
 			gbl_panel.columnWidths = new int[]{-29, 0, 276, 0, 0};
-			gbl_panel.rowHeights = new int[]{73, 0, 0, -2, 0, 0, 0, 0, 0, 0, 0, 25, 94, 0};
+			gbl_panel.rowHeights = new int[]{73, 0, 0, -2, 0, 0, 0, 0, 0, 0, 0, 25, 68, 0};
 			gbl_panel.columnWeights = new double[]{1.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 			gbl_panel.rowWeights = new double[]{1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, Double.MIN_VALUE};
 			panel.setLayout(gbl_panel);
@@ -216,7 +220,7 @@ public class ProductPage extends JDialog {
 				panel.add(lblNewLabel_2, gbc_lblNewLabel_2);
 			}
 			{
-				JComboBox categoryComboBox = new JComboBox();
+				JComboBox<String> categoryComboBox = new JComboBox<String>(categoriesDefaultModel);
 				GridBagConstraints gbc_categoryComboBox = new GridBagConstraints();
 				gbc_categoryComboBox.insets = new Insets(0, 0, 5, 5);
 				gbc_categoryComboBox.fill = GridBagConstraints.HORIZONTAL;
@@ -291,7 +295,7 @@ public class ProductPage extends JDialog {
 				panel.add(lblNewLabel_6, gbc_lblNewLabel_6);
 			}
 			{
-				JComboBox unitComboBox = new JComboBox();
+				JComboBox<String> unitComboBox = new JComboBox<String>(unitsDefaultModel);
 				GridBagConstraints gbc_unitComboBox = new GridBagConstraints();
 				gbc_unitComboBox.insets = new Insets(0, 0, 5, 5);
 				gbc_unitComboBox.fill = GridBagConstraints.HORIZONTAL;
@@ -333,6 +337,8 @@ public class ProductPage extends JDialog {
 			loadData();
 			
 			suppliers.stream().forEach(supplier -> suppliersDefaultModel.addElement(String.valueOf(supplier.getCvrNo()) + " - " + supplier.getSupplierName()));
+			units.stream().forEach(unit -> unitsDefaultModel.addElement(unit.getName()));
+			categories.stream().forEach(category -> categoriesDefaultModel.addElement(category.getName()));
 		} catch (SQLException e) {
 			e.printStackTrace();
 			errorMsgLbl.setText("Something went wrong with database. Try it again later.");
