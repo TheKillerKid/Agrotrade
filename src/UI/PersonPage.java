@@ -7,11 +7,8 @@ import java.awt.EventQueue;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
 
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -21,7 +18,6 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
 
 import Model.Model.Address;
 import Model.Model.Customer;
@@ -366,7 +362,6 @@ public class PersonPage extends JDialog {
 						}
 						if(type == PersonPageType.SUPPLIER) {
 							long cvrNo;
-							int streetNo;
 							try {
 								cvrNo = ParsingHelper.tryParseLong(cvrNoField.getText());
 								Supplier supplier = new Supplier(0,
