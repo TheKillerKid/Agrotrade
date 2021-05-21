@@ -85,9 +85,9 @@ public class OrderPage extends JDialog {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		GridBagLayout gbl_contentPanel = new GridBagLayout();
 		gbl_contentPanel.columnWidths = new int[]{0, 100, 259, 84, 0, 0};
-		gbl_contentPanel.rowHeights = new int[]{0, 45, 0, 28, 0, 0, 0, 0};
+		gbl_contentPanel.rowHeights = new int[]{0, 45, 0, 28, 0, 0, 24, 0, 0};
 		gbl_contentPanel.columnWeights = new double[]{1.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
-		gbl_contentPanel.rowWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
+		gbl_contentPanel.rowWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 		contentPanel.setLayout(gbl_contentPanel);
 		{
 			JLabel lblNewLabel = new JLabel("Create Order");
@@ -117,14 +117,22 @@ public class OrderPage extends JDialog {
 			contentPanel.add(customerCVRLbl, gbc_customerCVRLbl);
 			customerCVRLbl.setColumns(10);
 		}
+		
+		
 		{
-			JButton btnCheck = new JButton("Check");
-			GridBagConstraints gbc_btnCheck = new GridBagConstraints();
-			gbc_btnCheck.anchor = GridBagConstraints.WEST;
-			gbc_btnCheck.insets = new Insets(0, 0, 5, 5);
-			gbc_btnCheck.gridx = 3;
-			gbc_btnCheck.gridy = 2;
-			contentPanel.add(btnCheck, gbc_btnCheck);
+			JButton checkNameBtn = new JButton("Check");
+			checkNameBtn.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) 
+				{
+					
+				}
+				
+			});
+			GridBagConstraints gbc_checkNameBtn = new GridBagConstraints();
+			gbc_checkNameBtn.insets = new Insets(0, 0, 5, 5);
+			gbc_checkNameBtn.gridx = 3;
+			gbc_checkNameBtn.gridy = 2;
+			contentPanel.add(checkNameBtn, gbc_checkNameBtn);
 		}
 		{
 			JLabel lblNewLabel_2 = new JLabel("Customer Name");
@@ -248,6 +256,15 @@ public class OrderPage extends JDialog {
 			contentPanel.add(textField_3, gbc_textField_3);
 		}
 		{
+			JLabel lblNewLabel_6 = new JLabel("Current Order");
+			GridBagConstraints gbc_lblNewLabel_6 = new GridBagConstraints();
+			gbc_lblNewLabel_6.anchor = GridBagConstraints.WEST;
+			gbc_lblNewLabel_6.insets = new Insets(0, 0, 5, 5);
+			gbc_lblNewLabel_6.gridx = 1;
+			gbc_lblNewLabel_6.gridy = 6;
+			contentPanel.add(lblNewLabel_6, gbc_lblNewLabel_6);
+		}
+		{
 			JPanel buttonPane = new JPanel();
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			GridBagLayout gbl_buttonPane = new GridBagLayout();
@@ -291,11 +308,12 @@ public class OrderPage extends JDialog {
 		}
 	}
 	
-	public void loadData () throws SQLException {	
+	private void loadData () throws SQLException {	
 		try {
 			stockProducts = orderCtrl.getStockProducts(LoginContainer.getInstance().getCurrentUser().getWarehouse().getId());
 		} catch (SQLException e) {
 			throw e;
 		}
 	}
+	
 }
