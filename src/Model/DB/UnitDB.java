@@ -12,29 +12,7 @@ import Model.Model.Unit;
 public class UnitDB implements UnitIF{
 
 	@Override
-	public Unit getUnit(long id) throws SQLException {
-		Unit res = null;
-		String sqlUnit = ("SELECT * FROM Unit WHERE id = ?");
-
-		Connection con = DBConnection.getInstance().getConnection();
-
-    try {
-			PreparedStatement preparedStmt = con.prepareStatement(sqlUnit);
-
-			preparedStmt.setLong(1, id);
-
-			ResultSet rsUnit = preparedStmt.executeQuery();
-			if(rsUnit.next()) {
-				res = buildUnit(rsUnit);
-			}
-		} catch (SQLException e) {
-			throw e;
-		}
-		return res;
-	}
-
-	@Override
-	public ArrayList<Unit> getUnit() throws SQLException {
+	public ArrayList<Unit> getUnits() throws SQLException {
 		ArrayList<Unit> units = new ArrayList<Unit>();
 		String sqlUnit = ("SELECT * FROM Unit");
 		

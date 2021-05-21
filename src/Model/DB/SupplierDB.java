@@ -103,16 +103,17 @@ private AddressDB addressDb =  new AddressDB();
 			PreparedStatement preparedStmt = con.prepareStatement(sqlSupplier);
 
 			ResultSet rsSupplier = preparedStmt.executeQuery();
-
-		while(rsSupplier.next()) {
-			Supplier res = buildSupplier(rsSupplier);
-			res.setAddress(addressDb.getAddress(rsSupplier.getLong("address_id")));
-			suppliers.add(res);
+			
+			while(rsSupplier.next()) {
+				Supplier res = buildSupplier(rsSupplier);
+				res.setAddress(addressDb.getAddress(rsSupplier.getLong("address_id")));
+				suppliers.add(res);
 			}
 
 		} catch (SQLException e) {
 			throw e;
 		}
+
 		return null;
 	}
 

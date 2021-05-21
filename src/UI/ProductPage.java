@@ -9,12 +9,24 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import Controller.CategoryController;
 import Controller.ProductController;
+import Controller.SupplierController;
+import Controller.UnitController;
+import Model.Model.Category;
+import Model.Model.Supplier;
+import Model.Model.Unit;
+
 import java.awt.GridBagLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.awt.event.ActionEvent;
 import java.awt.GridBagConstraints;
 import java.awt.Panel;
@@ -39,6 +51,15 @@ public class ProductPage extends JDialog {
 	private JTextField salePriceField;
 	private JTextField leasePriceField;
 	
+	private ProductController productCtrl = new ProductController();
+	private UnitController unitCtrl = new UnitController();
+	private CategoryController categoryCtrl = new CategoryController();
+	private SupplierController supplierCtrl = new SupplierController();
+	
+	private ArrayList<Unit> units = new ArrayList<Unit>();
+	private ArrayList<Category> categories = new ArrayList<Category>();
+	private ArrayList<Supplier> suppliers = new ArrayList<Supplier>();
+	
 	public static void start() {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -54,8 +75,12 @@ public class ProductPage extends JDialog {
 	}
 
 	public ProductPage() {
+		try {
+			loadData();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		
-		ProductController productCtrl = new ProductController();
 		
 		getContentPane().setBackground(SystemColor.menu);
 		setBounds(100, 100, 740, 480);
@@ -270,7 +295,14 @@ public class ProductPage extends JDialog {
 				panel.add(lblNewLabel_7, gbc_lblNewLabel_7);
 			}
 			{
-				JComboBox supplierComboBox = new JComboBox();
+				
+				List<String> stringSuppliers = 
+						suppliers.stream().map(supplier -> String.valueOf(supplier.getCvrNo()) + " - " + supplier.getSupplierName()).distinct().collect(Collectors.toList());
+				
+				DefaultComboBoxModel<String> suppliersDefaultModel = new DefaultComboBoxModel<String>();
+				suppliers.stream().forEach(supplier -> suppliersDefaultModel.addElement(String.valueOf(supplier.getCvrNo()) + " - " + supplier.getSupplierName()));
+				JComboBox<String> supplierComboBox = new JComboBox<String>(suppliersDefaultModel);
+				
 				GridBagConstraints gbc_supplierComboBox = new GridBagConstraints();
 				gbc_supplierComboBox.insets = new Insets(0, 0, 5, 5);
 				gbc_supplierComboBox.fill = GridBagConstraints.HORIZONTAL;
@@ -278,6 +310,16 @@ public class ProductPage extends JDialog {
 				gbc_supplierComboBox.gridy = 9;
 				panel.add(supplierComboBox, gbc_supplierComboBox);
 			}
+		}
+	}
+	
+	public void loadData() throws SQLException {
+		try {
+			units = unitCtrl.getUnits();
+			categories = categoryCtrl.getCategories();
+			suppliers = supplierCtrl.getSuppliers();
+		} catch (SQLException e) {
+			throw e;
 		}
 	}
 }
