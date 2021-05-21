@@ -16,6 +16,7 @@ import Controller.ProductController;
 import Controller.SupplierController;
 import Controller.UnitController;
 import Model.Model.Category;
+import Model.Model.Price;
 import Model.Model.Product;
 import Model.Model.Supplier;
 import Model.Model.Unit;
@@ -25,6 +26,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -50,6 +52,8 @@ public class ProductPage extends JDialog {
 	private JButton saveBtn;
 	private JTextField textField;
 	private JTextField nameField;
+	private JTextField minStockTextField;
+	private JTextField maxStockTextField;
 	private JTextField purchasePriceField;
 	private JTextField salePriceField;
 	private JTextField leasePriceField;
@@ -65,6 +69,8 @@ public class ProductPage extends JDialog {
 	private CategoryController categoryCtrl = new CategoryController();
 	private SupplierController supplierCtrl = new SupplierController();
 	
+	private Product product = null;
+	
 	private ArrayList<Unit> units = new ArrayList<Unit>();
 	private ArrayList<Category> categories = new ArrayList<Category>();
 	private ArrayList<Supplier> suppliers = new ArrayList<Supplier>();
@@ -72,8 +78,7 @@ public class ProductPage extends JDialog {
 	private DefaultComboBoxModel<String> suppliersDefaultModel = new DefaultComboBoxModel<String>();
 	private DefaultComboBoxModel<String> unitsDefaultModel = new DefaultComboBoxModel<String>();
 	private DefaultComboBoxModel<String> categoriesDefaultModel = new DefaultComboBoxModel<String>();
-	private JTextField minStockTextField;
-	private JTextField maxStockTextField;
+	
 	
 	public static void start() {
 		EventQueue.invokeLater(new Runnable() {
@@ -371,6 +376,21 @@ public class ProductPage extends JDialog {
 														  .filter(cat -> stringCategory.equals(cat.getName()))
 														  .findAny()
 														  .orElse(null);
+							String stringPurchasePrice = purchasePriceField.getText();
+							Price purchasePrice = new Price(-1, ParsingHelper.tryParseDouble(stringPurchasePrice), LocalDate.now(), "PURCHASE") ;
+							String stringSalePrice = salePriceField.getText();
+							Price salePrice = new Price(-1, ParsingHelper.tryParseDouble(stringSalePrice), LocalDate.now(), "SALE");
+							String stringLeasePrice = leasePriceField.getText();
+							Price leasePrice = new Price(-1, ParsingHelper.tryParseDouble(stringLeasePrice), LocalDate.now(), "LEASE");
+							String stringUnit = String.valueOf(unitComboBox.getSelectedIndex());
+							Unit unit = units.stream()
+											 .filter(uni -> stringUnit.equals(uni.getName()))
+											 .findAny()
+											 .orElse(null);
+							String stringSupplier = String.valueOf(supplierComboBox.getSelectedIndex());
+							
+							//Supplier supplier = suppliers.stream()
+							
 							
 							/*Product product = new Product(-1, 
 													  barcode, 

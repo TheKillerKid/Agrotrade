@@ -11,7 +11,7 @@ public interface ProductIF {
 	
 	Product getProductById(long barcode) throws SQLException;
 	
-	long createProduct(Product product, int minStock, int maxStock) throws SQLException;
+	Product createProduct(Product product, int minStock, int maxStock) throws SQLException;
 	
 	ArrayList<StockProduct> createStockProducts(long productId, int minStock, int maxStock) throws SQLException;
 	
