@@ -16,6 +16,8 @@ import Controller.ProductController;
 import Controller.SupplierController;
 import Controller.UnitController;
 import Model.Model.Category;
+import Model.Model.Price;
+import Model.Model.PriceType;
 import Model.Model.Product;
 import Model.Model.Supplier;
 import Model.Model.Unit;
@@ -25,6 +27,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,6 +56,8 @@ public class ProductPage extends JDialog {
 	private JTextField purchasePriceField;
 	private JTextField salePriceField;
 	private JTextField leasePriceField;
+	private JTextField minStockField;
+	private JTextField maxStockField;
 	private JComboBox<String> categoryComboBox;
 	private JComboBox<String> unitComboBox;
 	private JComboBox<String> supplierComboBox;
@@ -70,11 +75,12 @@ public class ProductPage extends JDialog {
 	private ArrayList<Supplier> suppliers = new ArrayList<Supplier>();
 	private ArrayList<Product> products = new ArrayList<Product>();
 	
+	private Product product = null;
+	
 	private DefaultComboBoxModel<String> suppliersDefaultModel = new DefaultComboBoxModel<String>();
 	private DefaultComboBoxModel<String> unitsDefaultModel = new DefaultComboBoxModel<String>();
 	private DefaultComboBoxModel<String> categoriesDefaultModel = new DefaultComboBoxModel<String>();
-	private JTextField minStockTextField;
-	private JTextField maxStockTextField;
+
 	
 	public static void start() {
 		EventQueue.invokeLater(new Runnable() {
@@ -261,14 +267,14 @@ public class ProductPage extends JDialog {
 				panel.add(minStockLbl, gbc_minStockLbl);
 			}
 			{
-				minStockTextField = new JTextField();
-				GridBagConstraints gbc_minStockTextField = new GridBagConstraints();
-				gbc_minStockTextField.insets = new Insets(0, 0, 5, 5);
-				gbc_minStockTextField.fill = GridBagConstraints.HORIZONTAL;
-				gbc_minStockTextField.gridx = 2;
-				gbc_minStockTextField.gridy = 9;
-				panel.add(minStockTextField, gbc_minStockTextField);
-				minStockTextField.setColumns(10);
+				minStockField = new JTextField();
+				GridBagConstraints gbc_minStockField = new GridBagConstraints();
+				gbc_minStockField.insets = new Insets(0, 0, 5, 5);
+				gbc_minStockField.fill = GridBagConstraints.HORIZONTAL;
+				gbc_minStockField.gridx = 2;
+				gbc_minStockField.gridy = 9;
+				panel.add(minStockField, gbc_minStockField);
+				minStockField.setColumns(10);
 			}
 			{
 				JLabel maxStockLbl = new JLabel("Maximum Stock:");
@@ -280,14 +286,14 @@ public class ProductPage extends JDialog {
 				panel.add(maxStockLbl, gbc_maxStockLbl);
 			}
 			{
-				maxStockTextField = new JTextField();
-				GridBagConstraints gbc_maxStockTextField = new GridBagConstraints();
-				gbc_maxStockTextField.insets = new Insets(0, 0, 5, 5);
-				gbc_maxStockTextField.fill = GridBagConstraints.HORIZONTAL;
-				gbc_maxStockTextField.gridx = 2;
-				gbc_maxStockTextField.gridy = 10;
-				panel.add(maxStockTextField, gbc_maxStockTextField);
-				maxStockTextField.setColumns(10);
+				maxStockField = new JTextField();
+				GridBagConstraints gbc_maxStockField = new GridBagConstraints();
+				gbc_maxStockField.insets = new Insets(0, 0, 5, 5);
+				gbc_maxStockField.fill = GridBagConstraints.HORIZONTAL;
+				gbc_maxStockField.gridx = 2;
+				gbc_maxStockField.gridy = 10;
+				panel.add(maxStockField, gbc_maxStockField);
+				maxStockField.setColumns(10);
 			}
 			{
 				JLabel lblNewLabel_6 = new JLabel("Unit:");
@@ -366,31 +372,54 @@ public class ProductPage extends JDialog {
 				saveBtn.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent e) {
 						try {
-							long barcode = ParsingHelper.tryParseLong(textField.getText());
+							
 							String stringCategory = String.valueOf(categoryComboBox.getSelectedItem());
 							Category category = categories.stream()
 														  .filter(cat -> stringCategory.equals(cat.getName()))
 														  .findAny()
 														  .orElse(null);
 							
-							/*Product product = new Product(-1, 
-													  barcode, 
-													  nameField.getText(),
-													  categoryComboBox.getSelectedItem(),
-													  purchasePriceField.getText(),
-													  salePriceField.getText(),
-													  leasePriceField.getText(),
-													  unitComboBox.getSelectedItem(),
-													  supplierComboBox.getSelectedItem());
-							productCtrl.createProduct(product, minStock, maxStock)
-						*/
+							String stringUnit = String.valueOf(unitComboBox.getSelectedItem());
+							Unit unit = units.stream()
+											 .filter(u -> stringUnit.equals(u.getName()))
+											 .findAny()
+											 .orElse(null);
+							
+							String stringSupplierCvrNo = String.valueOf(supplierComboBox.getSelectedItem()).substring(0,8);
+							Supplier supplier = suppliers.stream()
+														 .filter(s -> stringSupplierCvrNo.equals(s.getCvrNo()))
+														 .findAny()
+														 .orElse(null);
+							
+							
+							
+							product = new Product(-1, 
+												  ParsingHelper.tryParseLong(textField.getText()), 
+												  nameField.getText(),
+												  category,
+												  new Price(-1, ParsingHelper.tryParseDouble(purchasePriceField.getText()), LocalDate.now(), PriceType.PURCHASE),
+												  new Price(-1, ParsingHelper.tryParseDouble(salePriceField.getText()), LocalDate.now(), PriceType.SALE),
+												  new Price(-1, ParsingHelper.tryParseDouble(leasePriceField.getText()), LocalDate.now(), PriceType.SALE),
+												  unit,
+												  supplier);
+							
+							product = productCtrl.createProduct(product, ParsingHelper.tryParseInt(minStockField.getText()), ParsingHelper.tryParseInt(maxStockField.getText()));
+						
 							HomePage.start();
 							dispose();
 						} catch (NumberFormatException e1) {
+							e1.printStackTrace();
+							errorMsgLbl.setText("Cannot parse values from fields. Write values in correct format.");
+							return;
 							
-						}/* catch {
-							
-						}*/
+						} catch (SQLException e2) {
+							e2.printStackTrace();
+							errorMsgLbl.setText("Something went wrong with database. Try it again later.");
+							return;
+						}
+						finally {
+							errorMsgLbl.setText("");
+						}
 					}
 				});
 				GridBagConstraints gbc_saveBtn = new GridBagConstraints();
