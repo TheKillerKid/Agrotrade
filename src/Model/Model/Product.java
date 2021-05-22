@@ -21,6 +21,7 @@ public class Product {
 		this.salePrice = salePrice;
 		this.leasePrice = leasePrice;
 		this.unit = unit;
+		this.supplier = supplier;
 	}
 	
 	public Price getPurchasePrice() {

@@ -39,7 +39,7 @@ public class ProductController {
 
 		
 		public String generateBarcode() throws SQLException {
-			String barcode = null;
+			String barcode = "";
 			
 			try {
 				while(barcode.isEmpty()) {

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import Model.DBIF.PriceIF;
 import Model.Model.Price;
@@ -35,7 +36,7 @@ public class PriceDB implements PriceIF {
 	@Override
 	public long createPrice(Price price, long productId) throws SQLException {
 		
-		String sqlCreate = "INSERT INTO Price (product_id, amount, start_date, price_type)";
+		String sqlCreate = "INSERT INTO Price (product_id, amount, start_date, price_type) VALUES (?,?,?,?)";
 				
 		long id;
 		double amount = price.getAmount();
@@ -45,14 +46,22 @@ public class PriceDB implements PriceIF {
      Connection con = DBConnection.getInstance().getConnection();
 
      try {
-			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate);
+			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate, Statement.RETURN_GENERATED_KEYS);
 			
 			preparedStmt.setLong(1, productId);
 			preparedStmt.setDouble(2, amount);
 			preparedStmt.setDate(3, java.sql.Date.valueOf(startDate));
 			preparedStmt.setString(4, priceType.toString());
 			
-			id = preparedStmt.executeUpdate();
+			preparedStmt.executeUpdate();
+			
+			ResultSet rs = preparedStmt.getGeneratedKeys();
+            if (rs.next()) {
+                id = rs.getLong(1);
+            }
+            else {
+                throw new SQLException("Creating price failed, no ID obtained.");
+            }
 		} catch (SQLException e) {
 			throw e;
 		}

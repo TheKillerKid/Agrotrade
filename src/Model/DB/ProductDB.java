@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import Model.Model.Category;
@@ -85,20 +86,28 @@ public class ProductDB implements ProductIF {
      Connection con = DBConnection.getInstance().getConnection();
 
      try {
-			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate);
+			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate, Statement.RETURN_GENERATED_KEYS);
 			preparedStmt.setString(1, barcode);
 			preparedStmt.setString(2, name);
 			preparedStmt.setLong(3, categoryId);
 			preparedStmt.setLong(4, unitId);
 			preparedStmt.setLong(5, supplierId);
 		
-			id = preparedStmt.executeUpdate();
+			preparedStmt.executeUpdate();
 			
-			product.getPurchasePrice().setId(priceDb.createPrice(purchasePrice, id));
-			product.getSalePrice().setId(priceDb.createPrice(salePrice, id));
-			product.getLeasePrice().setId(priceDb.createPrice(leasePrice, id));
+			ResultSet rs = preparedStmt.getGeneratedKeys();
+            if (rs.next()) {
+                product.setId(rs.getLong(1));
+            }
+            else {
+                throw new SQLException("Creating product failed, no ID obtained.");
+            }
 			
-			createStockProducts(id, minStock, maxStock);
+			product.getPurchasePrice().setId(priceDb.createPrice(purchasePrice, product.getId()));
+			product.getSalePrice().setId(priceDb.createPrice(salePrice, product.getId()));
+			product.getLeasePrice().setId(priceDb.createPrice(leasePrice, product.getId()));
+			
+			createStockProducts(product.getId(), minStock, maxStock);
 			
 		} catch (SQLException e) {
 			throw e;
@@ -115,22 +124,32 @@ public class ProductDB implements ProductIF {
 
 		ArrayList<StockProduct> stockProducts = new ArrayList<StockProduct>();
 		
-		String sqlCreate = "INSERT INTO StockProducts (amount, min_stock, max_stock, product_id, warehouse_id) VALUES (?,?,?,?,?)";
+		String sqlCreate = "INSERT INTO StockProduct (amount, min_stock, max_stock, product_id, warehouse_id) VALUES (?,?,?,?,?)";
 		
 		Connection con = DBConnection.getInstance().getConnection();
 
 		try {
-			ArrayList<Warehouse>warehouses = warehouseDb.getWarehouses();
+			ArrayList<Warehouse> warehouses = warehouseDb.getWarehouses();
 			
 			for(Warehouse warehouse : warehouses) {
-				PreparedStatement preparedStmt = con.prepareStatement(sqlCreate);
+				PreparedStatement preparedStmt = con.prepareStatement(sqlCreate, Statement.RETURN_GENERATED_KEYS);
 				preparedStmt.setInt(1, 0);
 				preparedStmt.setInt(2, minStock);
 				preparedStmt.setInt(3, maxStock);
 				preparedStmt.setLong(4, productId);
 				preparedStmt.setLong(5, warehouse.getId());
 				
-				long id = preparedStmt.executeUpdate();
+				preparedStmt.executeUpdate();
+				
+				long id = -1;
+				
+				ResultSet rs = preparedStmt.getGeneratedKeys();
+	            if (rs.next()) {
+	                id = rs.getLong(1);
+	            }
+	            else {
+	                throw new SQLException("Creating stock product failed, no ID obtained.");
+	            }
 				stockProducts.add(new StockProduct(id, 0, minStock, maxStock, null, warehouse.getId()));
 			}
 			

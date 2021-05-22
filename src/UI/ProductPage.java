@@ -36,6 +36,8 @@ import java.awt.SystemColor;
 import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.Color;
+import java.awt.ScrollPane;
+import javax.swing.JScrollPane;
 
 public class ProductPage extends JDialog {
 
@@ -56,7 +58,6 @@ public class ProductPage extends JDialog {
 	private JComboBox<String> supplierComboBox;
 	
 	private JLabel errorBarcodeLbl;
-	private JLabel errorMsgLbl;
 	
 	private ProductController productCtrl = new ProductController();
 	private UnitController unitCtrl = new UnitController();
@@ -74,6 +75,7 @@ public class ProductPage extends JDialog {
 	private DefaultComboBoxModel<String> suppliersDefaultModel = new DefaultComboBoxModel<String>();
 	private DefaultComboBoxModel<String> unitsDefaultModel = new DefaultComboBoxModel<String>();
 	private DefaultComboBoxModel<String> categoriesDefaultModel = new DefaultComboBoxModel<String>();
+	private JLabel errorMsgLbl;
 	
 	public static void start() {
 		EventQueue.invokeLater(new Runnable() {
@@ -92,22 +94,21 @@ public class ProductPage extends JDialog {
 	public ProductPage() {
 		
 		getContentPane().setBackground(SystemColor.menu);
-		setBounds(100, 100, 740, 480);
+		setBounds(100, 100, 740, 550);
 
 		{
 			DefaultComboBoxModel options = new DefaultComboBoxModel();
 		}
-		
 		getContentPane().setLayout(new BorderLayout(0, 0));
 		
 		{
 			Panel panel = new Panel();
-			getContentPane().add(panel, BorderLayout.NORTH);
+			getContentPane().add(panel);
 			GridBagLayout gbl_panel = new GridBagLayout();
 			gbl_panel.columnWidths = new int[]{8, 89, 127, 0, 0};
-			gbl_panel.rowHeights = new int[]{38, 0, 0, -2, 0, 0, 0, 0, 0, 25, 25, 0, 0, 25, 55, 0};
+			gbl_panel.rowHeights = new int[]{0, 45, 0, -2, 0, 0, 0, 0, 0, 25, 25, 0, 0, 30, 0, 0};
 			gbl_panel.columnWeights = new double[]{1.0, 0.0, 1.0, 1.0, Double.MIN_VALUE};
-			gbl_panel.rowWeights = new double[]{1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, Double.MIN_VALUE};
+			gbl_panel.rowWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 			panel.setLayout(gbl_panel);
 			{
 				JTextPane txtpnRegisterProduct = new JTextPane();
@@ -116,7 +117,6 @@ public class ProductPage extends JDialog {
 				txtpnRegisterProduct.setBackground(SystemColor.menu);
 				GridBagConstraints gbc_txtpnRegisterProduct = new GridBagConstraints();
 				gbc_txtpnRegisterProduct.insets = new Insets(0, 0, 5, 5);
-				gbc_txtpnRegisterProduct.fill = GridBagConstraints.VERTICAL;
 				gbc_txtpnRegisterProduct.gridx = 2;
 				gbc_txtpnRegisterProduct.gridy = 1;
 				panel.add(txtpnRegisterProduct, gbc_txtpnRegisterProduct);
@@ -328,7 +328,6 @@ public class ProductPage extends JDialog {
 				errorMsgLbl = new JLabel("");
 				errorMsgLbl.setForeground(Color.RED);
 				GridBagConstraints gbc_errorMsgLbl = new GridBagConstraints();
-				gbc_errorMsgLbl.fill = GridBagConstraints.VERTICAL;
 				gbc_errorMsgLbl.insets = new Insets(0, 0, 5, 5);
 				gbc_errorMsgLbl.gridx = 2;
 				gbc_errorMsgLbl.gridy = 13;
@@ -337,7 +336,7 @@ public class ProductPage extends JDialog {
 		}
 		{
 			buttonsPanel = new Panel();
-			getContentPane().add(buttonsPanel);
+			getContentPane().add(buttonsPanel, BorderLayout.SOUTH);
 			GridBagLayout gbl_buttonsPanel = new GridBagLayout();
 			gbl_buttonsPanel.columnWidths = new int[]{0, 75, 242, 75, 0, 0};
 			gbl_buttonsPanel.rowHeights = new int[]{29, 0};
@@ -392,7 +391,7 @@ public class ProductPage extends JDialog {
 												  category,
 												  new Price(-1, ParsingHelper.tryParseDouble(purchasePriceField.getText()), LocalDate.now(), PriceType.PURCHASE),
 												  new Price(-1, ParsingHelper.tryParseDouble(salePriceField.getText()), LocalDate.now(), PriceType.SALE),
-												  new Price(-1, ParsingHelper.tryParseDouble(leasePriceField.getText()), LocalDate.now(), PriceType.SALE),
+												  new Price(-1, ParsingHelper.tryParseDouble(leasePriceField.getText()), LocalDate.now(), PriceType.LEASE),
 												  unit,
 												  supplier);
 							
