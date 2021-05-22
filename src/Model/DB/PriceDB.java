@@ -40,7 +40,7 @@ public class PriceDB implements PriceIF {
 		long id;
 		double amount = price.getAmount();
 		LocalDate startDate = price.getStartDate();
-		String priceType = price.getPriceType();
+		PriceType priceType = price.getPriceType();
 		
      Connection con = DBConnection.getInstance().getConnection();
 
@@ -50,7 +50,7 @@ public class PriceDB implements PriceIF {
 			preparedStmt.setLong(1, productId);
 			preparedStmt.setDouble(2, amount);
 			preparedStmt.setDate(3, java.sql.Date.valueOf(startDate));
-			preparedStmt.setString(4, priceType);
+			preparedStmt.setString(4, priceType.toString());
 			
 			id = preparedStmt.executeUpdate();
 		} catch (SQLException e) {
@@ -63,6 +63,6 @@ public class PriceDB implements PriceIF {
 		return new Price(rsPrice.getLong("id"),
 						 rsPrice.getDouble("amount"),
 						 rsPrice.getDate("start_date").toLocalDate(),
-						 rsPrice.getString("price_type"));
+						 PriceType.valueOf(rsPrice.getString("price_type")));
 	}
 }

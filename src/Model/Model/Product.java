@@ -3,7 +3,7 @@ package Model.Model;
 public class Product {
 	
 	private long id;
-	private long barcode;
+	private String barcode;
 	private String name;
 	private Category category;
 	private Price purchasePrice;
@@ -12,7 +12,7 @@ public class Product {
 	private Unit unit;
 	private Supplier supplier;
 	
-	public Product(long id, long barcode, String name, Category category, Price purchasePrice, Price salePrice, Price leasePrice, Unit unit, Supplier supplier) {
+	public Product(long id, String barcode, String name, Category category, Price purchasePrice, Price salePrice, Price leasePrice, Unit unit, Supplier supplier) {
 		this.id = id;
 		this.barcode = barcode;
 		this.name = name;
@@ -59,11 +59,11 @@ public class Product {
 		this.id = id;
 	}
 
-	public long getBarcode() {
+	public String getBarcode() {
 		return barcode;
 	}
 
-	public void setBarcode(long barcode) {
+	public void setBarcode(String barcode) {
 		this.barcode = barcode;
 	}
 

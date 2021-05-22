@@ -11,17 +11,17 @@ public class EmployeeController {
 	
 	private EmployeeDB employeeDb = new EmployeeDB();
 	
-	public Employee getEmployee(long cprNo) throws SQLException{
+	public Employee getEmployeeByCprNo(String cprNo) throws SQLException{
 		try {
-			return employeeDb.getEmployee(cprNo);
+			return employeeDb.getEmployeeByCprNo(cprNo);
 		} catch (SQLException e) {
 			throw e;
 		}	
 	}
 	
-	public Employee getEmployee(String email) throws SQLException {
+	public Employee getEmployeeByEmail(String email) throws SQLException {
 		try {
-			return employeeDb.getEmployee(email);
+			return employeeDb.getEmployeeByEmail(email);
 		} catch (SQLException e) {
 			throw e;
 		}

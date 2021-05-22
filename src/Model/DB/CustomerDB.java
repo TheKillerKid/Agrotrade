@@ -8,23 +8,24 @@ import java.util.ArrayList;
 
 import Model.Model.Address;
 import Model.DB.AddressDB;
+import Model.DBIF.CustomerIF;
 import Model.Model.Customer;
 import Model.Model.Employee;
 import Model.Model.Supplier;
 import Model.Model.Warehouse;
 
-public class CustomerDB {
+public class CustomerDB implements CustomerIF {
 	
 	private AddressDB addressDb = new AddressDB();
 	
-	public Customer getCustomer(long cvrNo) throws SQLException {
+	public Customer getCustomer(String cvrNo) throws SQLException {
 		Customer res = null;
 		String sqlCustomer = ("SELECT * FROM Employee WHERE cvr_no = ?");
 		
 		try(Connection con = DBConnection.getInstance().getConnection()) {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlCustomer);
 			
-				preparedStmt.setLong(1, cvrNo);
+				preparedStmt.setString(1, cvrNo);
 				
 				ResultSet rsCustomer = preparedStmt.executeQuery();
 				
@@ -37,15 +38,17 @@ public class CustomerDB {
 		}
 		return res;
 	}
-	String sqlCreate = "INSERT INTO Customer (firstName, lastName, address, phone, email, cvrNo, staticDiscount) VALUES (?, ?, ?, ?, ?, ?, ?)";
+	
 	public long createCustomer(Customer customer) throws SQLException {
+		String sqlCreate = "INSERT INTO Customer (firstName, lastName, address, phone, email, cvrNo, staticDiscount) VALUES (?, ?, ?, ?, ?, ?, ?)";
+		
 		long id = 0;
 		String firstName = customer.getFirstName();
 		String lastName = customer.getLastName();
 		Address address = customer.getAddress();
 		String phone = customer.getPhone();
 		String email = customer.getEmail();
-		long cvrNo = customer.getCvrNo();
+		String cvrNo = customer.getCvrNo();
 		int staticDiscount = customer.getStaticDiscount();
 		
      Connection con = DBConnection.getInstance().getConnection();
@@ -57,7 +60,7 @@ public class CustomerDB {
 			preparedStmt.setLong(3, address.getId());
 			preparedStmt.setString(4, phone);
 			preparedStmt.setString(5, email);
-			preparedStmt.setLong(6, cvrNo);
+			preparedStmt.setString(6, cvrNo);
 			preparedStmt.setInt(7, staticDiscount);
 			
 			id = preparedStmt.executeUpdate();
@@ -67,17 +70,15 @@ public class CustomerDB {
 		return id;
 	}
 	
-	public int updateCustomer(Customer customer) throws SQLException {
+	public void updateCustomer(Customer customer) throws SQLException {
 		Customer oldCustomer = getCustomer(customer.getCvrNo());
-		
-		int rs = -1;
 		
 		String firstName = customer.getFirstName();
 		String lastName = customer.getLastName();
 		Address address = customer.getAddress();
 		String phone = customer.getPhone();
 		String email = customer.getEmail();
-		long cvrNo = customer.getCvrNo();
+		String cvrNo = customer.getCvrNo();
 		int staticDiscount = customer.getStaticDiscount();
 		
 		try (Connection con = DBConnection.getInstance().getConnection()) {		
@@ -136,8 +137,7 @@ public class CustomerDB {
 		            " WHERE customer cvrNo = " + customer.getCvrNo();
 		    System.out.println("\nExecuting: " + sqlString);
 	    	PreparedStatement preparedStmt = con.prepareStatement(sqlString);
-				 int res = preparedStmt.executeUpdate();
-				 rs = res;
+				 preparedStmt.executeUpdate();
 		  }
 		  else
 		  {
@@ -147,11 +147,10 @@ public class CustomerDB {
 		} catch (SQLException e) {
 			throw e;
 		}
-		return rs;
 	}
 	
-//	@Override
-//	public void deleteEmployee(long cprNo) throws SQLException {
+	@Override
+	public void deleteCustomer(String cvrNo) throws SQLException {
 		 /* Connection connection = null;
 	       Statement stmt = null;
 		
@@ -171,9 +170,9 @@ public class CustomerDB {
         	}
 		}*/
 		
-//	}
+	}
 
-//	@Override
+	@Override
 	public ArrayList<Customer> getCustomerList() throws SQLException {
 		ArrayList<Customer> customers = new ArrayList<Customer>();
 		String sqlCustomer = ("SELECT * FROM Customer");
@@ -203,7 +202,7 @@ public class CustomerDB {
 							null, 
 							rs.getString("phone"), 
 							rs.getString("email"), 
-							rs.getLong("cvr_no"), 
+							rs.getString("cvr_no"), 
 							0);
 	}
 }

@@ -22,14 +22,14 @@ public class ProductDB implements ProductIF {
 	private SupplierDB supplierDb = new SupplierDB();
 	private WarehouseDB warehouseDb = new WarehouseDB();
 	
-	public Product getProductByBarcode(long barcode) throws SQLException {
+	public Product getProductByBarcode(String barcode) throws SQLException {
 		Product product = null;
 		String sqlProduct = "SELECT * FROM Product WHERE barcode = ?";
 		Connection con = DBConnection.getInstance().getConnection();
 		 
 		try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlProduct);
-			preparedStmt.setLong(1, barcode);
+			preparedStmt.setString(1, barcode);
 			ResultSet rsProduct = preparedStmt.executeQuery();
 			if (rsProduct.next()) {
 				product = buildProduct(rsProduct);
@@ -73,7 +73,7 @@ public class ProductDB implements ProductIF {
 		String sqlCreate = "INSERT INTO Product (barcode, name, category_id, unit_id, supplier_id) VALUES (?,?,?,?,?)";
 		
 		long id;
-		long barcode = product.getBarcode();
+		String barcode = product.getBarcode();
 		String name = product.getName();
 		long categoryId = product.getCategory().getId();													
 		Price purchasePrice = product.getPurchasePrice();
@@ -86,7 +86,7 @@ public class ProductDB implements ProductIF {
 
      try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate);
-			preparedStmt.setLong(1, barcode);
+			preparedStmt.setString(1, barcode);
 			preparedStmt.setString(2, name);
 			preparedStmt.setLong(3, categoryId);
 			preparedStmt.setLong(4, unitId);
@@ -111,7 +111,7 @@ public class ProductDB implements ProductIF {
 	}
 	
 	@Override
-	public ArrayList<StockProduct> createStockProducts(long productId, int minStock, int maxStock) throws SQLException {
+	public void createStockProducts(long productId, int minStock, int maxStock) throws SQLException {
 
 		ArrayList<StockProduct> stockProducts = new ArrayList<StockProduct>();
 		
@@ -137,13 +137,11 @@ public class ProductDB implements ProductIF {
 		} catch(SQLException e) {
 			throw e;
 		}
-		
-		return stockProducts;
 	}
 	
 	private Product buildProduct(ResultSet rsProduct) throws SQLException {
 		return new Product(rsProduct.getLong("id"), 
-						   rsProduct.getLong("barcode"), 
+						   rsProduct.getString("barcode"), 
 						   rsProduct.getString("name"), 
 						   new Category(rsProduct.getLong("category_id"), rsProduct.getString("category_name")), 
 					       null, 

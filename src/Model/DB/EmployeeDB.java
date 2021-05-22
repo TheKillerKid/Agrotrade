@@ -21,7 +21,7 @@ public class EmployeeDB implements EmployeeIF{
 	private WarehouseDB warehouseDb = new WarehouseDB();
 
 	@Override
-	public Employee getEmployee(long cprNo) throws SQLException {
+	public Employee getEmployeeByCprNo(String cprNo) throws SQLException {
 		Employee res = null;
 		String sqlEmployee = ("SELECT * FROM Employee WHERE cpr_no = ?" );
 		
@@ -30,7 +30,7 @@ public class EmployeeDB implements EmployeeIF{
 		try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlEmployee);
 
-			preparedStmt.setLong(1, cprNo);
+			preparedStmt.setString(1, cprNo);
 
 			ResultSet rsEmployee = preparedStmt.executeQuery();
 
@@ -48,7 +48,7 @@ public class EmployeeDB implements EmployeeIF{
 	}
 
 	@Override
-	public Employee getEmployee(String email) throws SQLException {
+	public Employee getEmployeeByEmail(String email) throws SQLException {
 		Employee res = null;
 
 		String sqlEmployee = ("SELECT * FROM Employee WHERE email = ?" );
@@ -94,7 +94,7 @@ public class EmployeeDB implements EmployeeIF{
 		String phone = employee.getPhone();
 		String email = employee.getEmail();
 		String password = employee.getPassword();
-		long cprNo = employee.getCprNo();
+		String cprNo = employee.getCprNo();
 		String department = employee.getDepartment();
 		String position = employee.getPosition();
 		Warehouse warehouse = employee.getWarehouse();
@@ -110,7 +110,7 @@ public class EmployeeDB implements EmployeeIF{
 			preparedStmt.setString(5, phone);
 			preparedStmt.setString(6, email);
 			preparedStmt.setString(7, password);
-			preparedStmt.setLong(8, cprNo);
+			preparedStmt.setString(8, cprNo);
 			preparedStmt.setString(9, department);
 			preparedStmt.setString(10, position);
 			preparedStmt.setLong(11, warehouse.getId());
@@ -124,8 +124,7 @@ public class EmployeeDB implements EmployeeIF{
 
 	
 	public int updateEmployee(Employee employee) throws SQLException {
-		Employee oldEmployee = getEmployee(employee.getCprNo());
-		
+	
 		int rs = -1;
 		
 		String firstName = employee.getFirstName();
@@ -139,102 +138,104 @@ public class EmployeeDB implements EmployeeIF{
 		String position = employee.getPosition();
 		Warehouse warehouse = employee.getWarehouse();
 		
-		try (Connection con = DBConnection.getInstance().getConnection()) {		
+		Connection con = DBConnection.getInstance().getConnection();
+		try {		
+			Employee oldEmployee = getEmployeeByCprNo(employee.getCprNo());
 		
-		StringBuffer columns = new StringBuffer( 255 );
-		 
-		if ( firstName != null && 
-			     !firstName.equals(oldEmployee.getFirstName() ) )
+			StringBuffer columns = new StringBuffer( 255 );
+			 
+			if ( firstName != null && 
+				     !firstName.equals(oldEmployee.getFirstName() ) )
+				  {
+				    columns.append( "first name = '" + firstName + "'" );
+				  }
+			
+			if ( lastName != null && 
+				      !lastName.equals(oldEmployee.getLastName() ) ) {
+				    if ( columns.length() > 0 ) {
+				      columns.append( ", " );
+				    }
+				    columns.append( "last name = '" + lastName + "'" );
+				  }
+			
+			if ( dateOfBirth != null && 
+				      !dateOfBirth.equals(oldEmployee.getDateOfBirth() ) ) {
+				    if ( columns.length() > 0 ) {
+				      columns.append( ", " );
+				    }
+				    columns.append( "date of birth = '" + dateOfBirth + "'" );
+				  }
+			
+			if ( address != null && 
+				      !address.equals(oldEmployee.getAddress() ) ) {
+				    if ( columns.length() > 0 ) {
+				      columns.append( ", " );
+				    }
+				    columns.append( "address = '" + address + "'" );
+				  }
+			
+			if ( phone != null && 
+				      !phone.equals(oldEmployee.getPhone() ) ) {
+				    if ( columns.length() > 0 ) {
+				      columns.append( ", " );
+				    }
+				    columns.append( "phone = '" + phone + "'" );
+				  }
+			
+			if ( email != null && 
+				      !email.equals(oldEmployee.getEmail() ) ) {
+				    if ( columns.length() > 0 ) {
+				      columns.append( ", " );
+				    }
+				    columns.append( "email = '" + email + "'" );
+				  }
+			
+			if ( password != null && 
+				      !password.equals(oldEmployee.getPassword() ) ) {
+				    if ( columns.length() > 0 ) {
+				      columns.append( ", " );
+				    }
+				    columns.append( "password = '" + password + "'" );
+				  }
+			
+			if ( department != null && 
+				      !department.equals(oldEmployee.getDepartment() ) ) {
+				    if ( columns.length() > 0 ) {
+				      columns.append( ", " );
+				    }
+				    columns.append( "department = '" + department + "'" );
+				  }
+			
+			if ( position != null && 
+				      !position.equals(oldEmployee.getPosition() ) ) {
+				    if ( columns.length() > 0 ) {
+				      columns.append( ", " );
+				    }
+				    columns.append( "position = '" + position + "'" );
+				  }
+			
+			if ( warehouse != null && 
+				      !warehouse.equals(oldEmployee.getWarehouse() ) ) {
+				    if ( columns.length() > 0 ) {
+				      columns.append( ", " );
+				    }
+				    columns.append( "warehouse = '" + warehouse + "'" );
+				  }
+			
+			if ( columns.length() > 0 ) 
+			{
+			    String sqlString = "UPDATE Employees SET " + columns.toString() + 
+			            " WHERE employee cprNo = " + employee.getCprNo();
+			    System.out.println("\nExecuting: " + sqlString);
+		    	PreparedStatement preparedStmt = con.prepareStatement(sqlString);
+					 int res = preparedStmt.executeUpdate();
+					 rs = res;
+			  }
+			  else
 			  {
-			    columns.append( "first name = '" + firstName + "'" );
+			    System.out.println( "Nothing to do to update Employee CprNo: " + 
+			                        employee.getCprNo());
 			  }
-		
-		if ( lastName != null && 
-			      !lastName.equals(oldEmployee.getLastName() ) ) {
-			    if ( columns.length() > 0 ) {
-			      columns.append( ", " );
-			    }
-			    columns.append( "last name = '" + lastName + "'" );
-			  }
-		
-		if ( dateOfBirth != null && 
-			      !dateOfBirth.equals(oldEmployee.getDateOfBirth() ) ) {
-			    if ( columns.length() > 0 ) {
-			      columns.append( ", " );
-			    }
-			    columns.append( "date of birth = '" + dateOfBirth + "'" );
-			  }
-		
-		if ( address != null && 
-			      !address.equals(oldEmployee.getAddress() ) ) {
-			    if ( columns.length() > 0 ) {
-			      columns.append( ", " );
-			    }
-			    columns.append( "address = '" + address + "'" );
-			  }
-		
-		if ( phone != null && 
-			      !phone.equals(oldEmployee.getPhone() ) ) {
-			    if ( columns.length() > 0 ) {
-			      columns.append( ", " );
-			    }
-			    columns.append( "phone = '" + phone + "'" );
-			  }
-		
-		if ( email != null && 
-			      !email.equals(oldEmployee.getEmail() ) ) {
-			    if ( columns.length() > 0 ) {
-			      columns.append( ", " );
-			    }
-			    columns.append( "email = '" + email + "'" );
-			  }
-		
-		if ( password != null && 
-			      !password.equals(oldEmployee.getPassword() ) ) {
-			    if ( columns.length() > 0 ) {
-			      columns.append( ", " );
-			    }
-			    columns.append( "password = '" + password + "'" );
-			  }
-		
-		if ( department != null && 
-			      !department.equals(oldEmployee.getDepartment() ) ) {
-			    if ( columns.length() > 0 ) {
-			      columns.append( ", " );
-			    }
-			    columns.append( "department = '" + department + "'" );
-			  }
-		
-		if ( position != null && 
-			      !position.equals(oldEmployee.getPosition() ) ) {
-			    if ( columns.length() > 0 ) {
-			      columns.append( ", " );
-			    }
-			    columns.append( "position = '" + position + "'" );
-			  }
-		
-		if ( warehouse != null && 
-			      !warehouse.equals(oldEmployee.getWarehouse() ) ) {
-			    if ( columns.length() > 0 ) {
-			      columns.append( ", " );
-			    }
-			    columns.append( "warehouse = '" + warehouse + "'" );
-			  }
-		
-		 if ( columns.length() > 0 ) 
-		 {
-		    String sqlString = "UPDATE Employees SET " + columns.toString() + 
-		            " WHERE employee cprNo = " + employee.getCprNo();
-		    System.out.println("\nExecuting: " + sqlString);
-	    	PreparedStatement preparedStmt = con.prepareStatement(sqlString);
-				 int res = preparedStmt.executeUpdate();
-				 rs = res;
-		  }
-		  else
-		  {
-		    System.out.println( "Nothing to do to update Employee CprNo: " + 
-		                        employee.getCprNo());
-		  }
 		} catch (SQLException e) {
 			throw e;
 		}
@@ -242,7 +243,7 @@ public class EmployeeDB implements EmployeeIF{
 	}
 	
 	@Override
-	public void deleteEmployee(long cprNo) throws SQLException {
+	public void deleteEmployee(String cprNo) throws SQLException {
 		 /* Connection connection = null;
 	       Statement stmt = null;
 		
@@ -297,7 +298,7 @@ public class EmployeeDB implements EmployeeIF{
 							rs.getString("phone"), 
 							rs.getString("email"), 
 							rs.getString("password"), 
-							rs.getLong("cpr_no"), 
+							rs.getString("cpr_no"), 
 							rs.getString("department"), 
 							rs.getString("position"), 
 							null);

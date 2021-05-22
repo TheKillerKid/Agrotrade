@@ -2,13 +2,10 @@ package UI;
 
 import java.awt.BorderLayout; 
 import java.awt.EventQueue;
-import java.awt.FlowLayout;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 
 import Controller.CategoryController;
 import Controller.ParsingHelper;
@@ -24,26 +21,19 @@ import Model.Model.Supplier;
 import Model.Model.Unit;
 
 import java.awt.GridBagLayout;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.awt.event.ActionEvent;
 import java.awt.GridBagConstraints;
 import java.awt.Panel;
 import java.awt.Insets;
-import java.awt.Button;
 import javax.swing.JTextPane;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import java.awt.SystemColor;
 import javax.swing.JLabel;
-import javax.swing.ComboBoxModel;
 import java.awt.Font;
 import java.awt.Color;
 
@@ -52,7 +42,7 @@ public class ProductPage extends JDialog {
 	private Panel buttonsPanel;
 	private JButton backBtn;
 	private JButton saveBtn;
-	private JTextField textField;
+	private JTextField barcodeField;
 	private JTextField nameField;
 	private JTextField minStockTextField;
 	private JTextField maxStockTextField;
@@ -150,21 +140,21 @@ public class ProductPage extends JDialog {
 				panel.add(errorBarcodeLbl, gbc_errorBarcodeLbl);
 			}
 			{
-				textField = new JTextField();
+				barcodeField = new JTextField();
 				try {
-					textField.setText(productCtrl.generateBarcode());
+					barcodeField.setText(productCtrl.generateBarcode());
 				} catch (SQLException e) {
 					e.printStackTrace();
 					errorBarcodeLbl.setText("Something went wrong with database. Try it again later.");
 				}
-				textField.setEditable(false);
-				textField.setColumns(10);
+				barcodeField.setEditable(false);
+				barcodeField.setColumns(10);
 				GridBagConstraints gbc_textField = new GridBagConstraints();
 				gbc_textField.insets = new Insets(0, 0, 5, 5);
 				gbc_textField.fill = GridBagConstraints.HORIZONTAL;
 				gbc_textField.gridx = 2;
 				gbc_textField.gridy = 2;
-				panel.add(textField, gbc_textField);
+				panel.add(barcodeField, gbc_textField);
 			}
 			{
 				JLabel lblNewLabel = new JLabel("Name:");
@@ -397,7 +387,7 @@ public class ProductPage extends JDialog {
 							
 							
 							product = new Product(-1, 
-												  ParsingHelper.tryParseLong(textField.getText()), 
+												  barcodeField.getText(), 
 												  nameField.getText(),
 												  category,
 												  new Price(-1, ParsingHelper.tryParseDouble(purchasePriceField.getText()), LocalDate.now(), PriceType.PURCHASE),

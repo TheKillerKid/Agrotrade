@@ -15,23 +15,23 @@ public class PersonController {
 	private CustomerController customerCtrl = new CustomerController();
 	private SupplierController supplierCtrl = new SupplierController();
 	
-	public Employee getEmployee(long cprNo) throws SQLException {
+	public Employee getEmployeeByCprNo(String cprNo) throws SQLException {
 		try {
-			return employeeCtrl.getEmployee(cprNo);
+			return employeeCtrl.getEmployeeByCprNo(cprNo);
 		} catch (SQLException e) {
 			throw e;
 		}	
 	}
 	
-	public Employee getEmployee(String email) throws SQLException {
+	public Employee getEmployeeByEmail(String email) throws SQLException {
 		try {
-			return employeeCtrl.getEmployee(email);
+			return employeeCtrl.getEmployeeByEmail(email);
 		} catch (SQLException e) {
 			throw e;
 		}
 	}
 	
-	public Customer getCustomer(long cvrNo) throws SQLException {
+	public Customer getCustomer(String cvrNo) throws SQLException {
 		try {
 			return customerCtrl.getCustomer(cvrNo);
 		} catch (SQLException e) {
@@ -39,7 +39,7 @@ public class PersonController {
 		}	
 	}
 	
-	public Supplier getSupplierByCVRNumber(long cvrNo) throws SQLException {
+	public Supplier getSupplierByCVRNumber(String cvrNo) throws SQLException {
 		try {
 			return supplierCtrl.getSupplierByCVRNumber(cvrNo);
 			} catch (SQLException e) {

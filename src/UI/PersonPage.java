@@ -322,7 +322,6 @@ public class PersonPage extends JDialog {
 					public void actionPerformed(ActionEvent e) {
 						if(type == PersonPageType.EMPLOYEE) {	
 							try {
-								long cprNo = ParsingHelper.tryParseLong(cprNoField.getText());
 								Address address = new Address(0, streetField.getText(), 
 										streetNoField.getText(), 
 										cityField.getText(), 
@@ -337,26 +336,20 @@ public class PersonPage extends JDialog {
 										phoneField.getText(),
 										emailField.getText(),
 										passwordField.getText(),
-										cprNo,
+										cprNoField.getText(),
 										departmentField.getText(),
 										positionField.getText(), 
 										LoginContainer.getInstance().getCurrentUser().getWarehouse());
 								personCtrl.createPerson(employee);
-							} catch(NumberFormatException e1) {
-								messageLabel.setText("Wrong input please input numbers.");
-								e1.printStackTrace();
-								return;
-							}  catch(SQLException e2) {
+							} catch(SQLException e2) {
 								messageLabel.setText("Something went wrong with database, please try again.");
 								e2.printStackTrace();
 								return;
 							}
 						}
 						if(type == PersonPageType.CUSTOMER) {
-							long cvrNo;
 							int staticDiscount;
 							try {
-								cvrNo = ParsingHelper.tryParseLong(cvrNoField.getText());
 								staticDiscount = ParsingHelper.tryParseInt(staticDiscountField.getText());
 								Customer customer = new Customer(0,
 										firstNameField.getText(),
@@ -369,7 +362,7 @@ public class PersonPage extends JDialog {
 												countryField.getText()),
 										phoneField.getText(),
 										emailField.getText(),
-										cvrNo,
+										cvrNoField.getText(),
 										staticDiscount);
 								personCtrl.createPerson(customer);
 							} catch (NumberFormatException e1) {
@@ -383,9 +376,7 @@ public class PersonPage extends JDialog {
 							}	
 						}
 						if(type == PersonPageType.SUPPLIER) {
-							long cvrNo;
 							try {
-								cvrNo = ParsingHelper.tryParseLong(cvrNoField.getText());
 								Supplier supplier = new Supplier(0,
 										firstNameField.getText(),
 										lastNameField.getText(), 
@@ -397,13 +388,9 @@ public class PersonPage extends JDialog {
 												countryField.getText()),
 										phoneField.getText(),
 										emailField.getText(),
-										cvrNo,
+										cvrNoField.getText(),
 										companyNameField.getText());
 								personCtrl.createPerson(supplier);
-							} catch (NumberFormatException e1) {
-								messageLabel.setText("Wrong input please input numbers.");
-								e1.printStackTrace();
-								return;
 							} catch (SQLException e2) {
 								messageLabel.setText("Something went wrong with database, please try again.");
 								e2.printStackTrace();

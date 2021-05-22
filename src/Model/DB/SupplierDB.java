@@ -14,7 +14,7 @@ public class SupplierDB implements SupplierIF{
 private AddressDB addressDb =  new AddressDB();
 
 	@Override
-	public Supplier getSupplierByCVRNumber(long cvrNo) throws SQLException {
+	public Supplier getSupplierByCVRNumber(String cvrNo) throws SQLException {
 		Supplier res = null;
 		String sqlSupplier = "SELECT * FROM Supplier WHERE cvrNo = ?";
 		
@@ -22,7 +22,7 @@ private AddressDB addressDb =  new AddressDB();
 
      try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlSupplier);
-			preparedStmt.setLong(1, cvrNo);
+			preparedStmt.setString(1, cvrNo);
 			ResultSet rsSupplier = preparedStmt.executeQuery();
 			if (rsSupplier.next()) {
 				res = buildSupplier(rsSupplier);
@@ -66,7 +66,7 @@ private AddressDB addressDb =  new AddressDB();
 		long addressId = supplier.getAddress().getId();
 		String phone = supplier.getPhone();
 		String email = supplier.getEmail();
-		long cvrNo = supplier.getCvrNo();
+		String cvrNo = supplier.getCvrNo();
 		String companyName = supplier.getSupplierName();
      Connection con = DBConnection.getInstance().getConnection();
 
@@ -77,7 +77,7 @@ private AddressDB addressDb =  new AddressDB();
 			preparedStmt.setLong(3, addressId);
 			preparedStmt.setString(4, phone);
 			preparedStmt.setString(5, email);
-			preparedStmt.setLong(6, cvrNo);
+			preparedStmt.setString(6, cvrNo);
 			preparedStmt.setString(7, companyName);
 			
 			id = preparedStmt.executeUpdate();
@@ -93,7 +93,7 @@ private AddressDB addressDb =  new AddressDB();
 	}
 
 	@Override
-	public void deleteSupplier(long cvrNo) throws SQLException {
+	public void deleteSupplier(String cvrNo) throws SQLException {
 		// TODO Auto-generated method stub
 		
 	}
@@ -130,7 +130,7 @@ private AddressDB addressDb =  new AddressDB();
 							null,
 							rsSupplier.getString("phone"),
 							rsSupplier.getString("email"),
-							rsSupplier.getLong("cvr_no"),
+							rsSupplier.getString("cvr_no"),
 							rsSupplier.getString("company_name"));
 	}
 }
