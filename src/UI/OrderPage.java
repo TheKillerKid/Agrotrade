@@ -79,7 +79,7 @@ public class OrderPage extends JDialog {
 		
 		//loaddata method
 		
-		setBounds(100, 100, 740, 480);
+		setBounds(150, 150, 1280, 800);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);

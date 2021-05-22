@@ -72,7 +72,6 @@ public class ProductPage extends JDialog {
 	private ArrayList<Supplier> suppliers = new ArrayList<Supplier>();
 	private ArrayList<Product> products = new ArrayList<Product>();
 	
-	
 	private DefaultComboBoxModel<String> suppliersDefaultModel = new DefaultComboBoxModel<String>();
 	private DefaultComboBoxModel<String> unitsDefaultModel = new DefaultComboBoxModel<String>();
 	private DefaultComboBoxModel<String> categoriesDefaultModel = new DefaultComboBoxModel<String>();
@@ -95,7 +94,7 @@ public class ProductPage extends JDialog {
 	public ProductPage() {
 		
 		getContentPane().setBackground(SystemColor.menu);
-		setBounds(100, 100, 740, 550);
+		setBounds(150, 150, 1280, 800);
 
 		{
 			DefaultComboBoxModel options = new DefaultComboBoxModel();

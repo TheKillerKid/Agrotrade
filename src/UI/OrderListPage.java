@@ -46,7 +46,7 @@ public class OrderListPage extends JDialog {
 	 * Create the dialog.
 	 */
 	public OrderListPage() {
-		setBounds(100, 100, 640, 480);
+		setBounds(300, 300, 1280, 800);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);

@@ -21,6 +21,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
  
 public class HomePage extends JDialog {
 	
@@ -53,7 +55,7 @@ public class HomePage extends JDialog {
 	 * Create the dialog.
 	 */
 	public HomePage() {
-		setBounds(100, 100, 745, 480);
+		setBounds(150, 150, 1280, 800);
 		
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setForeground(Color.BLACK);
@@ -64,6 +66,18 @@ public class HomePage extends JDialog {
 		
 		JMenu mnNewMenu_1 = new JMenu("Product");
 		menuBar.add(mnNewMenu_1);
+		
+		JMenuItem registerProductMntm = new JMenuItem("Register product");
+		registerProductMntm.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ProductPage.start();
+				dispose();
+			}
+		});
+		mnNewMenu_1.add(registerProductMntm);
+		
+		JMenuItem productListMntm = new JMenuItem("Product list");
+		mnNewMenu_1.add(productListMntm);
 		
 		JMenu mnNewMenu_2 = new JMenu("Person");
 		menuBar.add(mnNewMenu_2);

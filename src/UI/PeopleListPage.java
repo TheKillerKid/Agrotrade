@@ -29,7 +29,7 @@ public class PeopleListPage extends JDialog {
 	 * Create the dialog.
 	 */
 	public PeopleListPage() {
-		setBounds(100, 100, 450, 300);
+		setBounds(150, 150, 1280, 800);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setLayout(new FlowLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
