@@ -10,7 +10,7 @@ public class CustomerController {
 
 	private CustomerDB customerDb = new CustomerDB();
 	
-	public Customer getCustomer(long cvrNo) throws SQLException{
+	public Customer getCustomer(String cvrNo) throws SQLException{
 		try {
 			return customerDb.getCustomer(cvrNo);
 		} catch (SQLException e) {

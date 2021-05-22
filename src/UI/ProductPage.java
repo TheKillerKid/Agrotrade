@@ -2,13 +2,10 @@ package UI;
 
 import java.awt.BorderLayout; 
 import java.awt.EventQueue;
-import java.awt.FlowLayout;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 
 import Controller.CategoryController;
 import Controller.ParsingHelper;
@@ -16,65 +13,70 @@ import Controller.ProductController;
 import Controller.SupplierController;
 import Controller.UnitController;
 import Model.Model.Category;
+import Model.Model.Price;
+
+import Model.Model.PriceType;
 import Model.Model.Product;
 import Model.Model.Supplier;
 import Model.Model.Unit;
 
 import java.awt.GridBagLayout;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.awt.event.ActionEvent;
 import java.awt.GridBagConstraints;
 import java.awt.Panel;
 import java.awt.Insets;
-import java.awt.Button;
 import javax.swing.JTextPane;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import java.awt.SystemColor;
 import javax.swing.JLabel;
-import javax.swing.ComboBoxModel;
 import java.awt.Font;
 import java.awt.Color;
+import java.awt.ScrollPane;
+import javax.swing.JScrollPane;
 
 public class ProductPage extends JDialog {
 
 	private Panel buttonsPanel;
 	private JButton backBtn;
 	private JButton saveBtn;
-	private JTextField textField;
+	private JTextField barcodeField;
 	private JTextField nameField;
+	private JTextField minStockTextField;
+	private JTextField maxStockTextField;
 	private JTextField purchasePriceField;
 	private JTextField salePriceField;
 	private JTextField leasePriceField;
+	private JTextField minStockField;
+	private JTextField maxStockField;
 	private JComboBox<String> categoryComboBox;
 	private JComboBox<String> unitComboBox;
 	private JComboBox<String> supplierComboBox;
 	
+	private JLabel msgLbl;
 	private JLabel errorBarcodeLbl;
-	private JLabel errorMsgLbl;
 	
 	private ProductController productCtrl = new ProductController();
 	private UnitController unitCtrl = new UnitController();
 	private CategoryController categoryCtrl = new CategoryController();
 	private SupplierController supplierCtrl = new SupplierController();
 	
+	private Product product = null;
+	
 	private ArrayList<Unit> units = new ArrayList<Unit>();
 	private ArrayList<Category> categories = new ArrayList<Category>();
 	private ArrayList<Supplier> suppliers = new ArrayList<Supplier>();
 	private ArrayList<Product> products = new ArrayList<Product>();
 	
+	
 	private DefaultComboBoxModel<String> suppliersDefaultModel = new DefaultComboBoxModel<String>();
 	private DefaultComboBoxModel<String> unitsDefaultModel = new DefaultComboBoxModel<String>();
 	private DefaultComboBoxModel<String> categoriesDefaultModel = new DefaultComboBoxModel<String>();
-	private JTextField minStockTextField;
-	private JTextField maxStockTextField;
+
 	
 	public static void start() {
 		EventQueue.invokeLater(new Runnable() {
@@ -93,22 +95,21 @@ public class ProductPage extends JDialog {
 	public ProductPage() {
 		
 		getContentPane().setBackground(SystemColor.menu);
-		setBounds(100, 100, 740, 480);
+		setBounds(100, 100, 740, 550);
 
 		{
 			DefaultComboBoxModel options = new DefaultComboBoxModel();
 		}
-		
 		getContentPane().setLayout(new BorderLayout(0, 0));
 		
 		{
 			Panel panel = new Panel();
-			getContentPane().add(panel, BorderLayout.NORTH);
+			getContentPane().add(panel);
 			GridBagLayout gbl_panel = new GridBagLayout();
 			gbl_panel.columnWidths = new int[]{8, 89, 127, 0, 0};
-			gbl_panel.rowHeights = new int[]{38, 0, 0, -2, 0, 0, 0, 0, 0, 25, 25, 0, 0, 25, 55, 0};
+			gbl_panel.rowHeights = new int[]{0, 45, 0, -2, 0, 0, 0, 0, 0, 25, 25, 0, 0, 30, 0, 0};
 			gbl_panel.columnWeights = new double[]{1.0, 0.0, 1.0, 1.0, Double.MIN_VALUE};
-			gbl_panel.rowWeights = new double[]{1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, Double.MIN_VALUE};
+			gbl_panel.rowWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 			panel.setLayout(gbl_panel);
 			{
 				JTextPane txtpnRegisterProduct = new JTextPane();
@@ -117,7 +118,6 @@ public class ProductPage extends JDialog {
 				txtpnRegisterProduct.setBackground(SystemColor.menu);
 				GridBagConstraints gbc_txtpnRegisterProduct = new GridBagConstraints();
 				gbc_txtpnRegisterProduct.insets = new Insets(0, 0, 5, 5);
-				gbc_txtpnRegisterProduct.fill = GridBagConstraints.VERTICAL;
 				gbc_txtpnRegisterProduct.gridx = 2;
 				gbc_txtpnRegisterProduct.gridy = 1;
 				panel.add(txtpnRegisterProduct, gbc_txtpnRegisterProduct);
@@ -141,21 +141,21 @@ public class ProductPage extends JDialog {
 				panel.add(errorBarcodeLbl, gbc_errorBarcodeLbl);
 			}
 			{
-				textField = new JTextField();
+				barcodeField = new JTextField();
 				try {
-					textField.setText(productCtrl.generateBarcode());
+					barcodeField.setText(productCtrl.generateBarcode());
 				} catch (SQLException e) {
 					e.printStackTrace();
 					errorBarcodeLbl.setText("Something went wrong with database. Try it again later.");
 				}
-				textField.setEditable(false);
-				textField.setColumns(10);
+				barcodeField.setEditable(false);
+				barcodeField.setColumns(10);
 				GridBagConstraints gbc_textField = new GridBagConstraints();
 				gbc_textField.insets = new Insets(0, 0, 5, 5);
 				gbc_textField.fill = GridBagConstraints.HORIZONTAL;
 				gbc_textField.gridx = 2;
 				gbc_textField.gridy = 2;
-				panel.add(textField, gbc_textField);
+				panel.add(barcodeField, gbc_textField);
 			}
 			{
 				JLabel lblNewLabel = new JLabel("Name:");
@@ -261,14 +261,14 @@ public class ProductPage extends JDialog {
 				panel.add(minStockLbl, gbc_minStockLbl);
 			}
 			{
-				minStockTextField = new JTextField();
-				GridBagConstraints gbc_minStockTextField = new GridBagConstraints();
-				gbc_minStockTextField.insets = new Insets(0, 0, 5, 5);
-				gbc_minStockTextField.fill = GridBagConstraints.HORIZONTAL;
-				gbc_minStockTextField.gridx = 2;
-				gbc_minStockTextField.gridy = 9;
-				panel.add(minStockTextField, gbc_minStockTextField);
-				minStockTextField.setColumns(10);
+				minStockField = new JTextField();
+				GridBagConstraints gbc_minStockField = new GridBagConstraints();
+				gbc_minStockField.insets = new Insets(0, 0, 5, 5);
+				gbc_minStockField.fill = GridBagConstraints.HORIZONTAL;
+				gbc_minStockField.gridx = 2;
+				gbc_minStockField.gridy = 9;
+				panel.add(minStockField, gbc_minStockField);
+				minStockField.setColumns(10);
 			}
 			{
 				JLabel maxStockLbl = new JLabel("Maximum Stock:");
@@ -280,14 +280,14 @@ public class ProductPage extends JDialog {
 				panel.add(maxStockLbl, gbc_maxStockLbl);
 			}
 			{
-				maxStockTextField = new JTextField();
-				GridBagConstraints gbc_maxStockTextField = new GridBagConstraints();
-				gbc_maxStockTextField.insets = new Insets(0, 0, 5, 5);
-				gbc_maxStockTextField.fill = GridBagConstraints.HORIZONTAL;
-				gbc_maxStockTextField.gridx = 2;
-				gbc_maxStockTextField.gridy = 10;
-				panel.add(maxStockTextField, gbc_maxStockTextField);
-				maxStockTextField.setColumns(10);
+				maxStockField = new JTextField();
+				GridBagConstraints gbc_maxStockField = new GridBagConstraints();
+				gbc_maxStockField.insets = new Insets(0, 0, 5, 5);
+				gbc_maxStockField.fill = GridBagConstraints.HORIZONTAL;
+				gbc_maxStockField.gridx = 2;
+				gbc_maxStockField.gridy = 10;
+				panel.add(maxStockField, gbc_maxStockField);
+				maxStockField.setColumns(10);
 			}
 			{
 				JLabel lblNewLabel_6 = new JLabel("Unit:");
@@ -326,19 +326,17 @@ public class ProductPage extends JDialog {
 				panel.add(supplierComboBox, gbc_supplierComboBox);
 			}
 			{
-				errorMsgLbl = new JLabel("");
-				errorMsgLbl.setForeground(Color.RED);
+				msgLbl = new JLabel("");
 				GridBagConstraints gbc_errorMsgLbl = new GridBagConstraints();
-				gbc_errorMsgLbl.fill = GridBagConstraints.VERTICAL;
 				gbc_errorMsgLbl.insets = new Insets(0, 0, 5, 5);
 				gbc_errorMsgLbl.gridx = 2;
 				gbc_errorMsgLbl.gridy = 13;
-				panel.add(errorMsgLbl, gbc_errorMsgLbl);
+				panel.add(msgLbl, gbc_errorMsgLbl);
 			}
 		}
 		{
 			buttonsPanel = new Panel();
-			getContentPane().add(buttonsPanel);
+			getContentPane().add(buttonsPanel, BorderLayout.SOUTH);
 			GridBagLayout gbl_buttonsPanel = new GridBagLayout();
 			gbl_buttonsPanel.columnWidths = new int[]{0, 75, 242, 75, 0, 0};
 			gbl_buttonsPanel.rowHeights = new int[]{29, 0};
@@ -366,31 +364,51 @@ public class ProductPage extends JDialog {
 				saveBtn.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent e) {
 						try {
-							long barcode = ParsingHelper.tryParseLong(textField.getText());
+							
 							String stringCategory = String.valueOf(categoryComboBox.getSelectedItem());
 							Category category = categories.stream()
 														  .filter(cat -> stringCategory.equals(cat.getName()))
 														  .findAny()
 														  .orElse(null);
+
+							String stringUnit = String.valueOf(unitComboBox.getSelectedItem());
+							Unit unit = units.stream()
+											 .filter(u -> stringUnit.equals(u.getName()))
+											 .findAny()
+											 .orElse(null);
 							
-							/*Product product = new Product(-1, 
-													  barcode, 
-													  nameField.getText(),
-													  categoryComboBox.getSelectedItem(),
-													  purchasePriceField.getText(),
-													  salePriceField.getText(),
-													  leasePriceField.getText(),
-													  unitComboBox.getSelectedItem(),
-													  supplierComboBox.getSelectedItem());
-							productCtrl.createProduct(product, minStock, maxStock)
-						*/
-							HomePage.start();
-							dispose();
+							String stringSupplierCvrNo = String.valueOf(supplierComboBox.getSelectedItem()).substring(0,8);
+							Supplier supplier = suppliers.stream()
+														 .filter(s -> stringSupplierCvrNo.equals(s.getCvrNo()))
+														 .findAny()
+														 .orElse(null);
+							
+							product = new Product(-1, 
+												  barcodeField.getText(), 
+												  nameField.getText(),
+												  category,
+												  new Price(-1, ParsingHelper.tryParseDouble(purchasePriceField.getText()), LocalDate.now(), PriceType.PURCHASE),
+												  new Price(-1, ParsingHelper.tryParseDouble(salePriceField.getText()), LocalDate.now(), PriceType.SALE),
+												  new Price(-1, ParsingHelper.tryParseDouble(leasePriceField.getText()), LocalDate.now(), PriceType.LEASE),
+												  unit,
+												  supplier);
+							
+							product = productCtrl.createProduct(product, ParsingHelper.tryParseInt(minStockField.getText()), ParsingHelper.tryParseInt(maxStockField.getText()));
+						
+							msgLbl.setForeground(Color.GREEN);
+							msgLbl.setText("Product saved! You can go and create purchase to fill your warehouse.");	
 						} catch (NumberFormatException e1) {
+							e1.printStackTrace();
+							msgLbl.setForeground(Color.RED);
+							msgLbl.setText("Cannot parse values from fields. Write values in correct format.");
+							return;
 							
-						}/* catch {
-							
-						}*/
+						} catch (SQLException e2) {
+							e2.printStackTrace();
+							msgLbl.setForeground(Color.RED);
+							msgLbl.setText("Something went wrong with database. Try it again later.");
+							return;
+						}
 					}
 				});
 				GridBagConstraints gbc_saveBtn = new GridBagConstraints();
@@ -402,18 +420,20 @@ public class ProductPage extends JDialog {
 			}
 		}
 		try {
-			loadData();
+			loadComboBoxData();
 			
 			suppliers.stream().forEach(supplier -> suppliersDefaultModel.addElement(String.valueOf(supplier.getCvrNo()) + " - " + supplier.getSupplierName()));
 			units.stream().forEach(unit -> unitsDefaultModel.addElement(unit.getName()));
 			categories.stream().forEach(category -> categoriesDefaultModel.addElement(category.getName()));
+			
+			loadData();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			errorMsgLbl.setText("Something went wrong with database. Try it again later.");
+			msgLbl.setText("Something went wrong with database. Try it again later.");
 		}
 	}
 
-	public void loadData() throws SQLException {
+	public void loadComboBoxData() throws SQLException {
 		try {
 			units = unitCtrl.getUnits();
 			categories = categoryCtrl.getCategories();
@@ -421,5 +441,9 @@ public class ProductPage extends JDialog {
 		} catch (SQLException e) {
 			throw e;
 		}
+	}
+	
+	public void loadData() throws SQLException {
+		//For you Pavol <3 --commentBy="Edyyy62"
 	}
 }

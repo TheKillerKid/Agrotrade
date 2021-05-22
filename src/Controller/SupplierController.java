@@ -19,7 +19,7 @@ public class SupplierController {
 		}
 	}
 	
-	public Supplier getSupplierByCVRNumber(long cvrNo) throws SQLException{
+	public Supplier getSupplierByCVRNumber(String cvrNo) throws SQLException{
 		try {
 			return supplierDb.getSupplierByCVRNumber(cvrNo);
 		} catch (SQLException e) {

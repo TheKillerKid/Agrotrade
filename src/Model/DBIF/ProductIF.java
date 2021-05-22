@@ -7,13 +7,13 @@ import Model.Model.StockProduct;
 
 public interface ProductIF {
 	
-	Product getProductByBarcode(long barcode) throws SQLException;
+	Product getProductByBarcode(String barcode) throws SQLException;
 	
-	Product getProductById(long barcode) throws SQLException;
+	Product getProductById(long id) throws SQLException;
 	
-	long createProduct(Product product, int minStock, int maxStock) throws SQLException;
+	Product createProduct(Product product, int minStock, int maxStock) throws SQLException;
 	
-	ArrayList<StockProduct> createStockProducts(long productId, int minStock, int maxStock) throws SQLException;
+	void createStockProducts(long productId, int minStock, int maxStock) throws SQLException;
 	
 	void updateProduct(Product product) throws SQLException;
 }

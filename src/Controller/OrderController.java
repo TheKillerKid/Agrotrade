@@ -65,7 +65,7 @@ public class OrderController {
 
 	}
 	
-	public Customer getCustomer(long cvrNo) throws SQLException {
+	public Customer getCustomer(String cvrNo) throws SQLException {
 		try {
 			return customerCtrl.getCustomer(cvrNo);
 		} catch (SQLException e) {

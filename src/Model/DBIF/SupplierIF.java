@@ -6,7 +6,7 @@ import Model.Model.Supplier;
 
 public interface SupplierIF {
 		
-		Supplier getSupplierByCVRNumber(long cvrNo) throws SQLException;
+		Supplier getSupplierByCVRNumber(String cvrNo) throws SQLException;
 		
 		Supplier getSupplierById(long id) throws SQLException;
 		
@@ -14,7 +14,7 @@ public interface SupplierIF {
 
 		void updateSupplier(Supplier supplier) throws SQLException;
 		
-		void deleteSupplier(long cvrNo) throws SQLException;
+		void deleteSupplier(String cvrNo) throws SQLException;
 		
 		ArrayList<Supplier> getSupplierList() throws SQLException;
 }

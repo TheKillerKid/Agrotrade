@@ -26,7 +26,7 @@ public class LoginController {
 		boolean res = false;
 
 		try {
-			employee = this.employeeController.getEmployee(email);
+			employee = this.employeeController.getEmployeeByEmail(email);
 			
 			if(employee != null && password.equals(employee.getPassword())) {
 				loginContainer.login(employee);

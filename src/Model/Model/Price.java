@@ -7,9 +7,9 @@ public class Price {
 	private long id;
 	private double amount;
 	private LocalDate startDate;
-	private String priceType;
+	private PriceType priceType;
 	
-	public Price(long id, double amount, LocalDate startDate, String priceType) {
+	public Price(long id, double amount, LocalDate startDate, PriceType priceType) {
 		this.id = id;
 		this.amount = amount;
 		this.startDate = startDate;
@@ -40,11 +40,11 @@ public class Price {
 		this.startDate = startDate;
 	}
 	
-	public String getPriceType() {
+	public PriceType getPriceType() {
 		return priceType;
 	}
 	
-	public void setPriceType(String priceType) {
+	public void setPriceType(PriceType priceType) {
 		this.priceType = priceType;
 	}
 }
