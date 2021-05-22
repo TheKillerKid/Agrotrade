@@ -68,7 +68,7 @@ public class ProductDB implements ProductIF {
 	}
 
 	@Override
-	public long createProduct(Product product, int minStock, int maxStock) throws SQLException {
+	public Product createProduct(Product product, int minStock, int maxStock) throws SQLException {
 		
 		String sqlCreate = "INSERT INTO Product (barcode, name, category_id, unit_id, supplier_id) VALUES (?,?,?,?,?)";
 		
@@ -81,7 +81,6 @@ public class ProductDB implements ProductIF {
 		Price leasePrice = product.getLeasePrice();
 		long unitId = product.getUnit().getId();
 		long supplierId = product.getSupplier().getId();
-
 		
      Connection con = DBConnection.getInstance().getConnection();
 
@@ -95,17 +94,16 @@ public class ProductDB implements ProductIF {
 		
 			id = preparedStmt.executeUpdate();
 			
-			priceDb.createPrice(purchasePrice, id);
-			priceDb.createPrice(salePrice, id);
-			priceDb.createPrice(leasePrice, id);
-			
+			product.getPurchasePrice().setId(priceDb.createPrice(purchasePrice, id));
+			product.getSalePrice().setId(priceDb.createPrice(salePrice, id));
+			product.getLeasePrice().setId(priceDb.createPrice(leasePrice, id));
 			
 			createStockProducts(id, minStock, maxStock);
 			
 		} catch (SQLException e) {
 			throw e;
 		}
-		return id;
+		return product;
 	}
 
 	@Override

@@ -17,6 +17,7 @@ import Controller.SupplierController;
 import Controller.UnitController;
 import Model.Model.Category;
 import Model.Model.Price;
+
 import Model.Model.PriceType;
 import Model.Model.Product;
 import Model.Model.Supplier;
@@ -53,6 +54,8 @@ public class ProductPage extends JDialog {
 	private JButton saveBtn;
 	private JTextField textField;
 	private JTextField nameField;
+	private JTextField minStockTextField;
+	private JTextField maxStockTextField;
 	private JTextField purchasePriceField;
 	private JTextField salePriceField;
 	private JTextField leasePriceField;
@@ -70,17 +73,17 @@ public class ProductPage extends JDialog {
 	private CategoryController categoryCtrl = new CategoryController();
 	private SupplierController supplierCtrl = new SupplierController();
 	
+	private Product product = null;
+	
 	private ArrayList<Unit> units = new ArrayList<Unit>();
 	private ArrayList<Category> categories = new ArrayList<Category>();
 	private ArrayList<Supplier> suppliers = new ArrayList<Supplier>();
 	private ArrayList<Product> products = new ArrayList<Product>();
 	
-	private Product product = null;
 	
 	private DefaultComboBoxModel<String> suppliersDefaultModel = new DefaultComboBoxModel<String>();
 	private DefaultComboBoxModel<String> unitsDefaultModel = new DefaultComboBoxModel<String>();
 	private DefaultComboBoxModel<String> categoriesDefaultModel = new DefaultComboBoxModel<String>();
-
 	
 	public static void start() {
 		EventQueue.invokeLater(new Runnable() {
@@ -378,7 +381,7 @@ public class ProductPage extends JDialog {
 														  .filter(cat -> stringCategory.equals(cat.getName()))
 														  .findAny()
 														  .orElse(null);
-							
+
 							String stringUnit = String.valueOf(unitComboBox.getSelectedItem());
 							Unit unit = units.stream()
 											 .filter(u -> stringUnit.equals(u.getName()))
