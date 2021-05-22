@@ -57,6 +57,7 @@ public class ProductPage extends JDialog {
 	private JComboBox<String> unitComboBox;
 	private JComboBox<String> supplierComboBox;
 	
+	private JLabel msgLbl;
 	private JLabel errorBarcodeLbl;
 	
 	private ProductController productCtrl = new ProductController();
@@ -75,7 +76,7 @@ public class ProductPage extends JDialog {
 	private DefaultComboBoxModel<String> suppliersDefaultModel = new DefaultComboBoxModel<String>();
 	private DefaultComboBoxModel<String> unitsDefaultModel = new DefaultComboBoxModel<String>();
 	private DefaultComboBoxModel<String> categoriesDefaultModel = new DefaultComboBoxModel<String>();
-	private JLabel errorMsgLbl;
+
 	
 	public static void start() {
 		EventQueue.invokeLater(new Runnable() {
@@ -325,13 +326,12 @@ public class ProductPage extends JDialog {
 				panel.add(supplierComboBox, gbc_supplierComboBox);
 			}
 			{
-				errorMsgLbl = new JLabel("");
-				errorMsgLbl.setForeground(Color.RED);
+				msgLbl = new JLabel("");
 				GridBagConstraints gbc_errorMsgLbl = new GridBagConstraints();
 				gbc_errorMsgLbl.insets = new Insets(0, 0, 5, 5);
 				gbc_errorMsgLbl.gridx = 2;
 				gbc_errorMsgLbl.gridy = 13;
-				panel.add(errorMsgLbl, gbc_errorMsgLbl);
+				panel.add(msgLbl, gbc_errorMsgLbl);
 			}
 		}
 		{
@@ -383,8 +383,6 @@ public class ProductPage extends JDialog {
 														 .findAny()
 														 .orElse(null);
 							
-							
-							
 							product = new Product(-1, 
 												  barcodeField.getText(), 
 												  nameField.getText(),
@@ -397,20 +395,19 @@ public class ProductPage extends JDialog {
 							
 							product = productCtrl.createProduct(product, ParsingHelper.tryParseInt(minStockField.getText()), ParsingHelper.tryParseInt(maxStockField.getText()));
 						
-							HomePage.start();
-							dispose();
+							msgLbl.setForeground(Color.GREEN);
+							msgLbl.setText("Product saved! You can go and create purchase to fill your warehouse.");	
 						} catch (NumberFormatException e1) {
 							e1.printStackTrace();
-							errorMsgLbl.setText("Cannot parse values from fields. Write values in correct format.");
+							msgLbl.setForeground(Color.RED);
+							msgLbl.setText("Cannot parse values from fields. Write values in correct format.");
 							return;
 							
 						} catch (SQLException e2) {
 							e2.printStackTrace();
-							errorMsgLbl.setText("Something went wrong with database. Try it again later.");
+							msgLbl.setForeground(Color.RED);
+							msgLbl.setText("Something went wrong with database. Try it again later.");
 							return;
-						}
-						finally {
-							errorMsgLbl.setText("");
 						}
 					}
 				});
@@ -423,18 +420,20 @@ public class ProductPage extends JDialog {
 			}
 		}
 		try {
-			loadData();
+			loadComboBoxData();
 			
 			suppliers.stream().forEach(supplier -> suppliersDefaultModel.addElement(String.valueOf(supplier.getCvrNo()) + " - " + supplier.getSupplierName()));
 			units.stream().forEach(unit -> unitsDefaultModel.addElement(unit.getName()));
 			categories.stream().forEach(category -> categoriesDefaultModel.addElement(category.getName()));
+			
+			loadData();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			errorMsgLbl.setText("Something went wrong with database. Try it again later.");
+			msgLbl.setText("Something went wrong with database. Try it again later.");
 		}
 	}
 
-	public void loadData() throws SQLException {
+	public void loadComboBoxData() throws SQLException {
 		try {
 			units = unitCtrl.getUnits();
 			categories = categoryCtrl.getCategories();
@@ -442,5 +441,9 @@ public class ProductPage extends JDialog {
 		} catch (SQLException e) {
 			throw e;
 		}
+	}
+	
+	public void loadData() throws SQLException {
+		//For you Pavol <3 --commentBy="Edyyy62"
 	}
 }
