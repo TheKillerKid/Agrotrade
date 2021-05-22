@@ -8,4 +8,5 @@ import Model.Model.Unit;
 public interface UnitIF {
 	
 	ArrayList<Unit> getUnits() throws SQLException;
+	Unit getUnit(long id) throws SQLException;
 }

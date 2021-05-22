@@ -22,7 +22,7 @@ public class StockProductDB implements StockProductIF{
 		
 		String sqlWarehouse = "";
 		if(warehouseId != 0) {
-			 sqlWarehouse = ("SELECT * FROM StockProduct WHERE product_id = ?");
+			 sqlWarehouse = ("SELECT * FROM StockProduct WHERE warehouse_id = ?");
 		}
 		else {
 			sqlWarehouse = ("SELECT * FROM StockProduct");

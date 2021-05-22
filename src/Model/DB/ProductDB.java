@@ -22,6 +22,8 @@ public class ProductDB implements ProductIF {
 	private PriceDB priceDb = new PriceDB();
 	private SupplierDB supplierDb = new SupplierDB();
 	private WarehouseDB warehouseDb = new WarehouseDB();
+	private CategoryDB categoryDb = new CategoryDB();
+	private UnitDB unitDb = new UnitDB();
 	
 	public Product getProductByBarcode(String barcode) throws SQLException {
 		Product product = null;
@@ -49,7 +51,8 @@ public class ProductDB implements ProductIF {
 		Product product = null;
 		String sqlProduct = "SELECT * FROM Product WHERE id = ?";
 		
-     Connection con = DBConnection.getInstance().getConnection();
+		
+		Connection con = DBConnection.getInstance().getConnection();
 
      try {
 				PreparedStatement preparedStmt = con.prepareStatement(sqlProduct);
@@ -60,7 +63,10 @@ public class ProductDB implements ProductIF {
 					product.setSalePrice(priceDb.getPrice(product.getId(), PriceType.SALE));
 					product.setLeasePrice(priceDb.getPrice(product.getId(), PriceType.LEASE));
 					product.setPurchasePrice(priceDb.getPrice(product.getId(), PriceType.PURCHASE));
-					product.setSupplier(supplierDb.getSupplierById(product.getSupplier().getId()));
+					product.setSupplier(supplierDb.getSupplierById(rsProduct.getLong("supplier_id")));
+					product.setCategory(categoryDb.getCategory(rsProduct.getLong("category_id")));
+					product.setUnit(unitDb.getUnit(rsProduct.getLong("unit_id")));
+					
 				}
 		} catch (SQLException e) {
 			throw e;
@@ -162,11 +168,11 @@ public class ProductDB implements ProductIF {
 		return new Product(rsProduct.getLong("id"), 
 						   rsProduct.getString("barcode"), 
 						   rsProduct.getString("name"), 
-						   new Category(rsProduct.getLong("category_id"), rsProduct.getString("category_name")), 
+						   null, 
 					       null, 
 						   null, 
 						   null, 
-						   new Unit(rsProduct.getLong("unit_id"), rsProduct.getString("unit_name")), 
-						   new Supplier(rsProduct.getLong("supplier_id")));
+						   null, 
+						   null);
 	}
 }

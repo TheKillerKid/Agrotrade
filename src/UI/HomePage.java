@@ -208,7 +208,7 @@ public class HomePage extends JDialog {
 		productListButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ProductListPage.start();
-				
+				dispose();
 			}
 		});
 		
