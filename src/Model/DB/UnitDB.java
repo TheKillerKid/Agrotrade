@@ -10,6 +10,31 @@ import Model.DBIF.UnitIF;
 import Model.Model.Unit;
 
 public class UnitDB implements UnitIF{
+	
+	@Override
+	public Unit getUnit(long id) throws SQLException {
+		Unit res = null;
+		String sqlCategory = ("SELECT * FROM Unit WHERE id = ?");
+		
+		Connection con = DBConnection.getInstance().getConnection();
+
+		try {
+			PreparedStatement preparedStmt = con.prepareStatement(sqlCategory);
+			
+			preparedStmt.setLong(1, id);
+				
+			ResultSet rsUnit = preparedStmt.executeQuery();
+
+			if(rsUnit.next()) {
+				res = buildUnit(rsUnit);
+			}
+
+		} catch (SQLException e) {
+			throw e;
+		}
+		
+		return res;
+	}
 
 	@Override
 	public ArrayList<Unit> getUnits() throws SQLException {
@@ -34,8 +59,7 @@ public class UnitDB implements UnitIF{
 	}
 	
 	public Unit buildUnit(ResultSet rsUnit) throws SQLException{
-		return new Unit(rsUnit.getLong("id"),
-						rsUnit.getString("name"));
+		return new Unit(rsUnit.getLong("id"), rsUnit.getString("name"));
 	}
 
 }

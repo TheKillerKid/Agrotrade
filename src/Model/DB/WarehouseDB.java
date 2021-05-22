@@ -53,7 +53,7 @@ public class WarehouseDB implements WarehouseIF {
     try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlWarehouse);
 
-				ResultSet rsWarehouse = preparedStmt.executeQuery();
+			ResultSet rsWarehouse = preparedStmt.executeQuery();
 
 			while(rsWarehouse.next()) {
 				Warehouse res = buildWarehouse(rsWarehouse);

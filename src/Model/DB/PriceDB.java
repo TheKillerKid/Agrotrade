@@ -22,6 +22,8 @@ public class PriceDB implements PriceIF {
      try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlPrice);
 			preparedStmt.setLong(1, productId);
+			preparedStmt.setString(2, type.toString());
+
 			ResultSet rsPrice = preparedStmt.executeQuery();
 			if (rsPrice.next()) {
 				price = buildPrice(rsPrice);
