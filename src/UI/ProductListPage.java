@@ -1,28 +1,27 @@
 package UI;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.FlowLayout;
 
+import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.TableCellRenderer;
-
-import Model.DB.ProductDB;
+import javax.swing.table.DefaultTableModel;
 import Model.DB.StockProductDB;
 import Model.Model.LoginContainer;
-import Model.Model.Product;
 import Model.Model.StockProduct;
 
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.JTable;
+
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
@@ -30,18 +29,6 @@ import java.awt.Insets;
 public class ProductListPage extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
-	
-	String[] columnNames = {
-		"First Name",
-	    "Last Name",
-    };
-
-	private static class JTableButtonRenderer implements TableCellRenderer {        
-        @Override public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            JButton button = (JButton)value;
-            return button;  
-        }
-    }
 
 	public static void start() {
 		try {
@@ -79,31 +66,45 @@ public class ProductListPage extends JDialog {
 		contentPanel.setLayout(gbl_contentPanel);
 		{
 			ArrayList<StockProduct> stockProducts = loadData(); 
-			String[][] data = new String[stockProducts.size()][];
+			Object[][] data = new Object[stockProducts.size()][];
 
 				
 			for (int i = 0; i < stockProducts.size(); i++) {
 				StockProduct stockProduct = stockProducts.get(i);
-				String [] newData = {
+				Object [] newData = {
+					Long.toString(stockProduct.getId()),
 					stockProduct.getProduct().getBarcode(),
 					stockProduct.getProduct().getName(),
 					stockProduct.getProduct().getCategory().getName(),
 					Integer.toString(stockProduct.getAmount()),
 					String.format("%s/%s", stockProduct.getMinStock(), stockProduct.getMaxStock()),
 					stockProduct.getProduct().getSupplier().getSupplierName(),
-					""
+					"Open",
 				};
 
 				data[i] = newData;
 
 			}
 			
-			String column[]={"Barcode", "Name", "Category", "Ammount", "Min/Max stock", "Supplier", "Go to"};
+			AbstractAction open = new AbstractAction() {
+				public void actionPerformed(ActionEvent e) {
+			        JTable table = (JTable)e.getSource();
+			        int modelRow = Integer.valueOf( e.getActionCommand() );
+			       
+			        System.out.println(table.getValueAt(modelRow, 0));
+			        
+			        ProductPage.start();
+			    }
+			};
+			
+			
+			String column[]={"Id", "Barcode", "Name", "Category", "Ammount", "Min/Max stock", "Supplier", ""};
 
-			JTable table = new JTable(data, column);
+			DefaultTableModel model = new DefaultTableModel(data, column);
+			JTable table = new JTable( model );
 
-			TableCellRenderer buttonRenderer = new JTableButtonRenderer();
-			table.getColumn("Go to").setCellRenderer(buttonRenderer);
+			ButtonColumn buttonColumn = new ButtonColumn(table, open, 7);
+			buttonColumn.setMnemonic(KeyEvent.VK_D);
 
 			GridBagConstraints gbc_table = new GridBagConstraints();
 			gbc_table.gridheight = 3;
@@ -115,10 +116,6 @@ public class ProductListPage extends JDialog {
 		    JScrollPane sp=new JScrollPane(table);
 
 			contentPanel.add(sp, gbc_table);
-		}
-
-		for (StockProduct stockProduct : loadData()) {
-			System.out.println(stockProduct.getMaxStock());
 		}
 		
 		{
