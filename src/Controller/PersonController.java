@@ -59,20 +59,20 @@ public class PersonController {
 		return null;
 	}
 	
-	public long createPerson(Person person) throws SQLException {
+	public Person createPerson(Person person) throws SQLException {
 		try {
 			if(person instanceof Employee) {
 				return this.employeeCtrl.createEmployee((Employee)person);
 			}
 			
 			if (person instanceof Customer) {
-				return -1;
+				return null;
 			}
 			
 			if (person instanceof Supplier) {
-				return -1;
+				return null;
 			}
-			return -1;
+			return null;
 			
 		} catch (SQLException e) {
 			throw e;
@@ -108,10 +108,10 @@ public class PersonController {
 		try {
 			if(cprNo.length() == 10) {
 				int day = ParsingHelper.tryParseInt(cprNo.substring(0, 2));
-				int month = ParsingHelper.tryParseInt(cprNo.substring(2, 2));
-				int year = ParsingHelper.tryParseInt(cprNo.substring(4, 2));
+				int month = ParsingHelper.tryParseInt(cprNo.substring(2, 4));
+				int year = ParsingHelper.tryParseInt(cprNo.substring(4, 6));
 				
-				int currentYearLastTwoDigits = ParsingHelper.tryParseInt(String.valueOf(LocalDate.now().getYear()).substring(2,2));
+				int currentYearLastTwoDigits = ParsingHelper.tryParseInt(String.valueOf(LocalDate.now().getYear()).substring(2,4));
 				
 				if(currentYearLastTwoDigits < year) {
 					year += 1900;

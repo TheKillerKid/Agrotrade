@@ -10,7 +10,7 @@ public interface EmployeeIF {
 	
 	public Employee getEmployeeByEmail(String email) throws SQLException;
 	
-	public long createEmployee(Employee employee) throws SQLException;
+	public Employee createEmployee(Employee employee) throws SQLException;
 	
 	public int updateEmployee(Employee employee) throws SQLException;
 	

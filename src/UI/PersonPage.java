@@ -6,6 +6,7 @@ import java.awt.EventQueue;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -20,27 +21,28 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.ArrayList;
 
 import Model.Model.Address;
 import Model.Model.Customer;
+import Model.Model.DepartmentType;
 import Model.Model.Employee;
 import Model.Model.LoginContainer;
 import Model.Model.MessagesEnum;
+import Model.Model.Person;
 import Model.Model.PersonPageType;
+import Model.Model.PositionType;
 import Model.Model.Supplier;
-import Controller.CustomerController;
 import Controller.EmployeeController;
 import Controller.ParsingHelper;
 import Controller.PersonController;
-import Controller.SupplierController;
 
 public class PersonPage extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	JPanel panel = new JPanel();
 	JPanel buttonPane = new JPanel();
+	
+	private Person person = null;
 	
 	private PersonController personCtrl = new PersonController();
 	private EmployeeController employeeCtrl = new EmployeeController();
@@ -66,6 +68,11 @@ public class PersonPage extends JDialog {
 	private JButton btnBack;
 	private JButton btnSave;
 	
+	private JComboBox<String> departmentComboBox;
+	private JComboBox<String> positionComboBox;
+	
+	private DefaultComboBoxModel<String> departmentDefaultModel = new DefaultComboBoxModel<String>();
+	private DefaultComboBoxModel<String> positionDefaultModel = new DefaultComboBoxModel<String>();
 
 	public static void start(PersonPageType type) {
 		EventQueue.invokeLater(new Runnable() {
@@ -85,6 +92,7 @@ public class PersonPage extends JDialog {
 	 * Create the dialog.
 	 */
 	public PersonPage(PersonPageType type) {
+		loadComboBoxData();
 		setBounds(150, 150, 1280, 800);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -323,35 +331,47 @@ public class PersonPage extends JDialog {
 					public void actionPerformed(ActionEvent e) {
 						if(type == PersonPageType.EMPLOYEE) {	
 							try {
-								Address address = new Address(0, streetField.getText(), 
-										streetNoField.getText(), 
-										cityField.getText(), 
-										positionField.getText(),
-										countryField.getText());
+								Address address = new Address(0, 
+															  streetField.getText(), 
+															  streetNoField.getText(), 
+														   	  cityField.getText(), 
+															  postalCodeField.getText(),
+															  countryField.getText());
+								DepartmentType departmentType = DepartmentType.valueOf(String.valueOf(departmentComboBox.getSelectedItem()));
+								PositionType positionType = PositionType.valueOf(String.valueOf(positionComboBox.getSelectedItem()));
 								
-								Employee employee = new Employee(0,
+								Employee employee = new Employee(-1,
 										firstNameField.getText(),
 										lastNameField.getText(),
-										personCtrl.getDateOfBirth(cprNoField.getText()), //change to field
+										personCtrl.getDateOfBirth(cprNoField.getText()),
 										address,
 										phoneField.getText(),
 										emailField.getText(),
 										passwordField.getText(),
 										cprNoField.getText(),
-										departmentField.getText(),
-										positionField.getText(), 
+										departmentType,
+										positionType, 
 										LoginContainer.getInstance().getCurrentUser().getWarehouse());
-								personCtrl.createPerson(employee);
+
+								person = personCtrl.createPerson(employee);
+								
+								messageLabel.setText(MessagesEnum.EMPLOYEESAVED.text);
+								messageLabel.setForeground(Color.GREEN);
 							} catch(SQLException e1) {
 								messageLabel.setText(MessagesEnum.DBERROR.text);
+								messageLabel.setForeground(Color.RED);
 								e1.printStackTrace();
 								return;
 							} catch(NumberFormatException e2) {
 								messageLabel.setText(MessagesEnum.PARSEERROR.text);
+								messageLabel.setForeground(Color.RED);
 								e2.printStackTrace();
 								return;
 							} catch(Exception e3) {
 								messageLabel.setText(e3.getMessage());
+								messageLabel.setForeground(Color.RED);
+								e3.printStackTrace();
+								return;
 							}
 						}
 						if(type == PersonPageType.CUSTOMER) {
@@ -404,9 +424,6 @@ public class PersonPage extends JDialog {
 								return;	
 							}
 						}
-						
-						HomePage.start();
-						dispose();
 					}
 				});
 				GridBagConstraints gbc_btnSave = new GridBagConstraints();
@@ -455,33 +472,32 @@ public class PersonPage extends JDialog {
 				gbc_lblDepartment.gridy = 11;
 				panel.add(lblDepartment, gbc_lblDepartment);
 			}
-			{
-				departmentField = new JTextField();
-				GridBagConstraints gbc_departmentField = new GridBagConstraints();
-				gbc_departmentField.insets = new Insets(0, 0, 5, 0);
-				gbc_departmentField.fill = GridBagConstraints.HORIZONTAL;
-				gbc_departmentField.gridx = 1;
-				gbc_departmentField.gridy = 11;
-				panel.add(departmentField, gbc_departmentField);
-				departmentField.setColumns(10);
+			{			
+				departmentComboBox = new JComboBox<String>(departmentDefaultModel);
+				GridBagConstraints gbc_departmentComboBox = new GridBagConstraints();
+				gbc_departmentComboBox.insets = new Insets(0, 0, 5, 0);
+				gbc_departmentComboBox.fill = GridBagConstraints.HORIZONTAL;
+				gbc_departmentComboBox.gridx = 1;
+				gbc_departmentComboBox.gridy = 11;
+				panel.add(departmentComboBox, gbc_departmentComboBox);
 			}
 			{
 				JLabel lblPosition = new JLabel("Position");
 				GridBagConstraints gbc_lblPosition = new GridBagConstraints();
 				gbc_lblPosition.anchor = GridBagConstraints.WEST;
-				gbc_lblPosition.insets = new Insets(0, 0, 0, 5);
+				gbc_lblPosition.insets = new Insets(0, 0, 5, 5);
 				gbc_lblPosition.gridx = 0;
 				gbc_lblPosition.gridy = 12;
 				panel.add(lblPosition, gbc_lblPosition);
 			}
-			{
-				positionField = new JTextField();
-				GridBagConstraints gbc_positionField = new GridBagConstraints();
-				gbc_positionField.fill = GridBagConstraints.HORIZONTAL;
-				gbc_positionField.gridx = 1;
-				gbc_positionField.gridy = 12;
-				panel.add(positionField, gbc_positionField);
-				positionField.setColumns(10);
+			{			
+				positionComboBox = new JComboBox<String>(positionDefaultModel);
+				GridBagConstraints gbc_postionComboBox = new GridBagConstraints();
+				gbc_postionComboBox.insets = new Insets(0, 0, 5, 0);
+				gbc_postionComboBox.fill = GridBagConstraints.HORIZONTAL;
+				gbc_postionComboBox.gridx = 1;
+				gbc_postionComboBox.gridy = 12;
+				panel.add(positionComboBox, gbc_postionComboBox);
 			}
 			{
 				JLabel lblPassword = new JLabel("Password");
@@ -624,6 +640,17 @@ public class PersonPage extends JDialog {
 			gbc_messageLabel.gridy = 4;
 			contentPanel.add(messageLabel, gbc_messageLabel);
 		}
+	
+
+	public void loadComboBoxData(){
+		for(DepartmentType type : DepartmentType.values()) {
+			departmentDefaultModel.addElement(type.name());
+		}
+		
+		for(PositionType type : PositionType.values()) {
+			positionDefaultModel.addElement(type.name());
+		}
+	}
 }
 			
 

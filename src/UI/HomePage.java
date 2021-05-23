@@ -220,7 +220,7 @@ public class HomePage extends JDialog {
 		gbc_loggedUserDetail.gridy = 1;
 		getContentPane().add(loggedUserDetail, gbc_loggedUserDetail);
 		GridBagLayout gbl_loggedUserDetail = new GridBagLayout();
-		gbl_loggedUserDetail.columnWidths = new int[]{61, 61, 0};
+		gbl_loggedUserDetail.columnWidths = new int[]{90, 61, 0};
 		gbl_loggedUserDetail.rowHeights = new int[]{16, 0, 0, 0, 0, 0, 0};
 		gbl_loggedUserDetail.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
 		gbl_loggedUserDetail.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
@@ -289,6 +289,7 @@ public class HomePage extends JDialog {
 		
 		JLabel warehouseLbl = new JLabel("Warehouse:");
 		GridBagConstraints gbc_warehouseLbl = new GridBagConstraints();
+		gbc_warehouseLbl.anchor = GridBagConstraints.WEST;
 		gbc_warehouseLbl.insets = new Insets(0, 0, 5, 5);
 		gbc_warehouseLbl.gridx = 0;
 		gbc_warehouseLbl.gridy = 4;
@@ -296,6 +297,7 @@ public class HomePage extends JDialog {
 		
 		JLabel warehouseValue = new JLabel(getWarehouseAddress());
 		GridBagConstraints gbc_warehouseValue = new GridBagConstraints();
+		gbc_warehouseValue.anchor = GridBagConstraints.WEST;
 		gbc_warehouseValue.insets = new Insets(0, 0, 5, 0);
 		gbc_warehouseValue.gridx = 1;
 		gbc_warehouseValue.gridy = 4;
