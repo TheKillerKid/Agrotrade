@@ -10,7 +10,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-import Model.DB.StockProductDB;
+
+import Controller.StockProductContoller;
 import Model.Model.LoginContainer;
 import Model.Model.StockProduct;
 
@@ -41,11 +42,11 @@ public class ProductListPage extends JDialog {
 	}
 	
 	private ArrayList<StockProduct> loadData () {
-		StockProductDB stockProductDB = new StockProductDB();
+		StockProductContoller stockProductController = new StockProductContoller();
 		ArrayList<StockProduct> stockProducts = new ArrayList<StockProduct>();
 
 		try {
-			stockProducts = stockProductDB.getStockProducts(LoginContainer.getInstance().getCurrentUser().getWarehouse().getId());
+			stockProducts = stockProductController.getStockProducts(LoginContainer.getInstance().getCurrentUser().getWarehouse().getId());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -91,14 +92,15 @@ public class ProductListPage extends JDialog {
 			        JTable table = (JTable)e.getSource();
 			        int modelRow = Integer.valueOf( e.getActionCommand() );
 			       
-			        System.out.println(table.getValueAt(modelRow, 0));
+			        long stockProductId = Long.parseLong((String) table.getValueAt(modelRow, 0)); 
 			        
-			        ProductPage.start();
+			        ProductPage.start(stockProductId);
+			        dispose();
 			    }
 			};
 			
 			
-			String column[]={"Id", "Barcode", "Name", "Category", "Ammount", "Min/Max stock", "Supplier", ""};
+			String column[]={"Id", "Barcode", "Name", "Category", "Current stock", "Min/Max stock", "Supplier", ""};
 
 			DefaultTableModel model = new DefaultTableModel(data, column);
 			JTable table = new JTable( model );
@@ -113,24 +115,17 @@ public class ProductListPage extends JDialog {
 			gbc_table.fill = GridBagConstraints.BOTH;
 			gbc_table.gridx = 0;
 			gbc_table.gridy = 0;
-		    JScrollPane sp=new JScrollPane(table);
+		    JScrollPane sp = new JScrollPane(table);
 
 			contentPanel.add(sp, gbc_table);
 		}
 		
 		{
 			JPanel buttonPane = new JPanel();
-			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+			buttonPane.setLayout(new FlowLayout(FlowLayout.LEFT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
-			
 			{
-				JButton okButton = new JButton("OK");
-				okButton.setActionCommand("OK");
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
-			}
-			{
-				JButton cancelButton = new JButton("Cancel");
+				JButton cancelButton = new JButton("Back");
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 				cancelButton.addActionListener(new ActionListener () {

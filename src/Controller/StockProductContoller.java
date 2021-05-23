@@ -13,10 +13,16 @@ public class StockProductContoller {
 	public ArrayList<StockProduct> getStockProducts(long warehouseId) throws SQLException {
 		try {
 			return stockProductDb.getStockProducts(warehouseId);
-		
 		} catch (SQLException e) {
 			throw e;
 		}
+	}
 	
+	public StockProduct getStockProduct(long id) throws SQLException {
+		try {
+			return stockProductDb.getStockProduct(id);
+		} catch (SQLException e) {
+			throw e;
+		}
 	}
 }
