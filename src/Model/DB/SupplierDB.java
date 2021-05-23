@@ -105,7 +105,7 @@ private AddressDB addressDb =  new AddressDB();
 
 		Connection con = DBConnection.getInstance().getConnection();
 
-    try {
+		try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlSupplier);
 
 			ResultSet rsSupplier = preparedStmt.executeQuery();

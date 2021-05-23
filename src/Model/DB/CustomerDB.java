@@ -21,8 +21,9 @@ public class CustomerDB implements CustomerIF {
 	public Customer getCustomer(String cvrNo) throws SQLException {
 		Customer res = null;
 		String sqlCustomer = ("SELECT * FROM Employee WHERE cvr_no = ?");
-		
-		try(Connection con = DBConnection.getInstance().getConnection()) {
+		Connection con = DBConnection.getInstance().getConnection();
+
+		try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlCustomer);
 			
 				preparedStmt.setString(1, cvrNo);
@@ -81,7 +82,8 @@ public class CustomerDB implements CustomerIF {
 		String cvrNo = customer.getCvrNo();
 		int staticDiscount = customer.getStaticDiscount();
 		
-		try (Connection con = DBConnection.getInstance().getConnection()) {		
+		Connection con = DBConnection.getInstance().getConnection();
+		try {		
 		
 		StringBuffer columns = new StringBuffer( 255 );
 		 
@@ -176,8 +178,9 @@ public class CustomerDB implements CustomerIF {
 	public ArrayList<Customer> getCustomerList() throws SQLException {
 		ArrayList<Customer> customers = new ArrayList<Customer>();
 		String sqlCustomer = ("SELECT * FROM Customer");
-		
-		try(Connection con = DBConnection.getInstance().getConnection()) {
+		Connection con = DBConnection.getInstance().getConnection();
+
+		try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlCustomer);
 			
 			ResultSet rsCustomer = preparedStmt.executeQuery();

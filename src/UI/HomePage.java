@@ -1,6 +1,6 @@
 package UI;
 
-import java.awt.EventQueue; 
+import java.awt.EventQueue;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -91,7 +91,7 @@ public class HomePage extends JDialog {
 		mnNewMenu_2.add(registerEmployeeMntm);
 		registerEmployeeMntm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				PersonPage.start(PersonPageType.EMPLOYEE);
+				PersonPage.start(PersonPageType.EMPLOYEE, -1);
 				dispose();
 			}
 		});
@@ -100,7 +100,7 @@ public class HomePage extends JDialog {
 		mnNewMenu_2.add(registerCustomerMntm);
 		registerCustomerMntm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				PersonPage.start(PersonPageType.CUSTOMER);
+				PersonPage.start(PersonPageType.CUSTOMER, -1);
 				dispose();
 				
 			}
@@ -110,7 +110,7 @@ public class HomePage extends JDialog {
 		mnNewMenu_2.add(registerSupplierMntm);
 		registerSupplierMntm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				PersonPage.start(PersonPageType.SUPPLIER);
+				PersonPage.start(PersonPageType.SUPPLIER, -1);
 				dispose();
 				
 			}
@@ -125,6 +125,7 @@ public class HomePage extends JDialog {
 		gridBagLayout.columnWeights = new double[]{1.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
 		gridBagLayout.rowWeights = new double[]{1.0, 0.0, 1.0, Double.MIN_VALUE};
 		getContentPane().setLayout(gridBagLayout);
+		
 		
 		JPanel panel = new JPanel();
 		GridBagConstraints gbc_panel = new GridBagConstraints();
@@ -156,7 +157,7 @@ public class HomePage extends JDialog {
 		JButton createEmployeeBtn = new JButton("Register employee");
 		createEmployeeBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				PersonPage.start(PersonPageType.EMPLOYEE);
+				PersonPage.start(PersonPageType.EMPLOYEE, -1);
 				dispose();
 			}
 		});
@@ -185,6 +186,12 @@ public class HomePage extends JDialog {
 		gbc_peopleListBtn.gridx = 1;
 		gbc_peopleListBtn.gridy = 1;
 		panel.add(peopleListBtn, gbc_peopleListBtn);
+		peopleListBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				PeopleListPage.start();
+				dispose();
+			}
+		});
 		
 		JButton createProductBtn = new JButton("Register product");
 		GridBagConstraints gbc_createProductBtn = new GridBagConstraints();

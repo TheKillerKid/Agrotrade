@@ -480,6 +480,10 @@ public class ProductPage extends JDialog {
 			currentStockField.setText(Integer.toString(stockProduct.getAmount()));
 			minStockField.setText(Integer.toString(stockProduct.getMinStock()));
 			maxStockField.setText(Integer.toString(stockProduct.getMaxStock()));
+			String supplier = (String.valueOf(stockProduct.getProduct().getSupplier().getCvrNo()) + " - " + stockProduct.getProduct().getSupplier().getSupplierName());
+			supplierComboBox.getModel().setSelectedItem(supplier);
+			categoryComboBox.getModel().setSelectedItem(stockProduct.getProduct().getCategory().getName());
+			unitComboBox.getModel().setSelectedItem(stockProduct.getProduct().getUnit().getName());
 		} catch (SQLException e) {
 			throw e;
 		}

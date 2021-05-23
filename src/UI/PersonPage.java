@@ -28,7 +28,9 @@ import Model.Model.Customer;
 import Model.Model.Employee;
 import Model.Model.LoginContainer;
 import Model.Model.MessagesEnum;
+import Model.Model.Person;
 import Model.Model.PersonPageType;
+import Model.Model.StockProduct;
 import Model.Model.Supplier;
 import Controller.CustomerController;
 import Controller.EmployeeController;
@@ -67,11 +69,11 @@ public class PersonPage extends JDialog {
 	private JButton btnSave;
 	
 
-	public static void start(PersonPageType type) {
+	public static void start(PersonPageType type, long personId) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					PersonPage dialog = new PersonPage(type);
+					PersonPage dialog = new PersonPage(type, personId);
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.setVisible(true);
 				} catch (Exception e) {
@@ -84,7 +86,7 @@ public class PersonPage extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public PersonPage(PersonPageType type) {
+	public PersonPage(PersonPageType type, long personId) {
 		setBounds(150, 150, 1280, 800);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -616,14 +618,41 @@ public class PersonPage extends JDialog {
 				cvrNoField.setColumns(10);
 			}
 		}
-			messageLabel = new JLabel("");
-			messageLabel.setForeground(Color.RED);
-			GridBagConstraints gbc_messageLabel = new GridBagConstraints();
-			gbc_messageLabel.anchor = GridBagConstraints.WEST;
-			gbc_messageLabel.gridx = 1;
-			gbc_messageLabel.gridy = 4;
-			contentPanel.add(messageLabel, gbc_messageLabel);
+		messageLabel = new JLabel("");
+		messageLabel.setForeground(Color.RED);
+		GridBagConstraints gbc_messageLabel = new GridBagConstraints();
+		gbc_messageLabel.anchor = GridBagConstraints.WEST;
+		gbc_messageLabel.gridx = 1;
+		gbc_messageLabel.gridy = 4;
+		contentPanel.add(messageLabel, gbc_messageLabel);
+				
+	}
+	
+	public void loadData(PersonPageType type, long id) throws SQLException {
+		try {
+			Person person = null;
+
+			/*
+			firstNameField;
+			lastNameField;
+			*/
+			if(type == PersonPageType.EMPLOYEE) {
+				Supplier supplier = personCtrl.getSupplierById(id);
+				person = supplier;
+			}
+			
+			if(type == PersonPageType.CUSTOMER) {
+			}
+			
+			if(type == PersonPageType.SUPPLIER) {
+			}
+			
+			firstNameField.setText(person.getFirstName());
+
+		} catch (SQLException e) {
+			throw e;
 		}
+	}
 }
 			
 

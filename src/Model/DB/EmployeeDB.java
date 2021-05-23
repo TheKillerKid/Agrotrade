@@ -269,8 +269,9 @@ public class EmployeeDB implements EmployeeIF{
 	public ArrayList<Employee> getEmployeeList() throws SQLException {
 		ArrayList<Employee> employees = new ArrayList<Employee>();
 		String sqlEmployee = ("SELECT * FROM Employee");
-		
-		try(Connection con = DBConnection.getInstance().getConnection()) {
+		Connection con = DBConnection.getInstance().getConnection();
+
+		try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlEmployee);
 			
 			ResultSet rsEmployee = preparedStmt.executeQuery();
