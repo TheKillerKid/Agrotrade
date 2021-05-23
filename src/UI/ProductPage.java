@@ -14,6 +14,7 @@ import Controller.StockProductContoller;
 import Controller.SupplierController;
 import Controller.UnitController;
 import Model.Model.Category;
+import Model.Model.MessagesEnum;
 import Model.Model.Price;
 
 import Model.Model.PriceType;
@@ -418,17 +419,17 @@ public class ProductPage extends JDialog {
 							product = productCtrl.createProduct(product, ParsingHelper.tryParseInt(minStockField.getText()), ParsingHelper.tryParseInt(maxStockField.getText()));
 							
 							msgLbl.setForeground(Color.GREEN);
-							msgLbl.setText("Product saved! You can go and create purchase to fill your warehouse.");
+							msgLbl.setText(MessagesEnum.PRODUCTSAVED.text);	
 						} catch (NumberFormatException e1) {
 							e1.printStackTrace();
 							msgLbl.setForeground(Color.RED);
-							msgLbl.setText("Cannot parse values from fields. Write values in correct format.");
+							msgLbl.setText(MessagesEnum.PARSEERROR.text);
 							return;
 							
 						} catch (SQLException e2) {
 							e2.printStackTrace();
 							msgLbl.setForeground(Color.RED);
-							msgLbl.setText("Something went wrong with database. Try it again later.");
+							msgLbl.setText(MessagesEnum.DBERROR.text);
 							return;
 						}
 					}

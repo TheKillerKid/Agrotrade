@@ -27,6 +27,7 @@ import Model.Model.Address;
 import Model.Model.Customer;
 import Model.Model.Employee;
 import Model.Model.LoginContainer;
+import Model.Model.MessagesEnum;
 import Model.Model.PersonPageType;
 import Model.Model.Supplier;
 import Controller.CustomerController;
@@ -331,7 +332,7 @@ public class PersonPage extends JDialog {
 								Employee employee = new Employee(0,
 										firstNameField.getText(),
 										lastNameField.getText(),
-										LocalDate.now(), //change to field
+										personCtrl.getDateOfBirth(cprNoField.getText()), //change to field
 										address,
 										phoneField.getText(),
 										emailField.getText(),
@@ -341,10 +342,16 @@ public class PersonPage extends JDialog {
 										positionField.getText(), 
 										LoginContainer.getInstance().getCurrentUser().getWarehouse());
 								personCtrl.createPerson(employee);
-							} catch(SQLException e2) {
-								messageLabel.setText("Something went wrong with database, please try again.");
+							} catch(SQLException e1) {
+								messageLabel.setText(MessagesEnum.DBERROR.text);
+								e1.printStackTrace();
+								return;
+							} catch(NumberFormatException e2) {
+								messageLabel.setText(MessagesEnum.PARSEERROR.text);
 								e2.printStackTrace();
 								return;
+							} catch(Exception e3) {
+								messageLabel.setText(e3.getMessage());
 							}
 						}
 						if(type == PersonPageType.CUSTOMER) {
@@ -366,7 +373,7 @@ public class PersonPage extends JDialog {
 										staticDiscount);
 								personCtrl.createPerson(customer);
 							} catch (NumberFormatException e1) {
-							    messageLabel.setText("Wrong input please input numbers.");
+							    messageLabel.setText(MessagesEnum.PARSEERROR.text);
 								e1.printStackTrace();
 							    return;
 							} catch (SQLException e2) {
@@ -392,7 +399,7 @@ public class PersonPage extends JDialog {
 										companyNameField.getText());
 								personCtrl.createPerson(supplier);
 							} catch (SQLException e2) {
-								messageLabel.setText("Something went wrong with database, please try again.");
+								messageLabel.setText(MessagesEnum.PARSEERROR.text);
 								e2.printStackTrace();
 								return;	
 							}
