@@ -330,17 +330,29 @@ public class PersonPage extends JDialog {
 					public void actionPerformed(ActionEvent e) {
 						if (type == PersonPageType.EMPLOYEE) {
 							try {
-								Address address = new Address(0, streetField.getText(), streetNoField.getText(),
-										cityField.getText(), postalCodeField.getText(), countryField.getText());
+								Address address = new Address(-1, 
+										streetField.getText(), 
+										streetNoField.getText(),
+										cityField.getText(), 
+										postalCodeField.getText(), 
+										countryField.getText());
+								
 								DepartmentType departmentType = DepartmentType
 										.valueOf(String.valueOf(departmentComboBox.getSelectedItem()));
 								PositionType positionType = PositionType
 										.valueOf(String.valueOf(positionComboBox.getSelectedItem()));
 
-								Employee employee = new Employee(-1, firstNameField.getText(), lastNameField.getText(),
-										personCtrl.getDateOfBirth(cprNoField.getText()), address, phoneField.getText(),
-										emailField.getText(), passwordField.getText(), cprNoField.getText(),
-										departmentType, positionType,
+								Employee employee = new Employee(-1, 
+										firstNameField.getText(), 
+										lastNameField.getText(),
+										personCtrl.getDateOfBirth(cprNoField.getText()), 
+										address, 
+										phoneField.getText(),
+										emailField.getText(), 
+										passwordField.getText(), 
+										cprNoField.getText(),
+										departmentType, 
+										positionType,
 										LoginContainer.getInstance().getCurrentUser().getWarehouse());
 
 								person = personCtrl.createPerson(employee);
@@ -368,10 +380,10 @@ public class PersonPage extends JDialog {
 							try {
 								double staticDiscount = ParsingHelper.tryParseDouble(staticDiscountField.getText());
 								
-								Customer customer = new Customer(0, 
+								Customer customer = new Customer(-1, 
 										firstNameField.getText(), 
 										lastNameField.getText(),
-										new Address(0, 
+										new Address(-1, 
 												streetField.getText(), 
 												streetNoField.getText(),
 												cityField.getText(), 
@@ -400,14 +412,31 @@ public class PersonPage extends JDialog {
 						}
 						if (type == PersonPageType.SUPPLIER) {
 							try {
-								Supplier supplier = new Supplier(0, firstNameField.getText(), lastNameField.getText(),
-										new Address(0, streetField.getText(), streetNoField.getText(),
-												cityField.getText(), positionField.getText(), countryField.getText()),
-										phoneField.getText(), emailField.getText(), cvrNoField.getText(),
+								Supplier supplier = new Supplier(-1, 
+										firstNameField.getText(), 
+										lastNameField.getText(),
+										new Address(-1, 
+												streetField.getText(), 
+												streetNoField.getText(),
+												cityField.getText(), 
+												postalCodeField.getText(), 
+												countryField.getText()),
+										phoneField.getText(), 
+										emailField.getText(), 
+										cvrNoField.getText(),
 										companyNameField.getText());
-								personCtrl.createPerson(supplier);
-							} catch (SQLException e2) {
+								
+								person = personCtrl.createPerson(supplier);
+								
+								messageLabel.setText(MessagesEnum.SUPPLIERSAVED.text);
+								messageLabel.setForeground(Color.GREEN);
+							} catch (NumberFormatException e1) {
 								messageLabel.setText(MessagesEnum.PARSEERROR.text);
+								messageLabel.setForeground(Color.RED);
+								e1.printStackTrace();
+								return;
+							} catch (SQLException e2) {
+								messageLabel.setText(MessagesEnum.DBERROR.text);
 								e2.printStackTrace();
 								return;
 							}

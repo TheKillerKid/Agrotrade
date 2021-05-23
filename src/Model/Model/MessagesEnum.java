@@ -9,7 +9,8 @@ public enum MessagesEnum {
 	//SUCCESS
 	PRODUCTSAVED("Product saved! You can go and create purchase to fill your warehouse."),
 	EMPLOYEESAVED("Employee saved!"),
-	CUSTOMERSAVED("Customer saved!")
+	CUSTOMERSAVED("Customer saved!"),
+	SUPPLIERSAVED("Supplier saved!")
 	;
 	
 	public final String text;

@@ -34,4 +34,12 @@ public class SupplierController {
 			throw e;
 		}
 	}
+	
+	public Supplier createSupplier(Supplier supplier) throws SQLException{
+		try {
+			return supplierDb.createSupplier(supplier);
+		} catch (SQLException e) {
+			throw e;
+		}
+	}
 }

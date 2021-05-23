@@ -70,7 +70,7 @@ public class PersonController {
 			}
 			
 			if (person instanceof Supplier) {
-				return null;
+				return this.supplierCtrl.createSupplier((Supplier)person);
 			}
 			return null;
 			
