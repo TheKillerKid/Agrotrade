@@ -70,7 +70,7 @@ public class LoginPage extends JDialog {
 	 * Create the dialog.
 	 */
 	public LoginPage() {		
-		setBounds(300, 300, 740, 480);
+		setBounds(150, 150, 1280, 800);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(Color.WHITE);
 		

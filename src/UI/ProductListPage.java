@@ -53,8 +53,8 @@ public class ProductListPage extends JDialog {
 		return stockProducts;
 	}
 
-	public ProductListPage() {
-		setBounds(100, 100, 745, 480);
+	public ProductListPage() throws SQLException {
+		setBounds(150, 150, 1280, 800);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
