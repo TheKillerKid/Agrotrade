@@ -1,6 +1,7 @@
 package Controller;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import Model.Model.Employee;
@@ -100,5 +101,34 @@ public class PersonController {
 			}
 		}
 		return list;
+	}
+	
+	public LocalDate getDateOfBirth(String cprNo) throws Exception {
+		try {
+			if(cprNo.length() == 10) {
+				int day = ParsingHelper.tryParseInt(cprNo.substring(0, 2));
+				int month = ParsingHelper.tryParseInt(cprNo.substring(2, 2));
+				int year = ParsingHelper.tryParseInt(cprNo.substring(4, 2));
+				
+				int currentYearLastTwoDigits = ParsingHelper.tryParseInt(String.valueOf(LocalDate.now().getYear()).substring(2,2));
+				
+				if(currentYearLastTwoDigits < year) {
+					year += 1900;
+				}
+				if(currentYearLastTwoDigits >= year) {
+					year += 2000;
+				}
+				
+				return LocalDate.of(year, month, day);
+			}
+			else {
+				throw new Exception("CPR number should has 10 digits. (example: 0209972128)");
+			}
+		} catch(NumberFormatException e1) {
+			throw e1;
+		}
+		catch(Exception e2) {
+			throw e2;
+		}
 	}
 }

@@ -39,6 +39,10 @@ public class LoginPage extends JDialog {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		LoginPage.start();
+	}
+	
+	public static void start() {
 		try {
 			LoginPage dialog = new LoginPage();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

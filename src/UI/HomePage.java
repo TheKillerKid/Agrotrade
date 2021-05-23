@@ -10,6 +10,7 @@ import java.awt.Color;
 import javax.swing.JMenu;
 import java.awt.GridBagLayout;
 
+import Model.Model.Address;
 import Model.Model.Employee;
 import Model.Model.LoginContainer;
 import Model.Model.PersonPageType;
@@ -23,6 +24,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.SwingConstants;
  
 public class HomePage extends JDialog {
 	
@@ -85,7 +87,6 @@ public class HomePage extends JDialog {
 		nameValue.setText(getFullname());
 		addressValue.setText(getFullAddress());
 		emailValue.setText(getEmail());
-		phoneValue.setText(getPhone());
 		
 		JMenuItem registerEmployeeMntm = new JMenuItem("Register employee");
 		mnNewMenu_2.add(registerEmployeeMntm);
@@ -135,9 +136,9 @@ public class HomePage extends JDialog {
 		getContentPane().add(panel, gbc_panel);
 		GridBagLayout gbl_panel = new GridBagLayout();
 		gbl_panel.columnWidths = new int[]{0, 0, 0};
-		gbl_panel.rowHeights = new int[]{0, 0, 0, 0, 0};
+		gbl_panel.rowHeights = new int[]{0, 0, 0, 0};
 		gbl_panel.columnWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
-		gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panel.setLayout(gbl_panel);
 		
 		JButton createOrderBtn = new JButton("Register order");
@@ -188,7 +189,7 @@ public class HomePage extends JDialog {
 		
 		JButton createProductBtn = new JButton("Register product");
 		GridBagConstraints gbc_createProductBtn = new GridBagConstraints();
-		gbc_createProductBtn.insets = new Insets(0, 0, 5, 5);
+		gbc_createProductBtn.insets = new Insets(0, 0, 0, 5);
 		gbc_createProductBtn.gridx = 0;
 		gbc_createProductBtn.gridy = 2;
 		panel.add(createProductBtn, gbc_createProductBtn);
@@ -201,7 +202,6 @@ public class HomePage extends JDialog {
 		
 		JButton productListButton = new JButton("Product list");
 		GridBagConstraints gbc_productListButton = new GridBagConstraints();
-		gbc_productListButton.insets = new Insets(0, 0, 5, 0);
 		gbc_productListButton.gridx = 1;
 		gbc_productListButton.gridy = 2;
 		panel.add(productListButton, gbc_productListButton);
@@ -221,9 +221,9 @@ public class HomePage extends JDialog {
 		getContentPane().add(loggedUserDetail, gbc_loggedUserDetail);
 		GridBagLayout gbl_loggedUserDetail = new GridBagLayout();
 		gbl_loggedUserDetail.columnWidths = new int[]{61, 61, 0};
-		gbl_loggedUserDetail.rowHeights = new int[]{16, 0, 0, 0, 0};
+		gbl_loggedUserDetail.rowHeights = new int[]{16, 0, 0, 0, 0, 0, 0};
 		gbl_loggedUserDetail.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
-		gbl_loggedUserDetail.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_loggedUserDetail.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		loggedUserDetail.setLayout(gbl_loggedUserDetail);
 		
 		JLabel nameLbl = new JLabel("Name:");
@@ -274,16 +274,47 @@ public class HomePage extends JDialog {
 		JLabel phoneLbl = new JLabel("Phone:");
 		GridBagConstraints gbc_phoneLbl = new GridBagConstraints();
 		gbc_phoneLbl.anchor = GridBagConstraints.NORTHWEST;
-		gbc_phoneLbl.insets = new Insets(0, 0, 0, 5);
+		gbc_phoneLbl.insets = new Insets(0, 0, 5, 5);
 		gbc_phoneLbl.gridx = 0;
 		gbc_phoneLbl.gridy = 3;
 		loggedUserDetail.add(phoneLbl, gbc_phoneLbl);
+		phoneValue.setText(getPhone());
 		
 		GridBagConstraints gbc_phoneValue = new GridBagConstraints();
+		gbc_phoneValue.insets = new Insets(0, 0, 5, 0);
 		gbc_phoneValue.anchor = GridBagConstraints.NORTHWEST;
 		gbc_phoneValue.gridx = 1;
 		gbc_phoneValue.gridy = 3;
 		loggedUserDetail.add(phoneValue, gbc_phoneValue);
+		
+		JLabel warehouseLbl = new JLabel("Warehouse:");
+		GridBagConstraints gbc_warehouseLbl = new GridBagConstraints();
+		gbc_warehouseLbl.insets = new Insets(0, 0, 5, 5);
+		gbc_warehouseLbl.gridx = 0;
+		gbc_warehouseLbl.gridy = 4;
+		loggedUserDetail.add(warehouseLbl, gbc_warehouseLbl);
+		
+		JLabel warehouseValue = new JLabel(getWarehouseAddress());
+		GridBagConstraints gbc_warehouseValue = new GridBagConstraints();
+		gbc_warehouseValue.insets = new Insets(0, 0, 5, 0);
+		gbc_warehouseValue.gridx = 1;
+		gbc_warehouseValue.gridy = 4;
+		loggedUserDetail.add(warehouseValue, gbc_warehouseValue);
+		
+		JButton logoutBtn = new JButton("Log out");
+		GridBagConstraints gbc_logoutBtn = new GridBagConstraints();
+		gbc_logoutBtn.anchor = GridBagConstraints.EAST;
+		gbc_logoutBtn.gridx = 1;
+		gbc_logoutBtn.gridy = 5;
+		loggedUserDetail.add(logoutBtn, gbc_logoutBtn);
+		logoutBtn.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				LoginContainer.getInstance().logout();
+				dispose();
+				LoginPage.start();
+			}
+		});
 	}
 	
 	private String getFullname() {
@@ -318,6 +349,18 @@ public class HomePage extends JDialog {
 		Employee user = loginContainer.getCurrentUser();
 		if(user != null) {
 			return user.getPhone();
+		}
+		return null;
+	}
+	
+	private String getWarehouseAddress() {
+		Address address = loginContainer.getCurrentUser().getWarehouse().getAddress();
+		if(address != null) {
+			return address.getStreet() + " " + 
+				   address.getStreetNo() + ", " + 
+				   address.getCity() + ", " + 
+				   address.getPostalCode() + ", " + 
+				   address.getCountry();
 		}
 		return null;
 	}
