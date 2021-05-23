@@ -6,13 +6,13 @@ public class Employee extends Person {
 	
 	private String password;
 	private String cprNo;
-	private String department;
-	private String position;
+	private DepartmentType department;
+	private PositionType position;
 	private Warehouse warehouse;
 	private LocalDate dateOfBirth;
 	
 
-	public Employee(long id, String firstName, String lastName, LocalDate dateOfBirth, Address address, String phone, String email, String password, String cprNo, String department, String position, Warehouse warehouse) {
+	public Employee(long id, String firstName, String lastName, LocalDate dateOfBirth, Address address, String phone, String email, String password, String cprNo, DepartmentType department, PositionType position, Warehouse warehouse) {
 		super(id, firstName, lastName, address, phone, email);
 		this.dateOfBirth = dateOfBirth;
 		this.password = password;
@@ -42,22 +42,22 @@ public class Employee extends Person {
 	}
 
 
-	public String getDepartment() {
+	public DepartmentType getDepartment() {
 		return department;
 	}
 
 
-	public void setDepartment(String department) {
+	public void setDepartment(DepartmentType department) {
 		this.department = department;
 	}
 
 
-	public String getPosition() {
+	public PositionType getPosition() {
 		return position;
 	}
 
 
-	public void setPosition(String position) {
+	public void setPosition(PositionType position) {
 		this.position = position;	
 	}
 	

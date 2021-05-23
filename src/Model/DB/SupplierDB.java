@@ -4,9 +4,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import Model.DBIF.SupplierIF;
+import Model.Model.Address;
+import Model.Model.MessagesEnum;
 import Model.Model.Supplier;
 
 public class SupplierDB implements SupplierIF{
@@ -55,36 +58,44 @@ private AddressDB addressDb =  new AddressDB();
 	}
 	
 	@Override
-	public long createSupplier(Supplier supplier) throws SQLException {
+	public Supplier createSupplier(Supplier supplier) throws SQLException {
 		
-		String sqlCreate = "INSERT INTO Product (barcode, name) VALUES (?,?,?,?,?,?,?)";
-		
-		long id = 0;
+		String sqlCreate = "INSERT INTO Supplier (first_name, last_name, address_id, phone, email, cvr_no, company_name) VALUES (?, ?, ?, ?, ?, ?, ?)";
 		
 		String firstName = supplier.getFirstName();
 		String lastName = supplier.getLastName();
-		long addressId = supplier.getAddress().getId();
+		supplier.getAddress().setId(addressDb.createAddress(supplier.getAddress()));
+		Address address = supplier.getAddress();
 		String phone = supplier.getPhone();
 		String email = supplier.getEmail();
 		String cvrNo = supplier.getCvrNo();
 		String companyName = supplier.getSupplierName();
-     Connection con = DBConnection.getInstance().getConnection();
+		
+		Connection con = DBConnection.getInstance().getConnection();
 
      try {
-			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate);
+			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate, Statement.RETURN_GENERATED_KEYS);
 			preparedStmt.setString(1, firstName);
 			preparedStmt.setString(2, lastName);
-			preparedStmt.setLong(3, addressId);
+			preparedStmt.setLong(3, address.getId());
 			preparedStmt.setString(4, phone);
 			preparedStmt.setString(5, email);
 			preparedStmt.setString(6, cvrNo);
 			preparedStmt.setString(7, companyName);
 			
-			id = preparedStmt.executeUpdate();
+			preparedStmt.executeUpdate();
+			
+			ResultSet rs = preparedStmt.getGeneratedKeys();
+			if (rs.next()) {
+                supplier.setId(rs.getLong(1));
+            }
+            else {
+                throw new SQLException(MessagesEnum.DBSAVEERROR.text);
+            }
 		} catch (SQLException e) {
 			throw e;
 		}
-		return id;
+		return supplier;
 	}
 
 	@Override

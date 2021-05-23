@@ -9,14 +9,13 @@ import Model.Model.OrderLine;
 
 public class OrderLineDB implements OrderLineIF {
 
-	public long createOrderLine(OrderLine orderLine) throws SQLException {
+	public long createOrderLine(OrderLine orderLine, long orderId) throws SQLException {
 		String sqlCreate = "INSERT INTO OrderLine (requested_amount, amount, stock_product_id, order_id) VALUES (?,?,?,?)";
 		
 		long id = 0;
 		int requestedAmount = orderLine.getRequestedAmount();
 		int amount = orderLine.getAmount();
 		long stockProductId = orderLine.getStockProduct().getId();
-		long orderId = orderLine.getOrder().getOrderId();
 		
 		Connection con = DBConnection.getInstance().getConnection();
 

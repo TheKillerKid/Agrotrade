@@ -18,6 +18,14 @@ public class CustomerController {
 		}
 	}
 	
+	public Customer createCustomer(Customer customer) throws SQLException{
+		try {
+			return customerDb.createCustomer(customer);
+		} catch (SQLException e) {
+			throw e;
+		}
+	}
+	
 	public ArrayList<Customer> getCustomers() throws SQLException {
 		try {
 			return customerDb.getCustomerList();

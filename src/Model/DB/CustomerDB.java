@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import Model.Model.Address;
@@ -11,6 +12,7 @@ import Model.DB.AddressDB;
 import Model.DBIF.CustomerIF;
 import Model.Model.Customer;
 import Model.Model.Employee;
+import Model.Model.MessagesEnum;
 import Model.Model.Supplier;
 import Model.Model.Warehouse;
 
@@ -40,35 +42,45 @@ public class CustomerDB implements CustomerIF {
 		return res;
 	}
 	
-	public long createCustomer(Customer customer) throws SQLException {
-		String sqlCreate = "INSERT INTO Customer (firstName, lastName, address, phone, email, cvrNo, staticDiscount) VALUES (?, ?, ?, ?, ?, ?, ?)";
+	public Customer createCustomer(Customer customer) throws SQLException {
+		String sqlCreate = "INSERT INTO Customer (first_name, last_name, address_id, phone, email, cvr_no, static_discount) VALUES (?, ?, ?, ?, ?, ?, ?)";
 		
 		long id = 0;
 		String firstName = customer.getFirstName();
 		String lastName = customer.getLastName();
+		customer.getAddress().setId(addressDb.createAddress(customer.getAddress()));
 		Address address = customer.getAddress();
 		String phone = customer.getPhone();
 		String email = customer.getEmail();
 		String cvrNo = customer.getCvrNo();
-		int staticDiscount = customer.getStaticDiscount();
+		double staticDiscount = customer.getStaticDiscount();
 		
-     Connection con = DBConnection.getInstance().getConnection();
-
-     try {
-			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate);
+	    Connection con = DBConnection.getInstance().getConnection();
+	
+	    try {
+			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate, Statement.RETURN_GENERATED_KEYS);
 			preparedStmt.setString(1, firstName);
 			preparedStmt.setString(2, lastName);
 			preparedStmt.setLong(3, address.getId());
 			preparedStmt.setString(4, phone);
 			preparedStmt.setString(5, email);
 			preparedStmt.setString(6, cvrNo);
-			preparedStmt.setInt(7, staticDiscount);
+			preparedStmt.setDouble(7, staticDiscount);
 			
-			id = preparedStmt.executeUpdate();
+			preparedStmt.executeUpdate();
+			
+			ResultSet rs = preparedStmt.getGeneratedKeys();
+            if (rs.next()) {
+                customer.setId(rs.getLong(1));
+            }
+            else {
+                throw new SQLException(MessagesEnum.DBSAVEERROR.text);
+            }
+            
 		} catch (SQLException e) {
 			throw e;
 		}
-		return id;
+		return customer;
 	}
 	
 	public void updateCustomer(Customer customer) throws SQLException {
@@ -76,11 +88,12 @@ public class CustomerDB implements CustomerIF {
 		
 		String firstName = customer.getFirstName();
 		String lastName = customer.getLastName();
+		addressDb.createAddress(customer.getAddress());
 		Address address = customer.getAddress();
 		String phone = customer.getPhone();
 		String email = customer.getEmail();
 		String cvrNo = customer.getCvrNo();
-		int staticDiscount = customer.getStaticDiscount();
+		double staticDiscount = customer.getStaticDiscount();
 		
 		Connection con = DBConnection.getInstance().getConnection();
 		try {		

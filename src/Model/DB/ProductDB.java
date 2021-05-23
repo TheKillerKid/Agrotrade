@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import Model.Model.Category;
+import Model.Model.MessagesEnum;
 import Model.Model.Price;
 import Model.Model.PriceType;
 import Model.Model.Product;
@@ -89,9 +90,9 @@ public class ProductDB implements ProductIF {
 		long unitId = product.getUnit().getId();
 		long supplierId = product.getSupplier().getId();
 		
-     Connection con = DBConnection.getInstance().getConnection();
-
-     try {
+	    Connection con = DBConnection.getInstance().getConnection();
+	
+	    try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate, Statement.RETURN_GENERATED_KEYS);
 			preparedStmt.setString(1, barcode);
 			preparedStmt.setString(2, name);
@@ -106,7 +107,7 @@ public class ProductDB implements ProductIF {
                 product.setId(rs.getLong(1));
             }
             else {
-                throw new SQLException("Creating product failed, no ID obtained.");
+                throw new SQLException(MessagesEnum.DBSAVEERROR.text);
             }
 			
 			product.getPurchasePrice().setId(priceDb.createPrice(purchasePrice, product.getId()));

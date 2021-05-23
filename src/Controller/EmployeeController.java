@@ -27,15 +27,13 @@ public class EmployeeController {
 		}
 	}
 	
-	public long createEmployee(Employee employee) throws SQLException {
+	public Employee createEmployee(Employee employee) throws SQLException {
 		try {
 			return employeeDb.createEmployee(employee);
 		} catch (SQLException e) {
 			throw e;
 		}
 	}
-	
-	//update, delete and build object
 	
 	public String generateRandomPassword() {
 		int len = 10;

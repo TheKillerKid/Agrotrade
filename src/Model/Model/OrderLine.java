@@ -6,14 +6,12 @@ public class OrderLine {
 	private int requestedAmount;
 	private int amount;
 	private StockProduct stockProduct;
-	private Order order;
 	
-	public OrderLine(long id, int requestedAmount, int amount, StockProduct stockProduct, Order order) {	
+	public OrderLine(long id, int requestedAmount, int amount, StockProduct stockProduct) {	
 		this.id = id;
 		this.requestedAmount = requestedAmount;
 		this.amount = amount;
 		this.stockProduct = stockProduct;
-		this.order = order;
 	}
 	
 	public long getId() {
@@ -39,11 +37,5 @@ public class OrderLine {
 	}
 	public void setStockProduct(StockProduct stockProduct) {
 		this.stockProduct = stockProduct;
-	}
-	public Order getOrder() {
-		return order;
-	}
-	public void setOrder(Order order) {
-		this.order = order;
 	}
 }

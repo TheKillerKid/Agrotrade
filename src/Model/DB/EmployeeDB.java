@@ -6,12 +6,16 @@ import java.sql.ResultSet;
 import java.sql.Date;
 
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
 import Model.DBIF.EmployeeIF;
 import Model.Model.Address;
+import Model.Model.DepartmentType;
 import Model.Model.Employee;
+import Model.Model.MessagesEnum;
+import Model.Model.PositionType;
 import Model.Model.Supplier;
 import Model.Model.Warehouse;
 
@@ -36,8 +40,8 @@ public class EmployeeDB implements EmployeeIF{
 
 			if(rsEmployee.next()) {
 				res = buildEmployee(rsEmployee);
-				// res.setAddress(addressDb.getAddress(rsEmployee.getLong("address_id")));
-				// res.setWarehouse(warehouseDb.getWarehouse(rsEmployee.getLong("warehouse_id")));
+				res.setAddress(addressDb.getAddress(rsEmployee.getLong("address_id")));
+				res.setWarehouse(warehouseDb.getWarehouse(rsEmployee.getLong("warehouse_id")));
 			}
 		}
 
@@ -64,45 +68,39 @@ public class EmployeeDB implements EmployeeIF{
 			ResultSet rsEmployee = preparedStmt.executeQuery();
 			
 			if(rsEmployee.next()) {
-				res = buildEmployee(rsEmployee);					
-				warehouseId = rsEmployee.getInt("warehouse_id");
-				addressId = rsEmployee.getInt("address_id");
+				res = buildEmployee(rsEmployee);	
+				res.setWarehouse(warehouseDb.getWarehouse(rsEmployee.getInt("warehouse_id")));			
+				res.setAddress(addressDb.getAddress(rsEmployee.getInt("address_id")));
 			}
 		} catch (SQLException e) {
 			throw e;
-		}
-	
-		if (res != null) {
-			Warehouse warehouse = warehouseDb.getWarehouse(warehouseId);
-			Address address = addressDb.getAddress(addressId);
-			
-			res.setWarehouse(warehouse);			
-			res.setAddress(address);
 		}
 		
 		return res;
 	}
 
-	String sqlCreate = "INSERT INTO Employee (first_name, last_name, date_of_birth, address_id, phone, email, password, cpr_no, department, position, warehouse_id) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+	
 	@Override
-	public long createEmployee(Employee employee) throws SQLException {
-		long id = 0;
+	public Employee createEmployee(Employee employee) throws SQLException {
+		String sqlCreate = "INSERT INTO Employee (first_name, last_name, date_of_birth, address_id, phone, email, password, cpr_no, department, position, warehouse_id) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+		
 		String firstName = employee.getFirstName();
 		String lastName = employee.getLastName();
 		LocalDate dateOfBirth = employee.getDateOfBirth();
+		employee.getAddress().setId(addressDb.createAddress(employee.getAddress()));
 		Address address = employee.getAddress();
 		String phone = employee.getPhone();
 		String email = employee.getEmail();
 		String password = employee.getPassword();
 		String cprNo = employee.getCprNo();
-		String department = employee.getDepartment();
-		String position = employee.getPosition();
+		String department = employee.getDepartment().name();
+		String position = employee.getPosition().name();
 		Warehouse warehouse = employee.getWarehouse();
 		
-     Connection con = DBConnection.getInstance().getConnection();
-
-     try {
-			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate);
+	    Connection con = DBConnection.getInstance().getConnection();
+	
+	    try {
+	    	PreparedStatement preparedStmt = con.prepareStatement(sqlCreate, Statement.RETURN_GENERATED_KEYS);
 			preparedStmt.setString(1, firstName);
 			preparedStmt.setString(2, lastName);
 			preparedStmt.setDate(3, java.sql.Date.valueOf(dateOfBirth));
@@ -115,11 +113,19 @@ public class EmployeeDB implements EmployeeIF{
 			preparedStmt.setString(10, position);
 			preparedStmt.setLong(11, warehouse.getId());
 			
-			id = preparedStmt.executeUpdate();
+			preparedStmt.executeUpdate();
+			
+			ResultSet rs = preparedStmt.getGeneratedKeys();
+	        if (rs.next()) {
+	            employee.setId(rs.getLong(1));
+	        }
+	        else {
+	            throw new SQLException(MessagesEnum.DBSAVEERROR.text);
+	        }
 		} catch (SQLException e) {
 			throw e;
 		}
-		return id;
+		return employee;
 	}
 
 	
@@ -134,8 +140,8 @@ public class EmployeeDB implements EmployeeIF{
 		String phone = employee.getPhone();
 		String email = employee.getEmail();
 		String password = employee.getPassword();
-		String department = employee.getDepartment();
-		String position = employee.getPosition();
+		String department = employee.getDepartment().name();
+		String position = employee.getPosition().name();
 		Warehouse warehouse = employee.getWarehouse();
 		
 		Connection con = DBConnection.getInstance().getConnection();
@@ -300,8 +306,8 @@ public class EmployeeDB implements EmployeeIF{
 							rs.getString("email"), 
 							rs.getString("password"), 
 							rs.getString("cpr_no"), 
-							rs.getString("department"), 
-							rs.getString("position"), 
+							DepartmentType.valueOf(rs.getString("department")), 
+							PositionType.valueOf(rs.getString("position")), 
 							null);
 	}
 }

@@ -10,7 +10,7 @@ public interface SupplierIF {
 		
 		Supplier getSupplierById(long id) throws SQLException;
 		
-		long createSupplier(Supplier supplier) throws SQLException;
+		Supplier createSupplier(Supplier supplier) throws SQLException;
 
 		void updateSupplier(Supplier supplier) throws SQLException;
 		

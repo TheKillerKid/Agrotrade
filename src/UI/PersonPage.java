@@ -6,6 +6,7 @@ import java.awt.EventQueue;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -20,33 +21,33 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.ArrayList;
 
 import Model.Model.Address;
 import Model.Model.Customer;
+import Model.Model.DepartmentType;
 import Model.Model.Employee;
 import Model.Model.LoginContainer;
 import Model.Model.MessagesEnum;
 import Model.Model.Person;
 import Model.Model.PersonPageType;
 import Model.Model.StockProduct;
+import Model.Model.PositionType;
 import Model.Model.Supplier;
-import Controller.CustomerController;
 import Controller.EmployeeController;
 import Controller.ParsingHelper;
 import Controller.PersonController;
-import Controller.SupplierController;
 
 public class PersonPage extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	JPanel panel = new JPanel();
 	JPanel buttonPane = new JPanel();
-	
+
+	private Person person = null;
+
 	private PersonController personCtrl = new PersonController();
 	private EmployeeController employeeCtrl = new EmployeeController();
-	
+
 	private JLabel messageLabel;
 	private JTextField cprNoField;
 	private JTextField firstNameField;
@@ -67,7 +68,12 @@ public class PersonPage extends JDialog {
 	private JButton btnGeneratePassword;
 	private JButton btnBack;
 	private JButton btnSave;
-	
+
+	private JComboBox<String> departmentComboBox;
+	private JComboBox<String> positionComboBox;
+
+	private DefaultComboBoxModel<String> departmentDefaultModel = new DefaultComboBoxModel<String>();
+	private DefaultComboBoxModel<String> positionDefaultModel = new DefaultComboBoxModel<String>();
 
 	public static void start(PersonPageType type, long personId) {
 		EventQueue.invokeLater(new Runnable() {
@@ -87,15 +93,16 @@ public class PersonPage extends JDialog {
 	 * Create the dialog.
 	 */
 	public PersonPage(PersonPageType type, long personId) {
+		loadComboBoxData();
 		setBounds(150, 150, 1280, 800);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		GridBagLayout gbl_contentPanel = new GridBagLayout();
-		gbl_contentPanel.columnWidths = new int[]{0, 90, 0, 0};
-		gbl_contentPanel.rowHeights = new int[]{0, 45, 0, 0};
-		gbl_contentPanel.columnWeights = new double[]{1.0, 0.0, 1.0, Double.MIN_VALUE};
-		gbl_contentPanel.rowWeights = new double[]{1.0, 0.0, 1.0, Double.MIN_VALUE};
+		gbl_contentPanel.columnWidths = new int[] { 0, 90, 0, 0 };
+		gbl_contentPanel.rowHeights = new int[] { 0, 45, 0, 0 };
+		gbl_contentPanel.columnWeights = new double[] { 1.0, 0.0, 1.0, Double.MIN_VALUE };
+		gbl_contentPanel.rowWeights = new double[] { 1.0, 0.0, 1.0, Double.MIN_VALUE };
 		contentPanel.setLayout(gbl_contentPanel);
 		{
 			GridBagConstraints gbc_panel = new GridBagConstraints();
@@ -105,13 +112,12 @@ public class PersonPage extends JDialog {
 			gbc_panel.gridy = 1;
 			contentPanel.add(panel, gbc_panel);
 			GridBagLayout gbl_panel = new GridBagLayout();
-			gbl_panel.columnWidths = new int[]{90, 300, 0};
-			gbl_panel.rowHeights = new int[]{45, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-			gbl_panel.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
-			gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+			gbl_panel.columnWidths = new int[] { 90, 300, 0 };
+			gbl_panel.rowHeights = new int[] { 45, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+			gbl_panel.columnWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
+			gbl_panel.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 			panel.setLayout(gbl_panel);
 		}
-		
 
 		GridBagConstraints gbc_panel = new GridBagConstraints();
 		gbc_panel.insets = new Insets(0, 0, 5, 5);
@@ -120,10 +126,10 @@ public class PersonPage extends JDialog {
 		gbc_panel.gridy = 1;
 		contentPanel.add(panel, gbc_panel);
 		GridBagLayout gbl_panel = new GridBagLayout();
-		gbl_panel.columnWidths = new int[]{90, 300, 0};
-		gbl_panel.rowHeights = new int[]{45, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-		gbl_panel.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
-		gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panel.columnWidths = new int[] { 90, 300, 0 };
+		gbl_panel.rowHeights = new int[] { 45, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+		gbl_panel.columnWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
+		gbl_panel.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		panel.setLayout(gbl_panel);
 		{
 			JLabel lblFirstName = new JLabel("First Name");
@@ -136,7 +142,7 @@ public class PersonPage extends JDialog {
 		}
 		{
 			firstNameField = new JTextField();
-			
+
 			GridBagConstraints gbc_firstNameField = new GridBagConstraints();
 			gbc_firstNameField.fill = GridBagConstraints.HORIZONTAL;
 			gbc_firstNameField.insets = new Insets(0, 0, 5, 0);
@@ -300,10 +306,10 @@ public class PersonPage extends JDialog {
 		{
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			GridBagLayout gbl_buttonPane = new GridBagLayout();
-			gbl_buttonPane.columnWidths = new int[]{107, 72, 325, 65, 87, 0};
-			gbl_buttonPane.rowHeights = new int[]{40, 0};
-			gbl_buttonPane.columnWeights = new double[]{1.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
-			gbl_buttonPane.rowWeights = new double[]{0.0, Double.MIN_VALUE};
+			gbl_buttonPane.columnWidths = new int[] { 107, 72, 325, 65, 87, 0 };
+			gbl_buttonPane.rowHeights = new int[] { 40, 0 };
+			gbl_buttonPane.columnWeights = new double[] { 1.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE };
+			gbl_buttonPane.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
 			buttonPane.setLayout(gbl_buttonPane);
 			{
 				btnBack = new JButton("Back");
@@ -323,92 +329,119 @@ public class PersonPage extends JDialog {
 				btnSave = new JButton("Save");
 				btnSave.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						if(type == PersonPageType.EMPLOYEE) {	
+						if (type == PersonPageType.EMPLOYEE) {
 							try {
-								Address address = new Address(0, streetField.getText(), 
-										streetNoField.getText(), 
+								Address address = new Address(-1, 
+										streetField.getText(), 
+										streetNoField.getText(),
 										cityField.getText(), 
-										positionField.getText(),
+										postalCodeField.getText(), 
 										countryField.getText());
 								
-								Employee employee = new Employee(0,
-										firstNameField.getText(),
+								DepartmentType departmentType = DepartmentType
+										.valueOf(String.valueOf(departmentComboBox.getSelectedItem()));
+								PositionType positionType = PositionType
+										.valueOf(String.valueOf(positionComboBox.getSelectedItem()));
+
+								Employee employee = new Employee(-1, 
+										firstNameField.getText(), 
 										lastNameField.getText(),
-										personCtrl.getDateOfBirth(cprNoField.getText()), //change to field
-										address,
+										personCtrl.getDateOfBirth(cprNoField.getText()), 
+										address, 
 										phoneField.getText(),
-										emailField.getText(),
-										passwordField.getText(),
+										emailField.getText(), 
+										passwordField.getText(), 
 										cprNoField.getText(),
-										departmentField.getText(),
-										positionField.getText(), 
+										departmentType, 
+										positionType,
 										LoginContainer.getInstance().getCurrentUser().getWarehouse());
-								personCtrl.createPerson(employee);
-							} catch(SQLException e1) {
+
+								person = personCtrl.createPerson(employee);
+
+								messageLabel.setText(MessagesEnum.EMPLOYEESAVED.text);
+								messageLabel.setForeground(Color.GREEN);
+							} catch (SQLException e1) {
 								messageLabel.setText(MessagesEnum.DBERROR.text);
+								messageLabel.setForeground(Color.RED);
 								e1.printStackTrace();
 								return;
-							} catch(NumberFormatException e2) {
+							} catch (NumberFormatException e2) {
 								messageLabel.setText(MessagesEnum.PARSEERROR.text);
+								messageLabel.setForeground(Color.RED);
 								e2.printStackTrace();
 								return;
-							} catch(Exception e3) {
+							} catch (Exception e3) {
 								messageLabel.setText(e3.getMessage());
+								messageLabel.setForeground(Color.RED);
+								e3.printStackTrace();
+								return;
 							}
 						}
-						if(type == PersonPageType.CUSTOMER) {
-							int staticDiscount;
+						if (type == PersonPageType.CUSTOMER) {
 							try {
-								staticDiscount = ParsingHelper.tryParseInt(staticDiscountField.getText());
-								Customer customer = new Customer(0,
-										firstNameField.getText(),
-										lastNameField.getText(), 
-										new Address(0, 
+								double staticDiscount = ParsingHelper.tryParseDouble(staticDiscountField.getText());
+								
+								Customer customer = new Customer(-1, 
+										firstNameField.getText(), 
+										lastNameField.getText(),
+										new Address(-1, 
 												streetField.getText(), 
-												streetNoField.getText(), 
+												streetNoField.getText(),
 												cityField.getText(), 
-												positionField.getText(),
+												postalCodeField.getText(), 
 												countryField.getText()),
-										phoneField.getText(),
-										emailField.getText(),
+										phoneField.getText(), 
+										emailField.getText(), 
 										cvrNoField.getText(),
 										staticDiscount);
-								personCtrl.createPerson(customer);
+								
+								person = personCtrl.createPerson(customer);
+								
+								messageLabel.setText(MessagesEnum.CUSTOMERSAVED.text);
+								messageLabel.setForeground(Color.GREEN);
 							} catch (NumberFormatException e1) {
-							    messageLabel.setText(MessagesEnum.PARSEERROR.text);
+								messageLabel.setText(MessagesEnum.PARSEERROR.text);
+								messageLabel.setForeground(Color.RED);
 								e1.printStackTrace();
-							    return;
+								return;
 							} catch (SQLException e2) {
-								messageLabel.setText("Something went wrong with database, please try again.");
+								messageLabel.setText(MessagesEnum.CUSTOMERSAVED.text);
+								messageLabel.setForeground(Color.RED);
 								e2.printStackTrace();
 								return;
-							}	
-						}
-						if(type == PersonPageType.SUPPLIER) {
-							try {
-								Supplier supplier = new Supplier(0,
-										firstNameField.getText(),
-										lastNameField.getText(), 
-										new Address(0, 
-												streetField.getText(), 
-												streetNoField.getText(), 
-												cityField.getText(), 
-												positionField.getText(),
-												countryField.getText()),
-										phoneField.getText(),
-										emailField.getText(),
-										cvrNoField.getText(),
-										companyNameField.getText());
-								personCtrl.createPerson(supplier);
-							} catch (SQLException e2) {
-								messageLabel.setText(MessagesEnum.PARSEERROR.text);
-								e2.printStackTrace();
-								return;	
 							}
 						}
-						
-						HomePage.start();
-						dispose();
+						if (type == PersonPageType.SUPPLIER) {
+							try {
+								Supplier supplier = new Supplier(-1, 
+										firstNameField.getText(), 
+										lastNameField.getText(),
+										new Address(-1, 
+												streetField.getText(), 
+												streetNoField.getText(),
+												cityField.getText(), 
+												postalCodeField.getText(), 
+												countryField.getText()),
+										phoneField.getText(), 
+										emailField.getText(), 
+										cvrNoField.getText(),
+										companyNameField.getText());
+								
+								person = personCtrl.createPerson(supplier);
+								
+								messageLabel.setText(MessagesEnum.SUPPLIERSAVED.text);
+								messageLabel.setForeground(Color.GREEN);
+							} catch (NumberFormatException e1) {
+								messageLabel.setText(MessagesEnum.PARSEERROR.text);
+								messageLabel.setForeground(Color.RED);
+								e1.printStackTrace();
+								return;
+							} catch (SQLException e2) {
+								messageLabel.setText(MessagesEnum.DBERROR.text);
+								e2.printStackTrace();
+								return;
+							}
+						}
 					}
 				});
 				GridBagConstraints gbc_btnSave = new GridBagConstraints();
@@ -418,8 +451,8 @@ public class PersonPage extends JDialog {
 				buttonPane.add(btnSave, gbc_btnSave);
 			}
 		}
-			
-		if(type == PersonPageType.EMPLOYEE) {
+
+		if (type == PersonPageType.EMPLOYEE) {
 			{
 				JLabel lblCreateEmployee = new JLabel("Create Employee");
 				GridBagConstraints gbc_lblCreateEmployee = new GridBagConstraints();
@@ -458,32 +491,31 @@ public class PersonPage extends JDialog {
 				panel.add(lblDepartment, gbc_lblDepartment);
 			}
 			{
-				departmentField = new JTextField();
-				GridBagConstraints gbc_departmentField = new GridBagConstraints();
-				gbc_departmentField.insets = new Insets(0, 0, 5, 0);
-				gbc_departmentField.fill = GridBagConstraints.HORIZONTAL;
-				gbc_departmentField.gridx = 1;
-				gbc_departmentField.gridy = 11;
-				panel.add(departmentField, gbc_departmentField);
-				departmentField.setColumns(10);
+				departmentComboBox = new JComboBox<String>(departmentDefaultModel);
+				GridBagConstraints gbc_departmentComboBox = new GridBagConstraints();
+				gbc_departmentComboBox.insets = new Insets(0, 0, 5, 0);
+				gbc_departmentComboBox.fill = GridBagConstraints.HORIZONTAL;
+				gbc_departmentComboBox.gridx = 1;
+				gbc_departmentComboBox.gridy = 11;
+				panel.add(departmentComboBox, gbc_departmentComboBox);
 			}
 			{
 				JLabel lblPosition = new JLabel("Position");
 				GridBagConstraints gbc_lblPosition = new GridBagConstraints();
 				gbc_lblPosition.anchor = GridBagConstraints.WEST;
-				gbc_lblPosition.insets = new Insets(0, 0, 0, 5);
+				gbc_lblPosition.insets = new Insets(0, 0, 5, 5);
 				gbc_lblPosition.gridx = 0;
 				gbc_lblPosition.gridy = 12;
 				panel.add(lblPosition, gbc_lblPosition);
 			}
 			{
-				positionField = new JTextField();
-				GridBagConstraints gbc_positionField = new GridBagConstraints();
-				gbc_positionField.fill = GridBagConstraints.HORIZONTAL;
-				gbc_positionField.gridx = 1;
-				gbc_positionField.gridy = 12;
-				panel.add(positionField, gbc_positionField);
-				positionField.setColumns(10);
+				positionComboBox = new JComboBox<String>(positionDefaultModel);
+				GridBagConstraints gbc_postionComboBox = new GridBagConstraints();
+				gbc_postionComboBox.insets = new Insets(0, 0, 5, 0);
+				gbc_postionComboBox.fill = GridBagConstraints.HORIZONTAL;
+				gbc_postionComboBox.gridx = 1;
+				gbc_postionComboBox.gridy = 12;
+				panel.add(positionComboBox, gbc_postionComboBox);
 			}
 			{
 				JLabel lblPassword = new JLabel("Password");
@@ -517,8 +549,8 @@ public class PersonPage extends JDialog {
 				panel.add(btnGeneratePassword, gbc_btnGeneratePassword);
 			}
 		}
-		
-		if(type == PersonPageType.SUPPLIER) {
+
+		if (type == PersonPageType.SUPPLIER) {
 			{
 				JLabel lblCreateCustomer = new JLabel("Create Supplier");
 				GridBagConstraints gbc_lblCreateCustomer = new GridBagConstraints();
@@ -547,7 +579,7 @@ public class PersonPage extends JDialog {
 				panel.add(cvrNoField, gbc_cvrNoField);
 				cvrNoField.setColumns(10);
 			}
-		{
+			{
 				JLabel lblCompanyName = new JLabel("Company Name");
 				GridBagConstraints gbc_lblCompanyName = new GridBagConstraints();
 				gbc_lblCompanyName.anchor = GridBagConstraints.WEST;
@@ -566,29 +598,10 @@ public class PersonPage extends JDialog {
 				panel.add(companyNameField, gbc_companyNameField);
 				companyNameField.setColumns(10);
 			}
-			{
-				JLabel lblstaticDiscount = new JLabel("static Discount");
-				GridBagConstraints gbc_lblstaticDiscount = new GridBagConstraints();
-				gbc_lblstaticDiscount.anchor = GridBagConstraints.WEST;
-				gbc_lblstaticDiscount.insets = new Insets(0, 0, 5, 5);
-				gbc_lblstaticDiscount.gridx = 0;
-				gbc_lblstaticDiscount.gridy = 12;
-				panel.add(lblstaticDiscount, gbc_lblstaticDiscount);
-			}
-			{
-				staticDiscountField = new JTextField();
-				GridBagConstraints gbc_staticDiscountField = new GridBagConstraints();
-				gbc_staticDiscountField.insets = new Insets(0, 0, 5, 0);
-				gbc_staticDiscountField.fill = GridBagConstraints.HORIZONTAL;
-				gbc_staticDiscountField.gridx = 1;
-				gbc_staticDiscountField.gridy = 12;
-				panel.add(staticDiscountField, gbc_staticDiscountField);
-				staticDiscountField.setColumns(10);
-			}
-			}
-			
-		if(type == PersonPageType.CUSTOMER) {
-			
+		}
+
+		if (type == PersonPageType.CUSTOMER) {
+
 			{
 				JLabel lblCreateCustomer = new JLabel("Create Customer");
 				GridBagConstraints gbc_lblCreateCustomer = new GridBagConstraints();
@@ -598,7 +611,6 @@ public class PersonPage extends JDialog {
 				panel.add(lblCreateCustomer, gbc_lblCreateCustomer);
 				lblCreateCustomer.setFont(new Font("Tahoma", Font.BOLD, 14));
 			}
-			
 			{
 				JLabel lblCvrNo = new JLabel("CVR No");
 				GridBagConstraints gbc_lblCvrNo = new GridBagConstraints();
@@ -617,6 +629,24 @@ public class PersonPage extends JDialog {
 				panel.add(cvrNoField, gbc_cvrNoField);
 				cvrNoField.setColumns(10);
 			}
+			{
+				JLabel lblStaticDiscount = new JLabel("Static discount");
+				GridBagConstraints gbc_lblStaticDiscount = new GridBagConstraints();
+				gbc_lblStaticDiscount.anchor = GridBagConstraints.WEST;
+				gbc_lblStaticDiscount.insets = new Insets(0, 0, 0, 5);
+				gbc_lblStaticDiscount.gridx = 0;
+				gbc_lblStaticDiscount.gridy = 11;
+				panel.add(lblStaticDiscount, gbc_lblStaticDiscount);
+			}
+			{
+				staticDiscountField = new JTextField();
+				GridBagConstraints gbc_staticDiscountField = new GridBagConstraints();
+				gbc_staticDiscountField.fill = GridBagConstraints.HORIZONTAL;
+				gbc_staticDiscountField.gridx = 1;
+				gbc_staticDiscountField.gridy = 11;
+				panel.add(staticDiscountField, gbc_staticDiscountField);
+				staticDiscountField.setColumns(10);
+			}
 		}
 		messageLabel = new JLabel("");
 		messageLabel.setForeground(Color.RED);
@@ -625,7 +655,23 @@ public class PersonPage extends JDialog {
 		gbc_messageLabel.gridx = 1;
 		gbc_messageLabel.gridy = 4;
 		contentPanel.add(messageLabel, gbc_messageLabel);
-				
+	}
+
+	public void loadComboBoxData() {
+		for (DepartmentType type : DepartmentType.values()) {
+			departmentDefaultModel.addElement(type.name());
+		}
+		messageLabel = new JLabel("");
+		messageLabel.setForeground(Color.RED);
+		GridBagConstraints gbc_messageLabel = new GridBagConstraints();
+		gbc_messageLabel.anchor = GridBagConstraints.WEST;
+		gbc_messageLabel.gridx = 1;
+		gbc_messageLabel.gridy = 4;
+		contentPanel.add(messageLabel, gbc_messageLabel);
+
+		for (PositionType type : PositionType.values()) {
+			positionDefaultModel.addElement(type.name());
+		}
 	}
 	
 	public void loadData(PersonPageType type, long id) throws SQLException {
@@ -640,13 +686,13 @@ public class PersonPage extends JDialog {
 				Supplier supplier = personCtrl.getSupplierById(id);
 				person = supplier;
 			}
-			
+
 			if(type == PersonPageType.CUSTOMER) {
 			}
-			
+
 			if(type == PersonPageType.SUPPLIER) {
 			}
-			
+
 			firstNameField.setText(person.getFirstName());
 
 		} catch (SQLException e) {
@@ -654,5 +700,3 @@ public class PersonPage extends JDialog {
 		}
 	}
 }
-			
-

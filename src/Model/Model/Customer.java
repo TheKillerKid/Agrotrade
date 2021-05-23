@@ -2,10 +2,10 @@ package Model.Model;
 
 public class Customer extends Person {
 	private String cvrNo;
-	private int staticDiscount;
+	private double staticDiscount;
 	
 	public Customer(long id, String firstName, String lastName, Address address, String phone, String email, String cvrNo,
-			int staticDiscount) {
+			double staticDiscount) {
 		super(id, firstName, lastName, address, phone, email);
 		this.cvrNo = cvrNo;
 		this.staticDiscount = staticDiscount;
@@ -19,11 +19,11 @@ public class Customer extends Person {
 		this.cvrNo = cvrNo;
 	}
 
-	public int getStaticDiscount() {
+	public double getStaticDiscount() {
 		return staticDiscount;
 	}
 
-	public void setStaticDiscount(int staticDiscount) {
+	public void setStaticDiscount(double staticDiscount) {
 		this.staticDiscount = staticDiscount;
 	}
 }
