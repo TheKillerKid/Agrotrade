@@ -7,12 +7,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import Model.DBIF.StockProductIF;
+import Model.Model.PriceType;
+import Model.Model.Product;
 import Model.Model.StockProduct;
 import Model.Model.Warehouse;
 
-public class StockProductDB implements StockProductIF{
-	
-	private WarehouseDB warehouseDb = new WarehouseDB();
+public class StockProductDB implements StockProductIF {
 	private ProductDB productDb = new ProductDB();
 
 	@Override
@@ -31,7 +31,7 @@ public class StockProductDB implements StockProductIF{
 		
 		Connection con = DBConnection.getInstance().getConnection();
 
-    try {
+		try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlWarehouse);
 			
 			if(warehouseId != 0) {
@@ -50,6 +50,31 @@ public class StockProductDB implements StockProductIF{
 			throw e;
 		}
 		return stockProducts;
+	}
+	
+	public StockProduct getStockProduct(long id) throws SQLException {
+		StockProduct stockProduct = null;
+		String sqlProduct = "SELECT * FROM StockProduct WHERE id = ?";
+		
+		
+		Connection con = DBConnection.getInstance().getConnection();
+
+		try {
+				PreparedStatement preparedStmt = con.prepareStatement(sqlProduct);
+				preparedStmt.setLong(1, id);
+
+				ResultSet rsStockProduct = preparedStmt.executeQuery();
+
+				if (rsStockProduct.next()) {
+					Product product = productDb.getProductById(rsStockProduct.getLong("product_id"));
+					stockProduct = buildStockProduct(rsStockProduct);
+					stockProduct.setProduct(product);
+				}
+		} catch (SQLException e) {
+			throw e;
+		}
+
+		return stockProduct;
 	}
 	
 	private StockProduct buildStockProduct(ResultSet rsStockProduct) throws SQLException {

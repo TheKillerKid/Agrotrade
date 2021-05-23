@@ -8,5 +8,5 @@ import Model.Model.StockProduct;
 public interface StockProductIF {
 	
 	ArrayList<StockProduct> getStockProducts(long warehouseId) throws SQLException;
-
+	StockProduct getStockProduct(long id) throws SQLException;
 }
