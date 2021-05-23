@@ -66,7 +66,7 @@ public class PersonController {
 			}
 			
 			if (person instanceof Customer) {
-				return null;
+				return this.customerCtrl.createCustomer((Customer)person);
 			}
 			
 			if (person instanceof Supplier) {

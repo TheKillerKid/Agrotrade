@@ -35,8 +35,6 @@ public class EmployeeController {
 		}
 	}
 	
-	//update, delete and build object
-	
 	public String generateRandomPassword() {
 		int len = 10;
         int randNumOrigin = 48;

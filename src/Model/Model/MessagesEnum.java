@@ -8,7 +8,8 @@ public enum MessagesEnum {
 	DBSAVEERROR("Creating object failed, no ID obtained. Contact administrator and try it later."),
 	//SUCCESS
 	PRODUCTSAVED("Product saved! You can go and create purchase to fill your warehouse."),
-	EMPLOYEESAVED("Employee saved!")
+	EMPLOYEESAVED("Employee saved!"),
+	CUSTOMERSAVED("Customer saved!")
 	;
 	
 	public final String text;
