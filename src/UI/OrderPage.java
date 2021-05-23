@@ -9,6 +9,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -23,27 +24,47 @@ import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
 
 import Model.Model.StockProduct;
+import Model.Model.Supplier;
 
 import javax.swing.border.EtchedBorder;
 import java.awt.Color;
 import javax.swing.JList;
 
 import Controller.OrderController;
+import Controller.ParsingHelper;
 import Model.Model.LoginContainer;
+import Model.Model.Order;
+import Model.Model.OrderLine;
+
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
+import java.awt.ScrollPane;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class OrderPage extends JDialog {
 	private OrderController orderCtrl = new OrderController();
 	
 	private final JPanel contentPanel = new JPanel();
-	private JTextField customerCVRLbl;
-	private JTextField textField_2;
-	private JTextField textField_3;
+	private ScrollPane scrollPane = new ScrollPane();
+	private JTextField customerCvrNoField;
+	private JTextField quantityField;
+	private JTextField noteField;
+	JComboBox<String> stockProductsComboBox;
+	private JLabel onStockValue;
 	
 	private ArrayList<StockProduct> stockProducts = new ArrayList<StockProduct>();
 	
 	private DefaultComboBoxModel<String> stockProductsDefaultModel = new DefaultComboBoxModel<String>();
+	
+	private StockProduct selectedStockProduct = null;
+	private ArrayList<OrderLine> orderLines = new ArrayList<OrderLine>();
+	private Order order = null;
+	
+	private Object[][] ols = new Object[0][];
 	
 	public static void start() {
 		EventQueue.invokeLater(new Runnable() {
@@ -60,25 +81,9 @@ public class OrderPage extends JDialog {
 	}
 
 	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			OrderPage dialog = new OrderPage();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			throw e;
-		}
-	}
-
-	/**
 	 * Create the dialog.
 	 */
 	public OrderPage() {
-		
-		//loaddata method
-		
 		setBounds(150, 150, 1280, 800);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -90,35 +95,33 @@ public class OrderPage extends JDialog {
 		gbl_contentPanel.rowWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 		contentPanel.setLayout(gbl_contentPanel);
 		{
-			JLabel lblNewLabel = new JLabel("Create Order");
-			lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
-			GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
-			gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
-			gbc_lblNewLabel.gridx = 2;
-			gbc_lblNewLabel.gridy = 1;
-			contentPanel.add(lblNewLabel, gbc_lblNewLabel);
+			JLabel title = new JLabel("Create Order");
+			title.setFont(new Font("Tahoma", Font.BOLD, 14));
+			GridBagConstraints gbc_title = new GridBagConstraints();
+			gbc_title.insets = new Insets(0, 0, 5, 5);
+			gbc_title.gridx = 2;
+			gbc_title.gridy = 1;
+			contentPanel.add(title, gbc_title);
 		}
 		{
-			JLabel lblNewLabel_1 = new JLabel("Customer CVR");
-			GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
-			gbc_lblNewLabel_1.anchor = GridBagConstraints.WEST;
-			gbc_lblNewLabel_1.insets = new Insets(0, 0, 5, 5);
-			gbc_lblNewLabel_1.gridx = 1;
-			gbc_lblNewLabel_1.gridy = 2;
-			contentPanel.add(lblNewLabel_1, gbc_lblNewLabel_1);
+			JLabel customerCvrNoLbl = new JLabel("Customer CVR");
+			GridBagConstraints gbc_customerCvrNoLbl = new GridBagConstraints();
+			gbc_customerCvrNoLbl.anchor = GridBagConstraints.WEST;
+			gbc_customerCvrNoLbl.insets = new Insets(0, 0, 5, 5);
+			gbc_customerCvrNoLbl.gridx = 1;
+			gbc_customerCvrNoLbl.gridy = 2;
+			contentPanel.add(customerCvrNoLbl, gbc_customerCvrNoLbl);
 		}
 		{
-			customerCVRLbl = new JTextField();
-			GridBagConstraints gbc_customerCVRLbl = new GridBagConstraints();
-			gbc_customerCVRLbl.insets = new Insets(0, 0, 5, 5);
-			gbc_customerCVRLbl.fill = GridBagConstraints.HORIZONTAL;
-			gbc_customerCVRLbl.gridx = 2;
-			gbc_customerCVRLbl.gridy = 2;
-			contentPanel.add(customerCVRLbl, gbc_customerCVRLbl);
-			customerCVRLbl.setColumns(10);
+			customerCvrNoField = new JTextField();
+			GridBagConstraints gbc_customerCvrNoField = new GridBagConstraints();
+			gbc_customerCvrNoField.insets = new Insets(0, 0, 5, 5);
+			gbc_customerCvrNoField.fill = GridBagConstraints.HORIZONTAL;
+			gbc_customerCvrNoField.gridx = 2;
+			gbc_customerCvrNoField.gridy = 2;
+			contentPanel.add(customerCvrNoField, gbc_customerCvrNoField);
+			customerCvrNoField.setColumns(10);
 		}
-		
-		
 		{
 			JButton checkNameBtn = new JButton("Check");
 			checkNameBtn.addActionListener(new ActionListener() {
@@ -135,26 +138,24 @@ public class OrderPage extends JDialog {
 			contentPanel.add(checkNameBtn, gbc_checkNameBtn);
 		}
 		{
-			JLabel lblNewLabel_2 = new JLabel("Customer Name");
-			GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
-			gbc_lblNewLabel_2.anchor = GridBagConstraints.WEST;
-			gbc_lblNewLabel_2.insets = new Insets(0, 0, 5, 5);
-			gbc_lblNewLabel_2.gridx = 1;
-			gbc_lblNewLabel_2.gridy = 3;
-			contentPanel.add(lblNewLabel_2, gbc_lblNewLabel_2);
-		}
-		{
-			String customerName = null;
-			JLabel customerNameLbl = new JLabel(customerName);
-		
-			//customerName
-			
+			JLabel customerNameLbl = new JLabel("Customer Name");
 			GridBagConstraints gbc_customerNameLbl = new GridBagConstraints();
 			gbc_customerNameLbl.anchor = GridBagConstraints.WEST;
 			gbc_customerNameLbl.insets = new Insets(0, 0, 5, 5);
-			gbc_customerNameLbl.gridx = 2;
+			gbc_customerNameLbl.gridx = 1;
 			gbc_customerNameLbl.gridy = 3;
 			contentPanel.add(customerNameLbl, gbc_customerNameLbl);
+		}
+		{
+			String customerName = null;
+			JLabel customerNameValue = new JLabel(customerName);
+			
+			GridBagConstraints gbc_customerNameValue = new GridBagConstraints();
+			gbc_customerNameValue.anchor = GridBagConstraints.WEST;
+			gbc_customerNameValue.insets = new Insets(0, 0, 5, 5);
+			gbc_customerNameValue.gridx = 2;
+			gbc_customerNameValue.gridy = 3;
+			contentPanel.add(customerNameValue, gbc_customerNameValue);
 		}
 		{
 			JPanel panel = new JPanel();
@@ -173,17 +174,22 @@ public class OrderPage extends JDialog {
 			gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
 			panel.setLayout(gbl_panel);
 			{
-				JLabel lblNewLabel_4 = new JLabel("Select Product");
-				GridBagConstraints gbc_lblNewLabel_4 = new GridBagConstraints();
-				gbc_lblNewLabel_4.anchor = GridBagConstraints.WEST;
-				gbc_lblNewLabel_4.insets = new Insets(0, 0, 5, 5);
-				gbc_lblNewLabel_4.gridx = 0;
-				gbc_lblNewLabel_4.gridy = 0;
-				panel.add(lblNewLabel_4, gbc_lblNewLabel_4);
+				JLabel selectedProductLbl = new JLabel("Select Product");
+				GridBagConstraints gbc_selectedProductLbl = new GridBagConstraints();
+				gbc_selectedProductLbl.anchor = GridBagConstraints.WEST;
+				gbc_selectedProductLbl.insets = new Insets(0, 0, 5, 5);
+				gbc_selectedProductLbl.gridx = 0;
+				gbc_selectedProductLbl.gridy = 0;
+				panel.add(selectedProductLbl, gbc_selectedProductLbl);
 			}
 			{
 
-				JComboBox<String> stockProductsComboBox = new JComboBox<String>(stockProductsDefaultModel);
+				stockProductsComboBox = new JComboBox<String>(stockProductsDefaultModel);
+				stockProductsComboBox.addItemListener(new ItemListener() {
+					public void itemStateChanged(ItemEvent e) {
+						getCurrentStock();
+					}
+				});
 				GridBagConstraints gbc_comboBox = new GridBagConstraints();
 				gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
 				gbc_comboBox.insets = new Insets(0, 0, 5, 5);
@@ -192,44 +198,69 @@ public class OrderPage extends JDialog {
 				panel.add(stockProductsComboBox, gbc_comboBox);
 			}
 			{
-				JLabel lblNewLabel_5 = new JLabel("On Stock");
-				GridBagConstraints gbc_lblNewLabel_5 = new GridBagConstraints();
-				gbc_lblNewLabel_5.anchor = GridBagConstraints.WEST;
-				gbc_lblNewLabel_5.insets = new Insets(0, 0, 5, 5);
-				gbc_lblNewLabel_5.gridx = 0;
-				gbc_lblNewLabel_5.gridy = 1;
-				panel.add(lblNewLabel_5, gbc_lblNewLabel_5);
+				JLabel onStockLbl = new JLabel("On Stock");
+				GridBagConstraints gbc_onStockLbl = new GridBagConstraints();
+				gbc_onStockLbl.anchor = GridBagConstraints.WEST;
+				gbc_onStockLbl.insets = new Insets(0, 0, 5, 5);
+				gbc_onStockLbl.gridx = 0;
+				gbc_onStockLbl.gridy = 1;
+				panel.add(onStockLbl, gbc_onStockLbl);
 			}
 			{
-				JLabel lblNewLabel_3 = new JLabel("New label");
-				GridBagConstraints gbc_lblNewLabel_3 = new GridBagConstraints();
-				gbc_lblNewLabel_3.anchor = GridBagConstraints.WEST;
-				gbc_lblNewLabel_3.insets = new Insets(0, 0, 5, 5);
-				gbc_lblNewLabel_3.gridx = 1;
-				gbc_lblNewLabel_3.gridy = 1;
-				panel.add(lblNewLabel_3, gbc_lblNewLabel_3);
+				onStockValue = new JLabel("");
+				GridBagConstraints gbc_onStockValue = new GridBagConstraints();
+				gbc_onStockValue.anchor = GridBagConstraints.WEST;
+				gbc_onStockValue.insets = new Insets(0, 0, 5, 5);
+				gbc_onStockValue.gridx = 1;
+				gbc_onStockValue.gridy = 1;
+				panel.add(onStockValue, gbc_onStockValue);
 			}
 			{
-				JLabel lblNewLabel_5 = new JLabel("Quantity");
-				GridBagConstraints gbc_lblNewLabel_5 = new GridBagConstraints();
-				gbc_lblNewLabel_5.anchor = GridBagConstraints.WEST;
-				gbc_lblNewLabel_5.insets = new Insets(0, 0, 0, 5);
-				gbc_lblNewLabel_5.gridx = 0;
-				gbc_lblNewLabel_5.gridy = 2;
-				panel.add(lblNewLabel_5, gbc_lblNewLabel_5);
+				JLabel quantityLbl = new JLabel("Quantity");
+				GridBagConstraints gbc_quantityLbl = new GridBagConstraints();
+				gbc_quantityLbl.anchor = GridBagConstraints.WEST;
+				gbc_quantityLbl.insets = new Insets(0, 0, 0, 5);
+				gbc_quantityLbl.gridx = 0;
+				gbc_quantityLbl.gridy = 2;
+				panel.add(quantityLbl, gbc_quantityLbl);
 			}
 			{
-				textField_2 = new JTextField();
-				GridBagConstraints gbc_textField_2 = new GridBagConstraints();
-				gbc_textField_2.fill = GridBagConstraints.HORIZONTAL;
-				gbc_textField_2.insets = new Insets(0, 0, 0, 5);
-				gbc_textField_2.gridx = 1;
-				gbc_textField_2.gridy = 2;
-				panel.add(textField_2, gbc_textField_2);
-				textField_2.setColumns(10);
+				quantityField = new JTextField();
+				GridBagConstraints gbc_quantityField = new GridBagConstraints();
+				gbc_quantityField.fill = GridBagConstraints.HORIZONTAL;
+				gbc_quantityField.insets = new Insets(0, 0, 0, 5);
+				gbc_quantityField.gridx = 1;
+				gbc_quantityField.gridy = 2;
+				panel.add(quantityField, gbc_quantityField);
+				quantityField.setColumns(10);
 			}
 			{
 				JButton btnAdd = new JButton("Add");
+				btnAdd.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						int requestedAmount = ParsingHelper.tryParseInt(quantityField.getText());
+						int amount = requestedAmount > selectedStockProduct.getAmount() ? selectedStockProduct.getAmount() : requestedAmount;
+						orderLines.add(new OrderLine(-1, requestedAmount, amount, selectedStockProduct));
+						ols = new Object[orderLines.size()][];
+						
+						for(int i = 0; i < orderLines.size(); i++) {
+							OrderLine ol = orderLines.get(i);
+							Object [] newData = {
+								ol.getStockProduct().getProduct().getBarcode(),
+								ol.getStockProduct().getProduct().getName(),
+								Integer.toString(ol.getAmount()),
+								Integer.toString(ol.getStockProduct().getAmount()),
+							};
+
+							ols[i] = newData;
+						}
+						
+						quantityField.setText("");
+						
+						scrollPane.revalidate();
+						scrollPane.repaint();
+					}
+				});
 				GridBagConstraints gbc_btnAdd = new GridBagConstraints();
 				gbc_btnAdd.gridx = 2;
 				gbc_btnAdd.gridy = 2;
@@ -237,32 +268,35 @@ public class OrderPage extends JDialog {
 			}
 		}
 		{
+			Object[][] data = new Object[0][];
+			String columns[]={"Barcode", "Name", "On stock", "Quantity"};
+			DefaultTableModel model = new DefaultTableModel(data, columns);
+			JTable table = new JTable( model );
+			
+			GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+			gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
+			gbc_scrollPane.gridx = 2;
+			gbc_scrollPane.gridy = 5;
+			contentPanel.add(scrollPane, gbc_scrollPane);
+		}
+		{
 			JLabel lblNewLabel_3 = new JLabel("Note");
 			GridBagConstraints gbc_lblNewLabel_3 = new GridBagConstraints();
 			gbc_lblNewLabel_3.anchor = GridBagConstraints.WEST;
 			gbc_lblNewLabel_3.insets = new Insets(0, 0, 5, 5);
 			gbc_lblNewLabel_3.gridx = 1;
-			gbc_lblNewLabel_3.gridy = 5;
+			gbc_lblNewLabel_3.gridy = 6;
 			contentPanel.add(lblNewLabel_3, gbc_lblNewLabel_3);
 		}
 		{
-			textField_3 = new JTextField();
-			textField_3.setColumns(10);
-			GridBagConstraints gbc_textField_3 = new GridBagConstraints();
-			gbc_textField_3.insets = new Insets(0, 0, 5, 5);
-			gbc_textField_3.fill = GridBagConstraints.HORIZONTAL;
-			gbc_textField_3.gridx = 2;
-			gbc_textField_3.gridy = 5;
-			contentPanel.add(textField_3, gbc_textField_3);
-		}
-		{
-			JLabel lblNewLabel_6 = new JLabel("Current Order");
-			GridBagConstraints gbc_lblNewLabel_6 = new GridBagConstraints();
-			gbc_lblNewLabel_6.anchor = GridBagConstraints.WEST;
-			gbc_lblNewLabel_6.insets = new Insets(0, 0, 5, 5);
-			gbc_lblNewLabel_6.gridx = 1;
-			gbc_lblNewLabel_6.gridy = 6;
-			contentPanel.add(lblNewLabel_6, gbc_lblNewLabel_6);
+			noteField = new JTextField();
+			noteField.setColumns(10);
+			GridBagConstraints gbc_noteField = new GridBagConstraints();
+			gbc_noteField.insets = new Insets(0, 0, 5, 5);
+			gbc_noteField.fill = GridBagConstraints.HORIZONTAL;
+			gbc_noteField.gridx = 2;
+			gbc_noteField.gridy = 6;
+			contentPanel.add(noteField, gbc_noteField);
 		}
 		{
 			JPanel buttonPane = new JPanel();
@@ -288,7 +322,7 @@ public class OrderPage extends JDialog {
 				});
 			}
 			{
-				JButton saveBtn = new JButton("Regitster Order");
+				JButton saveBtn = new JButton("Save");
 				GridBagConstraints gbc_saveBtn = new GridBagConstraints();
 				gbc_saveBtn.anchor = GridBagConstraints.WEST;
 				gbc_saveBtn.insets = new Insets(0, 0, 0, 5);
@@ -297,6 +331,8 @@ public class OrderPage extends JDialog {
 				buttonPane.add(saveBtn, gbc_saveBtn);
 			}
 		}
+		
+		getCurrentStock();
 		
 		try {
 			loadData();
@@ -316,4 +352,14 @@ public class OrderPage extends JDialog {
 		}
 	}
 	
+	private void getCurrentStock() {
+		if(stockProductsComboBox.getSelectedItem() != null) {
+			String stringCurrentStock = String.valueOf(stockProductsComboBox.getSelectedItem()).substring(0,12);
+			selectedStockProduct = stockProducts.stream()
+										 .filter(sp -> stringCurrentStock.equals(sp.getProduct().getBarcode()))
+										 .findAny()
+										 .orElse(null);
+			onStockValue.setText(String.valueOf(selectedStockProduct.getAmount()));
+		}
+	}
 }

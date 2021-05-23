@@ -31,14 +31,16 @@ public class SaleDB implements SaleIF {
 			preparedStmt.setObject(1, java.sql.Date.valueOf(shippingDate));
 			preparedStmt.setObject(2, java.sql.Date.valueOf(deliveryDate));
 			preparedStmt.setLong(3, customerId);
+			
 			long saleId= preparedStmt.executeUpdate();
+			
 			sale.setId(saleId); 
 			sale.setOrderId(orderDb.createOrder(sale));
 			
 			ArrayList<OrderLine> ols = new ArrayList<OrderLine>(); 
 			
 			for (OrderLine ol : sale.getOrderLines()) {
-				ol.setId(ordeLineDb.createOrderLine(ol));
+				ol.setId(ordeLineDb.createOrderLine(ol, sale.getOrderId()));
 				ols.add(ol);
 			}
 			sale.setOrderLines(ols);
