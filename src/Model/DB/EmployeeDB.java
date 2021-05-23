@@ -78,7 +78,33 @@ public class EmployeeDB implements EmployeeIF{
 		
 		return res;
 	}
+	
+	@Override
+	public Employee getEmployeeById(long id) throws SQLException {
+		Employee res = null;
 
+		String sqlEmployee = ("SELECT * FROM Employee WHERE id = ?" );
+
+		Connection con = DBConnection.getInstance().getConnection();
+		
+		try {
+			PreparedStatement preparedStmt = con.prepareStatement(sqlEmployee);
+				
+			preparedStmt.setLong(1, id);
+				
+			ResultSet rsEmployee = preparedStmt.executeQuery();
+			
+			if(rsEmployee.next()) {
+				res = buildEmployee(rsEmployee);	
+				res.setWarehouse(warehouseDb.getWarehouse(rsEmployee.getInt("warehouse_id")));			
+				res.setAddress(addressDb.getAddress(rsEmployee.getInt("address_id")));
+			}
+		} catch (SQLException e) {
+			throw e;
+		}
+		
+		return res;
+	}
 	
 	@Override
 	public Employee createEmployee(Employee employee) throws SQLException {

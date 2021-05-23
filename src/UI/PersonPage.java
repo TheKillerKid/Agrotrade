@@ -30,7 +30,6 @@ import Model.Model.LoginContainer;
 import Model.Model.MessagesEnum;
 import Model.Model.Person;
 import Model.Model.PersonPageType;
-import Model.Model.StockProduct;
 import Model.Model.PositionType;
 import Model.Model.Supplier;
 import Controller.EmployeeController;
@@ -42,12 +41,12 @@ public class PersonPage extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	JPanel panel = new JPanel();
 	JPanel buttonPane = new JPanel();
-
-	private Person person = null;
+	Person person = null;
 
 	private PersonController personCtrl = new PersonController();
 	private EmployeeController employeeCtrl = new EmployeeController();
 
+	private JLabel headingLabel = new JLabel();
 	private JLabel messageLabel;
 	private JTextField cprNoField;
 	private JTextField firstNameField;
@@ -60,8 +59,6 @@ public class PersonPage extends JDialog {
 	private JTextField streetNoField;
 	private JTextField postalCodeField;
 	private JTextField countryField;
-	private JTextField departmentField;
-	private JTextField positionField;
 	private JTextField cvrNoField;
 	private JTextField companyNameField;
 	private JTextField staticDiscountField;
@@ -93,7 +90,8 @@ public class PersonPage extends JDialog {
 	 * Create the dialog.
 	 */
 	public PersonPage(PersonPageType type, long personId) {
-		loadComboBoxData();
+		loadComboBoxData();		
+
 		setBounds(150, 150, 1280, 800);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -454,13 +452,13 @@ public class PersonPage extends JDialog {
 
 		if (type == PersonPageType.EMPLOYEE) {
 			{
-				JLabel lblCreateEmployee = new JLabel("Create Employee");
+				headingLabel.setText("Create employee");
 				GridBagConstraints gbc_lblCreateEmployee = new GridBagConstraints();
 				gbc_lblCreateEmployee.insets = new Insets(0, 0, 5, 0);
 				gbc_lblCreateEmployee.gridx = 1;
 				gbc_lblCreateEmployee.gridy = 0;
-				panel.add(lblCreateEmployee, gbc_lblCreateEmployee);
-				lblCreateEmployee.setFont(new Font("Tahoma", Font.BOLD, 14));
+				panel.add(headingLabel, gbc_lblCreateEmployee);
+				headingLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
 			}
 			{
 				JLabel lblCprNo = new JLabel("CPR No");
@@ -552,13 +550,13 @@ public class PersonPage extends JDialog {
 
 		if (type == PersonPageType.SUPPLIER) {
 			{
-				JLabel lblCreateCustomer = new JLabel("Create Supplier");
+				headingLabel.setText("Create Supplier");
 				GridBagConstraints gbc_lblCreateCustomer = new GridBagConstraints();
 				gbc_lblCreateCustomer.insets = new Insets(0, 0, 5, 0);
 				gbc_lblCreateCustomer.gridx = 1;
 				gbc_lblCreateCustomer.gridy = 0;
-				panel.add(lblCreateCustomer, gbc_lblCreateCustomer);
-				lblCreateCustomer.setFont(new Font("Tahoma", Font.BOLD, 14));
+				panel.add(headingLabel, gbc_lblCreateCustomer);
+				headingLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
 			}
 			{
 				JLabel lblCvrNo = new JLabel("CVR No");
@@ -603,13 +601,13 @@ public class PersonPage extends JDialog {
 		if (type == PersonPageType.CUSTOMER) {
 
 			{
-				JLabel lblCreateCustomer = new JLabel("Create Customer");
+				headingLabel.setText("Create Customer");
 				GridBagConstraints gbc_lblCreateCustomer = new GridBagConstraints();
 				gbc_lblCreateCustomer.insets = new Insets(0, 0, 5, 0);
 				gbc_lblCreateCustomer.gridx = 1;
 				gbc_lblCreateCustomer.gridy = 0;
-				panel.add(lblCreateCustomer, gbc_lblCreateCustomer);
-				lblCreateCustomer.setFont(new Font("Tahoma", Font.BOLD, 14));
+				panel.add(headingLabel, gbc_lblCreateCustomer);
+				headingLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
 			}
 			{
 				JLabel lblCvrNo = new JLabel("CVR No");
@@ -655,6 +653,14 @@ public class PersonPage extends JDialog {
 		gbc_messageLabel.gridx = 1;
 		gbc_messageLabel.gridy = 4;
 		contentPanel.add(messageLabel, gbc_messageLabel);
+		
+		try {
+			if (personId != -1) {				
+				loadData(type, personId);
+			}
+		} catch (SQLException e4) {
+			e4.printStackTrace();
+		}
 	}
 
 	public void loadComboBoxData() {
@@ -676,27 +682,44 @@ public class PersonPage extends JDialog {
 	
 	public void loadData(PersonPageType type, long id) throws SQLException {
 		try {
-			Person person = null;
-
-			/*
-			firstNameField;
-			lastNameField;
-			*/
+			
 			if(type == PersonPageType.EMPLOYEE) {
+				headingLabel.setText("Edit employee");
+				Employee employee = personCtrl.getEmployeeById(id);
+				cprNoField.setText(employee.getCprNo());
+				departmentComboBox.getModel().setSelectedItem(employee.getDepartment());;
+				positionComboBox.getModel().setSelectedItem(employee.getPosition());
+				person = employee;
+			}
+		
+			if(type == PersonPageType.CUSTOMER) {
+				headingLabel.setText("Edit customer");
+				Customer customer = personCtrl.getCustomerById(id);
+				cvrNoField.setText(customer.getCvrNo());
+				staticDiscountField.setText(Double.toString(customer.getStaticDiscount()));
+				person = customer;
+			}
+		
+			if(type == PersonPageType.SUPPLIER) {
+				headingLabel.setText("Edit supplier");
 				Supplier supplier = personCtrl.getSupplierById(id);
+				cvrNoField.setText(supplier.getCvrNo());
+				companyNameField.setText(supplier.getSupplierName());
+				
 				person = supplier;
 			}
-
-			if(type == PersonPageType.CUSTOMER) {
-			}
-
-			if(type == PersonPageType.SUPPLIER) {
-			}
-
+			
 			firstNameField.setText(person.getFirstName());
-
-		} catch (SQLException e) {
-			throw e;
+			lastNameField.setText(person.getLastName());
+			cityField.setText(person.getAddress().getCity());
+			streetField.setText(person.getAddress().getStreet());
+			streetNoField.setText(person.getAddress().getStreetNo());
+			postalCodeField.setText(person.getAddress().getPostalCode());
+			countryField.setText(person.getAddress().getCountry());
+			emailField.setText(person.getEmail());
+			phoneField.setText(person.getPhone());
+		} catch (SQLException e5) {
+			e5.printStackTrace();
 		}
 	}
 }

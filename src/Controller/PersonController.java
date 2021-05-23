@@ -33,9 +33,25 @@ public class PersonController {
 		}
 	}
 	
+	public Employee getEmployeeById(long id) throws SQLException {
+		try {
+			return employeeCtrl.getEmployeeById(id);
+		} catch (SQLException e) {
+			throw e;
+		}
+	}
+	
 	public Customer getCustomer(String cvrNo) throws SQLException {
 		try {
 			return customerCtrl.getCustomer(cvrNo);
+		} catch (SQLException e) {
+			throw e;
+		}	
+	}
+
+	public Customer getCustomerById(long id) throws SQLException {
+		try {
+			return customerCtrl.getCustomerById(id);
 		} catch (SQLException e) {
 			throw e;
 		}	

@@ -41,7 +41,29 @@ public class CustomerDB implements CustomerIF {
 		}
 		return res;
 	}
+
+	public Customer getCustomerById(long id) throws SQLException {
+		Customer res = null;
+		String sqlCustomer = ("SELECT * FROM Employee WHERE id = ?");
+		Connection con = DBConnection.getInstance().getConnection();
+
+		try {
+			PreparedStatement preparedStmt = con.prepareStatement(sqlCustomer);
 	
+			preparedStmt.setLong(1, id);
+	
+			ResultSet rsCustomer = preparedStmt.executeQuery();
+			
+			if(rsCustomer.next()) {
+				res = buildCustomer(rsCustomer);
+				res.setAddress(addressDb.getAddress(rsCustomer.getLong("address_id")));
+			}
+		} catch (SQLException e) {
+			throw e;
+		}
+		return res;
+	}
+
 	public Customer createCustomer(Customer customer) throws SQLException {
 		String sqlCreate = "INSERT INTO Customer (first_name, last_name, address_id, phone, email, cvr_no, static_discount) VALUES (?, ?, ?, ?, ?, ?, ?)";
 		

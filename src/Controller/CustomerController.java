@@ -17,6 +17,14 @@ public class CustomerController {
 			throw e;
 		}
 	}
+
+	public Customer getCustomerById(long id) throws SQLException{
+		try {
+			return customerDb.getCustomerById(id);
+		} catch (SQLException e) {
+			throw e;
+		}
+	}
 	
 	public Customer createCustomer(Customer customer) throws SQLException{
 		try {

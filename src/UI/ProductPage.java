@@ -32,15 +32,12 @@ import java.util.ArrayList;
 import java.awt.GridBagConstraints;
 import java.awt.Panel;
 import java.awt.Insets;
-import javax.swing.JTextPane;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import java.awt.SystemColor;
 import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.Color;
-import java.awt.ScrollPane;
-import javax.swing.JScrollPane;
 
 public class ProductPage extends JDialog {
 	private JLabel txtpnRegisterProduct;
@@ -467,7 +464,7 @@ public class ProductPage extends JDialog {
 			throw e;
 		}
 	}
-	
+
 	public void loadData(long stockProductId) throws SQLException {
 		try {
 			txtpnRegisterProduct.setText("Edit product");

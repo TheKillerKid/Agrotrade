@@ -27,6 +27,14 @@ public class EmployeeController {
 		}
 	}
 	
+	public Employee getEmployeeById(long id) throws SQLException {
+		try {
+			return employeeDb.getEmployeeById(id);
+		} catch (SQLException e) {
+			throw e;
+		}
+	}
+	
 	public Employee createEmployee(Employee employee) throws SQLException {
 		try {
 			return employeeDb.createEmployee(employee);
