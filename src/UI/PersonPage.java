@@ -347,7 +347,7 @@ public class PersonPage extends JDialog {
 								e1.printStackTrace();
 								return;
 							} catch(NumberFormatException e2) {
-								messageLabel.setText("Cannot parse values from fields. Write values in correct format.");
+								messageLabel.setText(MessagesEnum.PARSEERROR.text);
 								e2.printStackTrace();
 								return;
 							} catch(Exception e3) {
@@ -373,7 +373,7 @@ public class PersonPage extends JDialog {
 										staticDiscount);
 								personCtrl.createPerson(customer);
 							} catch (NumberFormatException e1) {
-							    messageLabel.setText("Wrong input please input numbers.");
+							    messageLabel.setText(MessagesEnum.PARSEERROR.text);
 								e1.printStackTrace();
 							    return;
 							} catch (SQLException e2) {
@@ -399,7 +399,7 @@ public class PersonPage extends JDialog {
 										companyNameField.getText());
 								personCtrl.createPerson(supplier);
 							} catch (SQLException e2) {
-								messageLabel.setText("Something went wrong with database, please try again.");
+								messageLabel.setText(MessagesEnum.PARSEERROR.text);
 								e2.printStackTrace();
 								return;	
 							}

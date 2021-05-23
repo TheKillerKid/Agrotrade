@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 import Model.Model.Employee;
+import Model.Model.MessagesEnum;
 import Model.Model.Person;
 import Model.Model.PersonFilter;
 import Model.Model.Customer;
@@ -122,7 +123,7 @@ public class PersonController {
 				return LocalDate.of(year, month, day);
 			}
 			else {
-				throw new Exception("CPR number should has 10 digits. (example: 0209972128)");
+				throw new Exception(MessagesEnum.CPRLENGHTERROR.text);
 			}
 		} catch(NumberFormatException e1) {
 			throw e1;
