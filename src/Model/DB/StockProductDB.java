@@ -4,9 +4,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import Model.DBIF.StockProductIF;
+import Model.Model.MessagesEnum;
+import Model.Model.Price;
 import Model.Model.PriceType;
 import Model.Model.Product;
 import Model.Model.StockProduct;
@@ -52,22 +55,23 @@ public class StockProductDB implements StockProductIF {
 		return stockProducts;
 	}
 	
-	public StockProduct getStockProduct(long id) throws SQLException {
+	public StockProduct getStockProduct(long id, long warehouseId) throws SQLException {
 		StockProduct stockProduct = null;
-		String sqlProduct = "SELECT * FROM StockProduct WHERE id = ?";
-		
+		String sqlProduct = "SELECT * FROM StockProduct WHERE id = ? AND warehouse_id = ?";
 		
 		Connection con = DBConnection.getInstance().getConnection();
 
 		try {
 				PreparedStatement preparedStmt = con.prepareStatement(sqlProduct);
 				preparedStmt.setLong(1, id);
+				preparedStmt.setLong(2, warehouseId);
 
 				ResultSet rsStockProduct = preparedStmt.executeQuery();
 
 				if (rsStockProduct.next()) {
-					Product product = productDb.getProductById(rsStockProduct.getLong("product_id"));
 					stockProduct = buildStockProduct(rsStockProduct);
+
+					Product product = productDb.getProductById(rsStockProduct.getLong("product_id"));
 					stockProduct.setProduct(product);
 				}
 		} catch (SQLException e) {
@@ -75,6 +79,28 @@ public class StockProductDB implements StockProductIF {
 		}
 
 		return stockProduct;
+	}
+	
+	@Override
+	public void sellStockProduct(long stockProductId, int amount, long warehouseId) throws SQLException {
+		String sqlUpdate = "UPDATE StockProduct SET amount = ? WHERE id = ? AND warehouse_id = ?";
+		
+		StockProduct stockProduct = getStockProduct(stockProductId, warehouseId);
+		amount = stockProduct.getAmount() - amount;
+		
+	    Connection con = DBConnection.getInstance().getConnection();
+	
+	    try {
+			PreparedStatement preparedStmt = con.prepareStatement(sqlUpdate);
+			preparedStmt.setLong(1, amount);
+			preparedStmt.setLong(2, stockProductId);
+			preparedStmt.setLong(3, warehouseId);
+		
+			preparedStmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			throw e;
+		}
 	}
 	
 	private StockProduct buildStockProduct(ResultSet rsStockProduct) throws SQLException {

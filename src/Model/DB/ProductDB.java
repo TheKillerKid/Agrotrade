@@ -26,6 +26,7 @@ public class ProductDB implements ProductIF {
 	private CategoryDB categoryDb = new CategoryDB();
 	private UnitDB unitDb = new UnitDB();
 	
+	@Override
 	public Product getProductByBarcode(String barcode) throws SQLException {
 		Product product = null;
 		String sqlProduct = "SELECT * FROM Product WHERE barcode = ?";
@@ -48,27 +49,27 @@ public class ProductDB implements ProductIF {
 		return product;
 	}
 	
+	@Override
 	public Product getProductById(long id) throws SQLException {
 		Product product = null;
 		String sqlProduct = "SELECT * FROM Product WHERE id = ?";
 		
-		
 		Connection con = DBConnection.getInstance().getConnection();
 
-     try {
-				PreparedStatement preparedStmt = con.prepareStatement(sqlProduct);
-				preparedStmt.setLong(1, id);
-				ResultSet rsProduct = preparedStmt.executeQuery();
-				if (rsProduct.next()) {
-					product = buildProduct(rsProduct);
-					product.setSalePrice(priceDb.getPrice(product.getId(), PriceType.SALE));
-					product.setLeasePrice(priceDb.getPrice(product.getId(), PriceType.LEASE));
-					product.setPurchasePrice(priceDb.getPrice(product.getId(), PriceType.PURCHASE));
-					product.setSupplier(supplierDb.getSupplierById(rsProduct.getLong("supplier_id")));
-					product.setCategory(categoryDb.getCategory(rsProduct.getLong("category_id")));
-					product.setUnit(unitDb.getUnit(rsProduct.getLong("unit_id")));
-					
-				}
+		try {
+			PreparedStatement preparedStmt = con.prepareStatement(sqlProduct);
+			preparedStmt.setLong(1, id);
+			ResultSet rsProduct = preparedStmt.executeQuery();
+			if (rsProduct.next()) {
+				product = buildProduct(rsProduct);
+				product.setSalePrice(priceDb.getPrice(product.getId(), PriceType.SALE));
+				product.setLeasePrice(priceDb.getPrice(product.getId(), PriceType.LEASE));
+				product.setPurchasePrice(priceDb.getPrice(product.getId(), PriceType.PURCHASE));
+				product.setSupplier(supplierDb.getSupplierById(rsProduct.getLong("supplier_id")));
+				product.setCategory(categoryDb.getCategory(rsProduct.getLong("category_id")));
+				product.setUnit(unitDb.getUnit(rsProduct.getLong("unit_id")));
+				
+			}
 		} catch (SQLException e) {
 			throw e;
 		}

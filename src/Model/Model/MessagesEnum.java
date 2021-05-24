@@ -13,6 +13,7 @@ public enum MessagesEnum {
 	CUSTOMERSAVED("Customer saved!"),
 	SUPPLIERSAVED("Supplier saved!"),
 	PRODUCTADDEDTOORDER("Product was added to order!"),
+	SALECREATED("Sale was created!"),
 	;
 	
 	public final String text;

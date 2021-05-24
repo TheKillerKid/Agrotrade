@@ -18,9 +18,9 @@ public class StockProductContoller {
 		}
 	}
 	
-	public StockProduct getStockProduct(long id) throws SQLException {
+	public StockProduct getStockProduct(long id, long warehouseId) throws SQLException {
 		try {
-			return stockProductDb.getStockProduct(id);
+			return stockProductDb.getStockProduct(id, warehouseId);
 		} catch (SQLException e) {
 			throw e;
 		}

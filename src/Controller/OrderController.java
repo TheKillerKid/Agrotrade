@@ -17,18 +17,32 @@ import Model.Model.OrderPageType;
 
 public class OrderController {
 	private SaleController saleCtrl = new SaleController();
+	private LeaseController leaseCtrl = new LeaseController();
 	private StockProductContoller stockProrductCtrl = new StockProductContoller();
 	private CustomerController customerCtrl = new CustomerController();
 	
 	
 	public Order createOrder(Order order) throws SQLException{
 		
+		if(order instanceof Sale) {
+			Sale sale = (Sale)order;
+			order.setInvoice(new Invoice(0, LocalDate.now().plusDays(30), sale.getTotalPrice() - (sale.getTotalPrice() * sale.getCustomer().getStaticDiscount())));
+		}
+		
+		if(order instanceof Lease) {
+			Lease lease = (Lease)order;
+			order.setInvoice(new Invoice(0, LocalDate.now().plusDays(30), lease.getTotalPrice() - (lease.getTotalPrice() * lease.getCustomer().getStaticDiscount())));
+		}
+		/*if(order instanceof Purchase) {Sale sale = (Sale)order;
+			order.setInvoice(new Invoice(0, LocalDate.now().plusDays(30), sale.getTotalPrice() * sale.getCustomer().getStaticDiscount()));
+		}*/
 		
 		try {
 			if(order instanceof Sale) {
-				order.setTotalPrice(calculateTotalPrice(order.getOrderLines(), OrderPageType.SALE));
-				order.setInvoice(new Invoice(0, LocalDate.now().plusDays(30), calculateTotalPrice(order.getOrderLines(), OrderPageType.SALE)));
 				return this.saleCtrl.createSale((Sale)order);
+			}
+			if(order instanceof Lease) {
+				return this.leaseCtrl.createLease((Lease)order);
 			}
 		} catch (SQLException e) {
 			throw e;

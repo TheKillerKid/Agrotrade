@@ -18,9 +18,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Properties;
 
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -30,10 +28,6 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
-
-import org.jdatepicker.impl.JDatePanelImpl;
-import org.jdatepicker.impl.JDatePickerImpl;
-import org.jdatepicker.impl.UtilDateModel;
 
 import Model.Model.StockProduct;
 import Model.Model.Supplier;
@@ -50,28 +44,32 @@ import Model.Model.MessagesEnum;
 import Model.Model.Order;
 import Model.Model.OrderLine;
 import Model.Model.OrderPageType;
-import Model.Model.Sale;
 
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
-import javax.swing.JSpinner;
-import javax.swing.SwingConstants;
+import java.awt.ScrollPane;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
+import java.awt.event.InputMethodListener;
+import java.awt.event.InputMethodEvent;
 
-public class OrderPage extends JDialog {
+public class CoreOrderPage extends JDialog {
 	private OrderController orderCtrl = new OrderController();
 	
 	private final JPanel contentPanel = new JPanel();
+	
+	private JTextField customerCvrNoField;
 	private JTextField quantityField = new JTextField();;
 	private JTextField noteField;
-	private JComboBox<String> customersComboBox;
-	private JComboBox<String> stockProductsComboBox;
-	private UtilDateModel shippingDateModel;
-	private UtilDateModel deliveryDateModel;
+	JComboBox<String> customersComboBox;
+	JComboBox<String> stockProductsComboBox;
 	
 	private JLabel onStockValue;
 	private JLabel totalPriceValue;
 	
-	private JLabel msgLbl = new JLabel("");
+
 	private JLabel msgOrderLineLbl = new JLabel("");
 	
 	private JButton btnAdd = new JButton("Add");
@@ -99,7 +97,7 @@ public class OrderPage extends JDialog {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					OrderPage dialog = new OrderPage(type);
+					CoreOrderPage dialog = new CoreOrderPage(type);
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.setVisible(true);
 				} catch (Exception e) {
@@ -112,16 +110,16 @@ public class OrderPage extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public OrderPage(OrderPageType type) {
+	public CoreOrderPage(OrderPageType type) {
 		setBounds(150, 150, 1280, 800);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		GridBagLayout gbl_contentPanel = new GridBagLayout();
 		gbl_contentPanel.columnWidths = new int[]{0, 100, 259, 84, 0, 0};
-		gbl_contentPanel.rowHeights = new int[]{0, 45, 0, 0, 200, 30, 24, 30, 30, 0};
+		gbl_contentPanel.rowHeights = new int[]{0, 45, 0, 0, 200, 30, 24, 0, 0};
 		gbl_contentPanel.columnWeights = new double[]{1.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
-		gbl_contentPanel.rowWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE, 1.0};
+		gbl_contentPanel.rowWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 		contentPanel.setLayout(gbl_contentPanel);
 		{
 			JLabel title = new JLabel("Create Order");
@@ -215,7 +213,7 @@ public class OrderPage extends JDialog {
 				olsTabelModel = new DefaultTableModel(data, columns);
 				olsTable = new JTable(olsTabelModel);
 				scrollPane = new JScrollPane(olsTable);
-				gbc_scrollPane.fill = GridBagConstraints.BOTH;
+				gbc_scrollPane.fill = GridBagConstraints.HORIZONTAL;
 				
 				gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
 				gbc_scrollPane.gridx = 2;
@@ -357,13 +355,13 @@ public class OrderPage extends JDialog {
 			contentPanel.add(totalPriceValue, gbc_totalPriceValue);
 		}
 		{
-			JLabel noteLbl = new JLabel("Note");
-			GridBagConstraints gbc_noteLbl = new GridBagConstraints();
-			gbc_noteLbl.anchor = GridBagConstraints.WEST;
-			gbc_noteLbl.insets = new Insets(0, 0, 5, 5);
-			gbc_noteLbl.gridx = 1;
-			gbc_noteLbl.gridy = 6;
-			contentPanel.add(noteLbl, gbc_noteLbl);
+			JLabel lblNewLabel_3 = new JLabel("Note");
+			GridBagConstraints gbc_lblNewLabel_3 = new GridBagConstraints();
+			gbc_lblNewLabel_3.anchor = GridBagConstraints.WEST;
+			gbc_lblNewLabel_3.insets = new Insets(0, 0, 5, 5);
+			gbc_lblNewLabel_3.gridx = 1;
+			gbc_lblNewLabel_3.gridy = 6;
+			contentPanel.add(lblNewLabel_3, gbc_lblNewLabel_3);
 		}
 		{
 			noteField = new JTextField();
@@ -406,81 +404,7 @@ public class OrderPage extends JDialog {
 				gbc_saveBtn.gridx = 3;
 				gbc_saveBtn.gridy = 0;
 				buttonPane.add(saveBtn, gbc_saveBtn);
-				saveBtn.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						if(type == OrderPageType.SALE) {
-							saveSale();
-						}
-					}
-				});
 			}
-		}
-			
-			
-		if(type == OrderPageType.SALE) {
-			{
-				JLabel shippingDateLbl = new JLabel("Shipping date");
-				GridBagConstraints gbc_shippingDateLbl = new GridBagConstraints();
-				gbc_shippingDateLbl.anchor = GridBagConstraints.WEST;
-				gbc_shippingDateLbl.insets = new Insets(0, 0, 5, 5);
-				gbc_shippingDateLbl.gridx = 1;
-				gbc_shippingDateLbl.gridy = 7;
-				contentPanel.add(shippingDateLbl, gbc_shippingDateLbl);
-			}
-			{
-				shippingDateModel = new UtilDateModel();
-				Properties p = new Properties();
-				p.put("text.today", "Today");
-				p.put("text.month", "Month");
-				p.put("text.year", "Year");
-				JDatePanelImpl shippingDatePanel = new JDatePanelImpl(shippingDateModel, p);
-				JDatePickerImpl shippingDatePicker = new JDatePickerImpl(shippingDatePanel, new CalendarFormater());
-				
-				GridBagConstraints gbc_shippingDatePicker = new GridBagConstraints();
-				gbc_shippingDatePicker.insets = new Insets(0, 0, 5, 5);
-				gbc_shippingDatePicker.fill = GridBagConstraints.HORIZONTAL;
-				gbc_shippingDatePicker.gridx = 2;
-				gbc_shippingDatePicker.gridy = 7;
-				contentPanel.add(shippingDatePicker, gbc_shippingDatePicker);
-			}
-			{
-				JLabel deliveryDateLbl = new JLabel("Delivery date");
-				GridBagConstraints gbc_deliveryDateLbl = new GridBagConstraints();
-				gbc_deliveryDateLbl.anchor = GridBagConstraints.WEST;
-				gbc_deliveryDateLbl.insets = new Insets(0, 0, 5, 5);
-				gbc_deliveryDateLbl.gridx = 1;
-				gbc_deliveryDateLbl.gridy = 8;
-				contentPanel.add(deliveryDateLbl, gbc_deliveryDateLbl);
-			}
-			{
-				deliveryDateModel = new UtilDateModel();
-				Properties p = new Properties();
-				p.put("text.today", "Today");
-				p.put("text.month", "Month");
-				p.put("text.year", "Year");
-				JDatePanelImpl deliveryDatePanel = new JDatePanelImpl(deliveryDateModel, p);
-				JDatePickerImpl deliveryDatePicker = new JDatePickerImpl(deliveryDatePanel, new CalendarFormater());
-				
-				GridBagConstraints gbc_deliveryDatePicker = new GridBagConstraints();
-				gbc_deliveryDatePicker.insets = new Insets(0, 0, 5, 5);
-				gbc_deliveryDatePicker.fill = GridBagConstraints.HORIZONTAL;
-				gbc_deliveryDatePicker.gridx = 2;
-				gbc_deliveryDatePicker.gridy = 8;
-				contentPanel.add(deliveryDatePicker, gbc_deliveryDatePicker);
-			}
-		}
-		{
-			msgLbl.setVerticalAlignment(SwingConstants.TOP);
-			msgLbl.setHorizontalAlignment(SwingConstants.LEFT);
-			GridBagConstraints gbc_msgLbl = new GridBagConstraints();
-			gbc_msgLbl.anchor = GridBagConstraints.NORTHWEST;
-			gbc_msgLbl.insets = new Insets(0, 0, 0, 5);
-			gbc_msgLbl.gridx = 2;
-			if(type == OrderPageType.SALE) {
-				gbc_msgLbl.gridy = 9;
-			}
-			
-			contentPanel.add(msgLbl, gbc_msgLbl);
 		}
 		
 		getCurrentStock();
@@ -492,8 +416,7 @@ public class OrderPage extends JDialog {
 			customers.stream().forEach(customer -> customersDefaultModel.addElement(String.valueOf(customer.getCvrNo()) + " - " + customer.getFirstName() + " " + customer.getLastName()));
 		} catch (SQLException e) {
 			e.printStackTrace();
-			msgLbl.setText(MessagesEnum.DBERROR.text);
-			msgLbl.setForeground(Color.RED);
+			//errorMsgLbl.setText("Something went wrong with database. Try it again later.");
 		}
 	}
 	
@@ -517,48 +440,7 @@ public class OrderPage extends JDialog {
 		}
 	}
 	
-	private Customer getCurrentCustomer() {
-		if(customersComboBox.getSelectedItem() != null) {
-			String stringCustomer = String.valueOf(customersComboBox.getSelectedItem()).substring(0,8);
-			return customers.stream()
-								.filter(c -> stringCustomer.equals(c.getCvrNo()))
-								.findAny()
-								.orElse(null);
-		}
-		return null;
-	}
-	
-	private void saveSale() {
-		try {
-			
-			order = new Sale(-1,
-							  ParsingHelper.tryParseDouble(totalPriceValue.getText()),
-							  noteField.getText(),
-							  LocalDate.now(),
-							  LoginContainer.getInstance().getCurrentUser().getWarehouse(),
-							  orderLines,
-							  null,
-							  -1,
-							  LocalDate.of(shippingDateModel.getYear(), shippingDateModel.getMonth(), shippingDateModel.getDay()),
-							  LocalDate.of(deliveryDateModel.getYear(), deliveryDateModel.getMonth(), deliveryDateModel.getDay()),
-							  getCurrentCustomer()
-							);
-			
-			order = orderCtrl.createOrder(order);
-			
-			msgLbl.setText(MessagesEnum.SALECREATED.text);
-			msgLbl.setForeground(Color.GREEN);
-			
-		} catch(SQLException e) {
-			e.printStackTrace();
-			msgLbl.setText(MessagesEnum.DBERROR.text);
-			msgLbl.setForeground(Color.RED);
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-			msgLbl.setForeground(Color.RED);
-			msgLbl.setText(MessagesEnum.PARSEERROR.text);
-		} finally {
-			msgOrderLineLbl.setText("");
-		}
+	private void recalculateTotalPrice() {
+		
 	}
 }

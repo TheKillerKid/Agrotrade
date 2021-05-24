@@ -5,6 +5,6 @@ import java.sql.SQLException;
 import Model.Model.Invoice;
 
 public interface InvoiceIF {
-	public long createInvoice(Invoice invoice, long orderId) throws SQLException;
+	public Invoice createInvoice(Invoice invoice, long orderId) throws SQLException;
 	
 }
