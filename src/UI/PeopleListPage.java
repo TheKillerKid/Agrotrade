@@ -56,16 +56,15 @@ public class PeopleListPage extends JDialog {
 			}
 		});
 	}
-	
+
 	private ArrayList<Person> loadData() {
 		PersonController peopleController = new PersonController();
 
 		filter.setEmployee(employeesCheckbox.isSelected());		
 		filter.setCustomer(customerCheckbox.isSelected());
 		filter.setSupplier(suppliersCheckbox.isSelected());
-		
+
 		ArrayList<Person> res = new ArrayList<Person>();
-		
 
 		try {
 			res = peopleController.getPeople(filter);
