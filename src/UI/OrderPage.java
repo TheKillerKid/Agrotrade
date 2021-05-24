@@ -19,7 +19,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Properties;
 
 import javax.swing.JLabel;
@@ -61,12 +63,18 @@ public class OrderPage extends JDialog {
 	private OrderController orderCtrl = new OrderController();
 	
 	private final JPanel contentPanel = new JPanel();
+	private JPanel buttonPane = new JPanel();
 	private JTextField quantityField = new JTextField();;
 	private JTextField noteField;
 	private JComboBox<String> customersComboBox;
 	private JComboBox<String> stockProductsComboBox;
+	
 	private UtilDateModel shippingDateModel;
 	private UtilDateModel deliveryDateModel;
+	private JDatePanelImpl shippingDatePanel;
+	private JDatePanelImpl deliveryDatePanel;
+	private JDatePickerImpl shippingDatePicker;
+	private JDatePickerImpl deliveryDatePicker;
 	
 	private JLabel onStockValue;
 	private JLabel totalPriceValue;
@@ -76,6 +84,9 @@ public class OrderPage extends JDialog {
 	
 	private JButton btnAdd = new JButton("Add");
 	private GridBagConstraints gbc_btnAdd = new GridBagConstraints();
+	
+	private JButton saveBtn = new JButton("Save");
+	private GridBagConstraints gbc_saveBtn = new GridBagConstraints();
 	
 	private ArrayList<StockProduct> stockProducts = new ArrayList<StockProduct>();
 	private ArrayList<Customer> customers = new ArrayList<Customer>();
@@ -269,6 +280,14 @@ public class OrderPage extends JDialog {
 							contentPanel.revalidate();
 							contentPanel.repaint();
 							
+							
+							buttonPane.remove(saveBtn);
+							boolean enabled = orderLines.size() > 0;
+							saveBtn.setEnabled(enabled);
+							buttonPane.add(saveBtn, gbc_saveBtn);
+							buttonPane.revalidate();
+							buttonPane.repaint();
+							
 							msgOrderLineLbl.setText(MessagesEnum.PRODUCTADDEDTOORDER.text);
 							msgOrderLineLbl.setForeground(Color.GREEN);
 						}
@@ -376,7 +395,6 @@ public class OrderPage extends JDialog {
 			contentPanel.add(noteField, gbc_noteField);
 		}
 		{
-			JPanel buttonPane = new JPanel();
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			GridBagLayout gbl_buttonPane = new GridBagLayout();
 			gbl_buttonPane.columnWidths = new int[]{81, 70, 311, 80, 84, 0};
@@ -395,12 +413,12 @@ public class OrderPage extends JDialog {
 				backBtn.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						dispose();
+						HomePage.start();
 					}
 				});
 			}
 			{
-				JButton saveBtn = new JButton("Save");
-				GridBagConstraints gbc_saveBtn = new GridBagConstraints();
+				saveBtn.setEnabled(false);
 				gbc_saveBtn.anchor = GridBagConstraints.WEST;
 				gbc_saveBtn.insets = new Insets(0, 0, 0, 5);
 				gbc_saveBtn.gridx = 3;
@@ -433,8 +451,8 @@ public class OrderPage extends JDialog {
 				p.put("text.today", "Today");
 				p.put("text.month", "Month");
 				p.put("text.year", "Year");
-				JDatePanelImpl shippingDatePanel = new JDatePanelImpl(shippingDateModel, p);
-				JDatePickerImpl shippingDatePicker = new JDatePickerImpl(shippingDatePanel, new CalendarFormater());
+				shippingDatePanel = new JDatePanelImpl(shippingDateModel, p);
+				shippingDatePicker = new JDatePickerImpl(shippingDatePanel, new CalendarFormater());
 				
 				GridBagConstraints gbc_shippingDatePicker = new GridBagConstraints();
 				gbc_shippingDatePicker.insets = new Insets(0, 0, 5, 5);
@@ -458,8 +476,8 @@ public class OrderPage extends JDialog {
 				p.put("text.today", "Today");
 				p.put("text.month", "Month");
 				p.put("text.year", "Year");
-				JDatePanelImpl deliveryDatePanel = new JDatePanelImpl(deliveryDateModel, p);
-				JDatePickerImpl deliveryDatePicker = new JDatePickerImpl(deliveryDatePanel, new CalendarFormater());
+				deliveryDatePanel = new JDatePanelImpl(deliveryDateModel, p);
+				deliveryDatePicker = new JDatePickerImpl(deliveryDatePanel, new CalendarFormater());
 				
 				GridBagConstraints gbc_deliveryDatePicker = new GridBagConstraints();
 				gbc_deliveryDatePicker.insets = new Insets(0, 0, 5, 5);
@@ -529,7 +547,12 @@ public class OrderPage extends JDialog {
 	}
 	
 	private void saveSale() {
+
 		try {
+			Date sDate = (Date)shippingDatePicker.getModel().getValue();
+			Date dDate = (Date)deliveryDatePicker.getModel().getValue();
+			LocalDate shippmentDate = ParsingHelper.convertToLocalDateViaInstant(sDate);
+			LocalDate deliveryDate = ParsingHelper.convertToLocalDateViaInstant(dDate);
 			
 			order = new Sale(-1,
 							  ParsingHelper.tryParseDouble(totalPriceValue.getText()),
@@ -539,8 +562,8 @@ public class OrderPage extends JDialog {
 							  orderLines,
 							  null,
 							  -1,
-							  LocalDate.of(shippingDateModel.getYear(), shippingDateModel.getMonth(), shippingDateModel.getDay()),
-							  LocalDate.of(deliveryDateModel.getYear(), deliveryDateModel.getMonth(), deliveryDateModel.getDay()),
+							  shippmentDate,
+							  deliveryDate,
 							  getCurrentCustomer()
 							);
 			

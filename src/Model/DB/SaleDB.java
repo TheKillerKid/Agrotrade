@@ -21,7 +21,7 @@ public class SaleDB implements SaleIF {
 	public Sale createSale(Sale sale) throws SQLException {
 		String sqlCreate = "INSERT INTO Sale (shipping_date, delivery_date, customer_id) VALUES (?,?,?)";
 
-		LocalDate shippingDate = sale.getCreationDate();
+		LocalDate shippingDate = sale.getShippingDate();
 		LocalDate deliveryDate = sale.getDeliveryDate();
 		long customerId = sale.getCustomer().getId();
 		

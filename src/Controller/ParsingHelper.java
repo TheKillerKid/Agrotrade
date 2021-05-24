@@ -1,5 +1,9 @@
 package Controller;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
+
 public class ParsingHelper {
 
 	public static Integer tryParseInt(String value) throws NumberFormatException {
@@ -32,5 +36,16 @@ public class ParsingHelper {
     	} catch (NumberFormatException e) {
     		throw e;
     	}
+    }
+    
+    public static LocalDate convertToLocalDateViaInstant(Date dateToConvert) throws NullPointerException{
+    	try {
+            return dateToConvert.toInstant()
+              .atZone(ZoneId.systemDefault())
+              .toLocalDate();
+    	} catch(NullPointerException e) {
+    		throw e;
+    	}
+    	
     }
 }
