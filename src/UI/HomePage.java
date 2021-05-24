@@ -13,6 +13,7 @@ import java.awt.GridBagLayout;
 import Model.Model.Address;
 import Model.Model.Employee;
 import Model.Model.LoginContainer;
+import Model.Model.OrderPageType;
 import Model.Model.PersonPageType;
 
 import java.awt.Panel;
@@ -64,6 +65,15 @@ public class HomePage extends JDialog {
 		
 		JMenu mnNewMenu = new JMenu("Order");
 		menuBar.add(mnNewMenu);
+		
+		JMenuItem registerSelaMntm = new JMenuItem("Register sale");
+		registerSelaMntm.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				OrderPage.start(OrderPageType.SALE);
+				dispose();
+			}
+		});
+		mnNewMenu.add(registerSelaMntm);
 		
 		JMenu mnNewMenu_1 = new JMenu("Product");
 		menuBar.add(mnNewMenu_1);
@@ -141,15 +151,16 @@ public class HomePage extends JDialog {
 		gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panel.setLayout(gbl_panel);
 		
-		JButton createOrderBtn = new JButton("Register order");
-		GridBagConstraints gbc_createOrderBtn = new GridBagConstraints();
-		gbc_createOrderBtn.insets = new Insets(0, 0, 5, 5);
-		gbc_createOrderBtn.gridx = 0;
-		gbc_createOrderBtn.gridy = 0;
-		panel.add(createOrderBtn, gbc_createOrderBtn);
-		createOrderBtn.addActionListener(new ActionListener() {
+		JButton createSaleBtn = new JButton("Register sale");
+		GridBagConstraints gbc_createSaleBtn = new GridBagConstraints();
+		gbc_createSaleBtn.insets = new Insets(0, 0, 5, 5);
+		gbc_createSaleBtn.gridx = 0;
+		gbc_createSaleBtn.gridy = 0;
+		panel.add(createSaleBtn, gbc_createSaleBtn);
+		createSaleBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				OrderPage.start();
+				OrderPage.start(OrderPageType.SALE);
+				dispose();
 				
 			}
 		});

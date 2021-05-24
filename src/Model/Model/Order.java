@@ -6,7 +6,6 @@ import java.util.ArrayList;
 public abstract class Order {
 	protected long orderId;
 	protected double totalPrice;
-	// I replaced notes with note, makes more sense to me same orderLines for array
 	protected String note;
 	protected LocalDate creationDate;
 	protected Warehouse warehouse;

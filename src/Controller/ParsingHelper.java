@@ -1,7 +1,5 @@
 package Controller;
 
-import java.sql.SQLException;
-
 public class ParsingHelper {
 
 	public static Integer tryParseInt(String value) throws NumberFormatException {
