@@ -1,6 +1,5 @@
 package UI;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -21,14 +20,11 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import Controller.PersonController;
-import Controller.StockProductContoller;
 import Model.Model.Customer;
 import Model.Model.Employee;
-import Model.Model.LoginContainer;
 import Model.Model.Person;
 import Model.Model.PersonFilter;
 import Model.Model.PersonPageType;
-import Model.Model.StockProduct;
 import Model.Model.Supplier;
 
 import java.awt.GridBagLayout;
@@ -36,6 +32,7 @@ import javax.swing.JCheckBox;
 
 public class PeopleListPage extends JDialog {
 	private final JPanel contentPanel = new JPanel();
+	private JScrollPane sp;
 	private JCheckBox customerCheckbox = new JCheckBox("Customers");
 	private JCheckBox employeesCheckbox = new JCheckBox("Employees");
 	private JCheckBox suppliersCheckbox = new JCheckBox("Suppliers");
@@ -59,14 +56,15 @@ public class PeopleListPage extends JDialog {
 			}
 		});
 	}
-	
+
 	private ArrayList<Person> loadData() {
 		PersonController peopleController = new PersonController();
 
-		ArrayList<Person> res = new ArrayList<Person>();
 		filter.setEmployee(employeesCheckbox.isSelected());		
 		filter.setCustomer(customerCheckbox.isSelected());
 		filter.setSupplier(suppliersCheckbox.isSelected());
+
+		ArrayList<Person> res = new ArrayList<Person>();
 
 		try {
 			res = peopleController.getPeople(filter);
@@ -136,6 +134,10 @@ public class PeopleListPage extends JDialog {
 			getContentPane().add(searchButton, gbc_btnNewButton);
 			searchButton.addActionListener(new ActionListener () {
 				public void actionPerformed(ActionEvent e) {
+					if (sp != null) {
+						getContentPane().remove(sp);
+					}
+
 					ArrayList<Person> people = loadData();
 					
 					Object[][] data = new Object[people.size()][];
@@ -182,8 +184,10 @@ public class PeopleListPage extends JDialog {
 					gbc_table.fill = GridBagConstraints.BOTH;
 					gbc_table.gridx = 0;
 					gbc_table.gridy = 3;
-					JScrollPane sp = new JScrollPane(table);
-					getContentPane().add(sp, gbc_table);					
+					
+					sp = new JScrollPane(table);					
+
+					getContentPane().add(sp, gbc_table);
 					getContentPane().revalidate();
 					getContentPane().repaint();
 				}
@@ -205,6 +209,12 @@ public class PeopleListPage extends JDialog {
 				JButton cancelButton = new JButton("Cancel");
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
+				cancelButton.addActionListener(new ActionListener () {
+					public void actionPerformed(ActionEvent e) {
+						HomePage.start();
+						dispose();
+					}
+				});
 			}
 		}
 	}
