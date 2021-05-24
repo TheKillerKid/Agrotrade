@@ -35,7 +35,7 @@ public class OrderLineDB implements OrderLineIF {
 			ResultSet rs = preparedStmt.getGeneratedKeys();
             if (rs.next()) {
             	id = rs.getLong(1);
-            	stockProductDb.sellStockProduct(orderLine.getStockProduct().getId(), orderLine.getAmount() ,orderLine.getStockProduct().getWarehouseId());
+            	stockProductDb.sellOrLeaseStockProduct(orderLine.getStockProduct().getId(), orderLine.getAmount() ,orderLine.getStockProduct().getWarehouseId());
             }
             else {
                 throw new SQLException(MessagesEnum.DBSAVEERROR.text);

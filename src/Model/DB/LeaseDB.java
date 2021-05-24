@@ -6,12 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 import Model.DBIF.LeaseIF;
 import Model.Model.Lease;
 import Model.Model.MessagesEnum;
-import Model.Model.OrderLine;
 
 public class LeaseDB implements LeaseIF{
 
@@ -19,7 +17,7 @@ public class LeaseDB implements LeaseIF{
 	
 	@Override
 	public Lease createLease(Lease lease) throws SQLException {
-		String sqlCreate = "INSERT INTO Sale (borrow_date, expected_return_date, real_return_date, customer_id) VALUES (?,?,?,?)";
+		String sqlCreate = "INSERT INTO Lease (borrow_date, expected_return_date, real_return_date, customer_id) VALUES (?,?,?,?)";
 		
 		LocalDate borrowDate = lease.getBorrowDate();
 		LocalDate realReturnDate = lease.getRealReturnDate();
@@ -30,9 +28,9 @@ public class LeaseDB implements LeaseIF{
 	
 	     try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate, Statement.RETURN_GENERATED_KEYS);
-			preparedStmt.setObject(1, java.sql.Date.valueOf(borrowDate));
-			preparedStmt.setObject(2, java.sql.Date.valueOf(expectedReturnDate));
-			preparedStmt.setObject(3, java.sql.Date.valueOf(realReturnDate));
+			preparedStmt.setObject(1, borrowDate != null ? java.sql.Date.valueOf(borrowDate) : null);
+			preparedStmt.setObject(2, expectedReturnDate != null ? java.sql.Date.valueOf(expectedReturnDate) : null);
+			preparedStmt.setObject(3, realReturnDate != null ? java.sql.Date.valueOf(realReturnDate) : null);
 			preparedStmt.setLong(4, customerId);
 			
 			preparedStmt.executeUpdate();

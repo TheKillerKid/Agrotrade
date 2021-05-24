@@ -40,9 +40,14 @@ public class ParsingHelper {
     
     public static LocalDate convertToLocalDateViaInstant(Date dateToConvert) throws NullPointerException{
     	try {
-            return dateToConvert.toInstant()
-              .atZone(ZoneId.systemDefault())
-              .toLocalDate();
+    		if(dateToConvert != null) {
+	            return dateToConvert.toInstant()
+	              .atZone(ZoneId.systemDefault())
+	              .toLocalDate();
+    		}
+    		else {
+    			return null;
+    		}
     	} catch(NullPointerException e) {
     		throw e;
     	}

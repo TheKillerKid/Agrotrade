@@ -66,14 +66,24 @@ public class HomePage extends JDialog {
 		JMenu mnNewMenu = new JMenu("Order");
 		menuBar.add(mnNewMenu);
 		
-		JMenuItem registerSelaMntm = new JMenuItem("Register sale");
-		registerSelaMntm.addActionListener(new ActionListener() {
+		JMenuItem registerSaleMntm = new JMenuItem("Register sale");
+		registerSaleMntm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				OrderPage.start(OrderPageType.SALE);
 				dispose();
 			}
 		});
-		mnNewMenu.add(registerSelaMntm);
+		mnNewMenu.add(registerSaleMntm);
+		
+		JMenuItem registerLeaseMntm = new JMenuItem("Register lease");
+		registerLeaseMntm.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				OrderPage.start(OrderPageType.LEASE);
+				dispose();
+			}
+		});
+
+		mnNewMenu.add(registerLeaseMntm);
 		
 		JMenu mnNewMenu_1 = new JMenu("Product");
 		menuBar.add(mnNewMenu_1);

@@ -117,9 +117,9 @@ public class CoreOrderPage extends JDialog {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		GridBagLayout gbl_contentPanel = new GridBagLayout();
 		gbl_contentPanel.columnWidths = new int[]{0, 100, 259, 84, 0, 0};
-		gbl_contentPanel.rowHeights = new int[]{0, 45, 0, 0, 200, 30, 24, 0, 0};
+		gbl_contentPanel.rowHeights = new int[]{0, 45, 0, 0, 200, 30, 24, 0, 0, 0, 0, 0};
 		gbl_contentPanel.columnWeights = new double[]{1.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
-		gbl_contentPanel.rowWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
+		gbl_contentPanel.rowWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 		contentPanel.setLayout(gbl_contentPanel);
 		{
 			JLabel title = new JLabel("Create Order");

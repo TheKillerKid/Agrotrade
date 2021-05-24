@@ -7,6 +7,8 @@ public enum MessagesEnum {
 	CPRLENGHTERROR("CPR number should has 10 digits. (example: 0209972128)"),
 	DBSAVEERROR("Creating object failed, no ID obtained. Contact administrator and try it later."),
 	VALUEHIGHERTHANZEROERROR("Value should be higher than 0!"),
+	EMPTYBORROWDATE("Borrow date cannot be empty!"),
+	EMPTYEXPECTEDRETURNDATE("Expected return date cannot be empty!"),
 	//SUCCESS
 	PRODUCTSAVED("Product saved! You can go and create purchase to fill your warehouse."),
 	EMPLOYEESAVED("Employee saved!"),
@@ -14,6 +16,7 @@ public enum MessagesEnum {
 	SUPPLIERSAVED("Supplier saved!"),
 	PRODUCTADDEDTOORDER("Product was added to order!"),
 	SALECREATED("Sale was created!"),
+	LEASECREATED("Lease was created!"),
 	;
 	
 	public final String text;

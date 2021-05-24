@@ -457,7 +457,7 @@ public class PersonPage extends JDialog {
 
 		if (type == PersonPageType.EMPLOYEE) {
 			{
-				headingLabel.setText("Create employee");
+				headingLabel.setText("Register employee");
 				GridBagConstraints gbc_lblCreateEmployee = new GridBagConstraints();
 				gbc_lblCreateEmployee.insets = new Insets(0, 0, 5, 0);
 				gbc_lblCreateEmployee.gridx = 1;
@@ -555,7 +555,7 @@ public class PersonPage extends JDialog {
 
 		if (type == PersonPageType.SUPPLIER) {
 			{
-				headingLabel.setText("Create Supplier");
+				headingLabel.setText("Register supplier");
 				GridBagConstraints gbc_lblCreateCustomer = new GridBagConstraints();
 				gbc_lblCreateCustomer.insets = new Insets(0, 0, 5, 0);
 				gbc_lblCreateCustomer.gridx = 1;
@@ -606,7 +606,7 @@ public class PersonPage extends JDialog {
 		if (type == PersonPageType.CUSTOMER) {
 
 			{
-				headingLabel.setText("Create Customer");
+				headingLabel.setText("Register customer");
 				GridBagConstraints gbc_lblCreateCustomer = new GridBagConstraints();
 				gbc_lblCreateCustomer.insets = new Insets(0, 0, 5, 0);
 				gbc_lblCreateCustomer.gridx = 1;

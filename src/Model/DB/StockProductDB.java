@@ -82,7 +82,7 @@ public class StockProductDB implements StockProductIF {
 	}
 	
 	@Override
-	public void sellStockProduct(long stockProductId, int amount, long warehouseId) throws SQLException {
+	public void sellOrLeaseStockProduct(long stockProductId, int amount, long warehouseId) throws SQLException {
 		String sqlUpdate = "UPDATE StockProduct SET amount = ? WHERE id = ? AND warehouse_id = ?";
 		
 		StockProduct stockProduct = getStockProduct(stockProductId, warehouseId);

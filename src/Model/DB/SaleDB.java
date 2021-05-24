@@ -29,8 +29,8 @@ public class SaleDB implements SaleIF {
 
      try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate, Statement.RETURN_GENERATED_KEYS);
-			preparedStmt.setObject(1, java.sql.Date.valueOf(shippingDate));
-			preparedStmt.setObject(2, java.sql.Date.valueOf(deliveryDate));
+			preparedStmt.setObject(1, shippingDate != null ? java.sql.Date.valueOf(shippingDate) : null);
+			preparedStmt.setObject(2, deliveryDate != null ? java.sql.Date.valueOf(deliveryDate) : null);
 			preparedStmt.setLong(3, customerId);
 			
 			preparedStmt.executeUpdate();

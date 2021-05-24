@@ -47,6 +47,7 @@ import javax.swing.JList;
 import Controller.OrderController;
 import Controller.ParsingHelper;
 import Model.Model.Customer;
+import Model.Model.Lease;
 import Model.Model.LoginContainer;
 import Model.Model.MessagesEnum;
 import Model.Model.Order;
@@ -75,6 +76,16 @@ public class OrderPage extends JDialog {
 	private JDatePanelImpl deliveryDatePanel;
 	private JDatePickerImpl shippingDatePicker;
 	private JDatePickerImpl deliveryDatePicker;
+	
+	private UtilDateModel borrowDateModel;
+	private UtilDateModel expectedReturnDateModel;
+	private UtilDateModel realReturnDateModel;
+	private JDatePanelImpl borrowDatePanel;
+	private JDatePanelImpl expectedReturnDatePanel;
+	private JDatePanelImpl realReturnDatePanel;
+	private JDatePickerImpl borrowDatePicker;
+	private JDatePickerImpl expectedReturnDatePicker;
+	private JDatePickerImpl realReturnDatePicker;
 	
 	private JLabel onStockValue;
 	private JLabel totalPriceValue;
@@ -130,12 +141,20 @@ public class OrderPage extends JDialog {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		GridBagLayout gbl_contentPanel = new GridBagLayout();
 		gbl_contentPanel.columnWidths = new int[]{0, 100, 259, 84, 0, 0};
-		gbl_contentPanel.rowHeights = new int[]{0, 45, 0, 0, 200, 30, 24, 30, 30, 0};
+		gbl_contentPanel.rowHeights = new int[]{0, 45, 0, 0, 200, 30, 24, 30, 30, 0, 0, 0, 0, 0};
 		gbl_contentPanel.columnWeights = new double[]{1.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
-		gbl_contentPanel.rowWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE, 1.0};
+		gbl_contentPanel.rowWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE, 1.0};
 		contentPanel.setLayout(gbl_contentPanel);
 		{
-			JLabel title = new JLabel("Create Order");
+			JLabel title = new JLabel("");
+			if(type == OrderPageType.SALE) {
+				title.setText("Register sale");
+			}
+			if(type == OrderPageType.LEASE) {
+				title.setText("Register lease");
+			}
+			
+			
 			title.setFont(new Font("Tahoma", Font.BOLD, 14));
 			GridBagConstraints gbc_title = new GridBagConstraints();
 			gbc_title.insets = new Insets(0, 0, 5, 5);
@@ -429,6 +448,9 @@ public class OrderPage extends JDialog {
 						if(type == OrderPageType.SALE) {
 							saveSale();
 						}
+						if(type == OrderPageType.LEASE) {
+							saveLease();
+						}
 					}
 				});
 			}
@@ -487,6 +509,85 @@ public class OrderPage extends JDialog {
 				contentPanel.add(deliveryDatePicker, gbc_deliveryDatePicker);
 			}
 		}
+		if(type == OrderPageType.LEASE){
+			{
+				JLabel borrowDateLbl = new JLabel("Borrow date");
+				GridBagConstraints gbc_borrowDateLbl = new GridBagConstraints();
+				gbc_borrowDateLbl.anchor = GridBagConstraints.WEST;
+				gbc_borrowDateLbl.insets = new Insets(0, 0, 5, 5);
+				gbc_borrowDateLbl.gridx = 1;
+				gbc_borrowDateLbl.gridy = 7;
+				contentPanel.add(borrowDateLbl, gbc_borrowDateLbl);
+			}
+
+			{
+				borrowDateModel = new UtilDateModel();
+				Properties p = new Properties();
+				p.put("text.today", "Today");
+				p.put("text.month", "Month");
+				p.put("text.year", "Year");
+				borrowDatePanel = new JDatePanelImpl(borrowDateModel, p);
+				borrowDatePicker = new JDatePickerImpl(borrowDatePanel, new CalendarFormater());
+				
+				GridBagConstraints gbc_borrowDatePicker = new GridBagConstraints();
+				gbc_borrowDatePicker.insets = new Insets(0, 0, 5, 5);
+				gbc_borrowDatePicker.fill = GridBagConstraints.HORIZONTAL;
+				gbc_borrowDatePicker.gridx = 2;
+				gbc_borrowDatePicker.gridy = 7;
+				contentPanel.add(borrowDatePicker, gbc_borrowDatePicker);
+			}
+			{
+				JLabel expectedReturnDateLbl = new JLabel("Expected return date");
+				GridBagConstraints gbc_expectedReturnDateLbl = new GridBagConstraints();
+				gbc_expectedReturnDateLbl.anchor = GridBagConstraints.WEST;
+				gbc_expectedReturnDateLbl.insets = new Insets(0, 0, 5, 5);
+				gbc_expectedReturnDateLbl.gridx = 1;
+				gbc_expectedReturnDateLbl.gridy = 8;
+				contentPanel.add(expectedReturnDateLbl, gbc_expectedReturnDateLbl);
+			}
+			{
+				expectedReturnDateModel = new UtilDateModel();
+				Properties p = new Properties();
+				p.put("text.today", "Today");
+				p.put("text.month", "Month");
+				p.put("text.year", "Year");
+				expectedReturnDatePanel = new JDatePanelImpl(expectedReturnDateModel, p);
+				expectedReturnDatePicker = new JDatePickerImpl(expectedReturnDatePanel, new CalendarFormater());
+				
+				GridBagConstraints gbc_expectedReturnDatePicker = new GridBagConstraints();
+				gbc_expectedReturnDatePicker.insets = new Insets(0, 0, 5, 5);
+				gbc_expectedReturnDatePicker.fill = GridBagConstraints.HORIZONTAL;
+				gbc_expectedReturnDatePicker.gridx = 2;
+				gbc_expectedReturnDatePicker.gridy = 8;
+				contentPanel.add(expectedReturnDatePicker, gbc_expectedReturnDatePicker);
+			}
+			{
+				JLabel realReturnDateLbl = new JLabel("Real return date");
+				GridBagConstraints gbc_realReturnDateLbl = new GridBagConstraints();
+				gbc_realReturnDateLbl.anchor = GridBagConstraints.WEST;
+				gbc_realReturnDateLbl.insets = new Insets(0, 0, 5, 5);
+				gbc_realReturnDateLbl.gridx = 1;
+				gbc_realReturnDateLbl.gridy = 9;
+				contentPanel.add(realReturnDateLbl, gbc_realReturnDateLbl);
+			}
+			{
+				realReturnDateModel = new UtilDateModel();
+				Properties p = new Properties();
+				p.put("text.today", "Today");
+				p.put("text.month", "Month");
+				p.put("text.year", "Year");
+				realReturnDatePanel = new JDatePanelImpl(realReturnDateModel, p);
+				realReturnDatePicker = new JDatePickerImpl(realReturnDatePanel, new CalendarFormater());
+				
+				GridBagConstraints gbc_realReturnDatePicker = new GridBagConstraints();
+				gbc_realReturnDatePicker.insets = new Insets(0, 0, 5, 5);
+				gbc_realReturnDatePicker.fill = GridBagConstraints.HORIZONTAL;
+				gbc_realReturnDatePicker.gridx = 2;
+				gbc_realReturnDatePicker.gridy = 9;
+				contentPanel.add(realReturnDatePicker, gbc_realReturnDatePicker);
+			}
+		}
+		
 		{
 			msgLbl.setVerticalAlignment(SwingConstants.TOP);
 			msgLbl.setHorizontalAlignment(SwingConstants.LEFT);
@@ -496,6 +597,9 @@ public class OrderPage extends JDialog {
 			gbc_msgLbl.gridx = 2;
 			if(type == OrderPageType.SALE) {
 				gbc_msgLbl.gridy = 9;
+			}
+			if(type == OrderPageType.LEASE) {
+				gbc_msgLbl.gridy = 10;
 			}
 			
 			contentPanel.add(msgLbl, gbc_msgLbl);
@@ -549,28 +653,26 @@ public class OrderPage extends JDialog {
 	private void saveSale() {
 
 		try {
-			Date sDate = (Date)shippingDatePicker.getModel().getValue();
-			Date dDate = (Date)deliveryDatePicker.getModel().getValue();
-			LocalDate shippmentDate = ParsingHelper.convertToLocalDateViaInstant(sDate);
-			LocalDate deliveryDate = ParsingHelper.convertToLocalDateViaInstant(dDate);
-			
 			order = new Sale(-1,
-							  ParsingHelper.tryParseDouble(totalPriceValue.getText()),
-							  noteField.getText(),
-							  LocalDate.now(),
-							  LoginContainer.getInstance().getCurrentUser().getWarehouse(),
-							  orderLines,
-							  null,
-							  -1,
-							  shippmentDate,
-							  deliveryDate,
-							  getCurrentCustomer()
-							);
+					  ParsingHelper.tryParseDouble(totalPriceValue.getText()),
+					  noteField.getText(),
+					  LocalDate.now(),
+					  LoginContainer.getInstance().getCurrentUser().getWarehouse(),
+					  orderLines,
+					  null,
+					  -1,
+					  ParsingHelper.convertToLocalDateViaInstant((Date)shippingDatePicker.getModel().getValue()),
+					  ParsingHelper.convertToLocalDateViaInstant((Date)deliveryDatePicker.getModel().getValue()),
+					  getCurrentCustomer()
+					);
 			
 			order = orderCtrl.createOrder(order);
 			
 			msgLbl.setText(MessagesEnum.SALECREATED.text);
 			msgLbl.setForeground(Color.GREEN);
+			
+			loadData();
+			getCurrentStock();
 			
 		} catch(SQLException e) {
 			e.printStackTrace();
@@ -580,6 +682,57 @@ public class OrderPage extends JDialog {
 			e.printStackTrace();
 			msgLbl.setForeground(Color.RED);
 			msgLbl.setText(MessagesEnum.PARSEERROR.text);
+		} finally {
+			msgOrderLineLbl.setText("");
+		}
+	}
+	
+	private void saveLease() {
+		try {
+			LocalDate borrowDate = ParsingHelper.convertToLocalDateViaInstant((Date)borrowDatePicker.getModel().getValue());
+			LocalDate expectedReturnDate = ParsingHelper.convertToLocalDateViaInstant((Date)expectedReturnDatePicker.getModel().getValue());
+			
+			if(borrowDate == null) {
+				throw new Exception(MessagesEnum.EMPTYBORROWDATE.text);
+			}
+			if(expectedReturnDate == null) {
+				throw new Exception(MessagesEnum.EMPTYEXPECTEDRETURNDATE.text);
+			}
+			
+			order = new Lease(-1,
+							  ParsingHelper.tryParseDouble(totalPriceValue.getText()),
+							  noteField.getText(),
+							  LocalDate.now(),
+							  LoginContainer.getInstance().getCurrentUser().getWarehouse(),
+							  orderLines,
+							  null,
+							  -1,
+							  borrowDate,
+							  expectedReturnDate,
+							  ParsingHelper.convertToLocalDateViaInstant((Date)realReturnDatePicker.getModel().getValue()),
+							  getCurrentCustomer()
+							);
+			
+			order = orderCtrl.createOrder(order);
+			
+			msgLbl.setText(MessagesEnum.LEASECREATED.text);
+			msgLbl.setForeground(Color.GREEN);
+			
+			loadData();
+			getCurrentStock();
+			
+		} catch(SQLException e) {
+			e.printStackTrace();
+			msgLbl.setText(MessagesEnum.DBERROR.text);
+			msgLbl.setForeground(Color.RED);
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			msgLbl.setForeground(Color.RED);
+			msgLbl.setText(MessagesEnum.PARSEERROR.text);
+		} catch (Exception e) {
+			e.printStackTrace();
+			msgLbl.setForeground(Color.RED);
+			msgLbl.setText(e.getMessage());
 		} finally {
 			msgOrderLineLbl.setText("");
 		}
