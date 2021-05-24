@@ -44,7 +44,7 @@ public class CustomerDB implements CustomerIF {
 
 	public Customer getCustomerById(long id) throws SQLException {
 		Customer res = null;
-		String sqlCustomer = ("SELECT * FROM Employee WHERE id = ?");
+		String sqlCustomer = ("SELECT * FROM Customer WHERE id = ?");
 		Connection con = DBConnection.getInstance().getConnection();
 
 		try {

@@ -313,7 +313,12 @@ public class PersonPage extends JDialog {
 				btnBack = new JButton("Back");
 				btnBack.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						HomePage.start();
+						if (personId == -1 ) {
+							HomePage.start();							
+						} else {
+							PeopleListPage.start();
+						}
+						
 						dispose();
 					}
 				});

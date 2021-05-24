@@ -29,6 +29,7 @@ private AddressDB addressDb =  new AddressDB();
 			ResultSet rsSupplier = preparedStmt.executeQuery();
 			if (rsSupplier.next()) {
 				res = buildSupplier(rsSupplier);
+				res.setAddress(addressDb.getAddress(rsSupplier.getLong("address_id")));
 			}
 		} catch (SQLException e) {
 			throw e;
@@ -46,10 +47,11 @@ private AddressDB addressDb =  new AddressDB();
      try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlSupplier);
 			preparedStmt.setLong(1, id);
+
 			ResultSet rsSupplier = preparedStmt.executeQuery();
 			if (rsSupplier.next()) {
 				res = buildSupplier(rsSupplier);
-				
+				res.setAddress(addressDb.getAddress(rsSupplier.getLong("address_id")));	
 			}
 		} catch (SQLException e) {
 			throw e;
