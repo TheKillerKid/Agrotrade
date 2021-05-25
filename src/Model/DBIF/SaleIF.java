@@ -5,9 +5,11 @@ import java.sql.SQLException;
 import Model.Model.Sale;
 
 public interface SaleIF {
-	public Sale createSale(Sale sale) throws SQLException;
+	Sale createSale(Sale sale) throws Exception;
+	
+	void sendSale(long id) throws Exception;
+	
+	Sale getSale(long id) throws SQLException;
 	 
 	//Sale update(Sale sale) throws SQLException;
-	 
-	//void delete(long id) throws SQLException;
 }

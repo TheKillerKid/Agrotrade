@@ -12,8 +12,6 @@ public interface CustomerIF {
 	
 	public void updateCustomer(Customer customer) throws SQLException;
 	
-	public void deleteCustomer(String cvrNo) throws SQLException;
-	
 	public ArrayList<Customer> getCustomerList() throws SQLException;
 	
 }

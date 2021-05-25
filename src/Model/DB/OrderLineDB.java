@@ -49,16 +49,16 @@ public class OrderLineDB implements OrderLineIF {
 		return id;
 	}
 	
-	public ArrayList<OrderLine> getOrderLineList (long orderId, long warehouseId) throws SQLException {
+	public ArrayList<OrderLine> getOrderLineList(long orderId, long warehouseId) throws SQLException {
 		ArrayList<OrderLine> res = new ArrayList<OrderLine>();  
-		String sqlGetOrder = "SELECT * FROM OrderView WHERE order_id = ?";
+		String sqlGetOrder = "SELECT * FROM OrderLine WHERE order_id = ?";
 		
 		Connection con = DBConnection.getInstance().getConnection();
 		
 		try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlGetOrder);
 			
-			preparedStmt.setLong(0, orderId);
+			preparedStmt.setLong(1, orderId);
 			
 			ResultSet rs = preparedStmt.executeQuery();
 			
@@ -73,8 +73,6 @@ public class OrderLineDB implements OrderLineIF {
 		} catch (SQLException e) {
 			throw e;
 		}
-		
-		
 		
 		return res;
 	}

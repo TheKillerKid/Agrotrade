@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import Model.DBIF.SaleIF;
 import Model.Model.MessagesEnum;
 import Model.Model.OrderLine;
+import Model.Model.OrderPageType;
 import Model.Model.Sale;
 
 public class SaleDB implements SaleIF {
@@ -20,7 +21,7 @@ public class SaleDB implements SaleIF {
 	private CustomerDB customerDb = new CustomerDB();
 	
 	@Override
-	public Sale createSale(Sale sale) throws SQLException {
+	public Sale createSale(Sale sale) throws Exception {
 		String sqlCreate = "INSERT INTO Sale (shipping_date, delivery_date, customer_id) VALUES (?,?,?)";
 
 		LocalDate shippingDate = sale.getShippingDate();
@@ -43,7 +44,7 @@ public class SaleDB implements SaleIF {
     			sale.setOrder(orderDb.createOrder(sale));
             }
             else {
-                throw new SQLException(MessagesEnum.DBSAVEERROR.text);
+                throw new Exception(MessagesEnum.DBSAVEERROR.text);
             }
 		} catch (SQLException e) {
 			throw e;
@@ -51,21 +52,24 @@ public class SaleDB implements SaleIF {
 		return sale;
 	}
 	
-	public Sale getSale(long saleId) throws SQLException {
+	public Sale getSale(long id) throws SQLException {
 		Sale res = null;
 		
-		String sqlSale = "SELECT  * FROM Sale WHERE id = ?";
+		String sqlSale = "SELECT * FROM Sale WHERE id = ?";
 		
 	    Connection con = DBConnection.getInstance().getConnection();
 	    
 	    try {	    	
-	    	PreparedStatement preparedStmt = con.prepareStatement(sqlSale);	    	
+	    	PreparedStatement preparedStmt = con.prepareStatement(sqlSale);	  
+	    	
+	    	preparedStmt.setLong(1, id);
 	    	
 	    	ResultSet rs = preparedStmt.executeQuery();
 	    	
 	    	if (rs.next()) {
 	    		Sale sale = buildSale(rs);
 	    		
+	    		sale.setOrder(orderDb.getOrder(sale.getId(), OrderPageType.SALE));
 	    		sale.setCustomer(customerDb.getCustomerById(rs.getLong("customer_id")));
 	    		
 	    		res = sale;
@@ -73,24 +77,49 @@ public class SaleDB implements SaleIF {
 	    } catch (SQLException e) {
 	    	throw e;
 	    }
-
-		
+	
 		return res;
 	}
 	
 	private Sale buildSale(ResultSet rs) throws SQLException {
+		Date sqlShippingDate = rs.getDate("shipping_date");
+		Date sqlDeliveryDate = rs.getDate("delivery_date");
 		return new Sale(
 				-1,
-				0,
+				-1,
 				null,
 				null,
 				null,
 				null,
 				null,
 				rs.getLong("id"),
-				rs.getDate("shipping_date").toLocalDate(),
-				rs.getDate("delivery_date").toLocalDate(),
+				sqlShippingDate != null ? sqlShippingDate.toLocalDate() : null,
+				sqlDeliveryDate != null ? sqlDeliveryDate.toLocalDate() : null,
 				null
 		);
+	}
+
+	@Override
+	public void sendSale(long id) throws Exception {
+		String sqlCreate = "UPDATE Sale SET shipping_date = ? WHERE id = ?";
+
+		LocalDate shippingDate = LocalDate.now();
+		
+	     Connection con = DBConnection.getInstance().getConnection();
+	
+	     try {
+			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate, Statement.RETURN_GENERATED_KEYS);
+			preparedStmt.setObject(1, shippingDate != null ? java.sql.Date.valueOf(shippingDate) : null);
+			preparedStmt.setLong(2, id);
+			
+			preparedStmt.executeUpdate();
+			
+			ResultSet rs = preparedStmt.getGeneratedKeys();
+            if (!rs.next()) {
+            	throw new Exception(MessagesEnum.DBUPDATEERROR.text);
+            }
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 }

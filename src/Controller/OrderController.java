@@ -23,7 +23,7 @@ public class OrderController {
 	private CustomerController customerCtrl = new CustomerController();
 	
 	
-	public Order createOrder(Order order) throws SQLException{
+	public Order createOrder(Order order) throws Exception{
 		
 		if(order instanceof Sale) {
 			Sale sale = (Sale)order;
@@ -49,11 +49,28 @@ public class OrderController {
 			if(order instanceof Purchase) {
 				return this.purchaseCtrl.createPurchase((Purchase)order);
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			throw e;
 		}
 		
 		return null;
+	}
+	
+	public Order getOrder(OrderPageType type, long id) throws SQLException {
+		try {
+			if(type == OrderPageType.SALE) {
+				return this.saleCtrl.getSale(id);
+			}
+			if(type == OrderPageType.LEASE) {
+				return this.leaseCtrl.getLease(id);
+			}
+			if(type == OrderPageType.PURCHASE) {
+				return this.purchaseCtrl.getPurchase(id);
+			}
+			return null;
+		} catch(SQLException e) {
+			throw e;
+		}
 	}
 	
 	public double calculateTotalPrice(ArrayList<OrderLine> ols, OrderPageType type) {
@@ -72,6 +89,14 @@ public class OrderController {
 		
 		return totalPrice;
 		
+	}
+	
+	public void sendSale(long id) throws Exception {
+		try {
+			this.saleCtrl.sendSale(id);
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 	
 	public ArrayList<Customer> getCustomers() throws SQLException{

@@ -1,6 +1,7 @@
 package Model.DB;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,14 +9,16 @@ import java.sql.Statement;
 import java.time.LocalDate;
 
 import Model.Model.Purchase;
+import Model.Model.Sale;
 import Model.DBIF.PurchaseIF;
 import Model.Model.MessagesEnum;
+import Model.Model.OrderPageType;
 
 public class PurchaseDB implements PurchaseIF{
 	private OrderDB orderDb = new OrderDB();
 	
 	@Override
-	public Purchase createPurchase(Purchase purchase) throws SQLException {
+	public Purchase createPurchase(Purchase purchase) throws Exception {
 		String sqlCreate = "INSERT INTO Purchase (delivery_date) VALUES (?)";
 		
 		LocalDate deliveryDate = purchase.getDeliveryDate();
@@ -40,5 +43,47 @@ public class PurchaseDB implements PurchaseIF{
 			throw e;
 		}
 		return purchase;
+	}
+	
+	public Purchase getPurchase(long id) throws SQLException {
+		Purchase res = null;
+		
+		String sqlPurchase = "SELECT * FROM Purchase WHERE id = ?";
+		
+	    Connection con = DBConnection.getInstance().getConnection();
+	    
+	    try {	    	
+	    	PreparedStatement preparedStmt = con.prepareStatement(sqlPurchase);	  
+	    	
+	    	preparedStmt.setLong(1, id);
+	    	
+	    	ResultSet rs = preparedStmt.executeQuery();
+	    	
+	    	if (rs.next()) {
+	    		Purchase purchase = buildPurchase(rs);
+	    		
+	    		purchase.setOrder(orderDb.getOrder(purchase.getId(), OrderPageType.PURCHASE));
+	    		
+	    		res = purchase;
+	    	}
+	    } catch (SQLException e) {
+	    	throw e;
+	    }
+	    return res;
+	}
+	
+	private Purchase buildPurchase(ResultSet rs) throws SQLException {
+		Date sqlDeliveryDate = rs.getDate("delivery_date");
+		return new Purchase(
+				-1,
+				-1,
+				null,
+				null,
+				null,
+				null,
+				null,
+				rs.getLong("id"),
+				sqlDeliveryDate != null ? sqlDeliveryDate.toLocalDate() : null
+		);
 	}
 }

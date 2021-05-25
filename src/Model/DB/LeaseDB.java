@@ -1,6 +1,7 @@
 package Model.DB;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,13 +11,16 @@ import java.time.LocalDate;
 import Model.DBIF.LeaseIF;
 import Model.Model.Lease;
 import Model.Model.MessagesEnum;
+import Model.Model.OrderPageType;
 
 public class LeaseDB implements LeaseIF{
 
 	private OrderDB orderDb = new OrderDB();
 	
+	private CustomerDB customerDb = new CustomerDB();
+	
 	@Override
-	public Lease createLease(Lease lease) throws SQLException {
+	public Lease createLease(Lease lease) throws Exception {
 		String sqlCreate = "INSERT INTO Lease (borrow_date, expected_return_date, real_return_date, customer_id) VALUES (?,?,?,?)";
 		
 		LocalDate borrowDate = lease.getBorrowDate();
@@ -47,5 +51,54 @@ public class LeaseDB implements LeaseIF{
 			throw e;
 		}
 		return lease;
+	}
+	
+	public Lease getLease(long id) throws SQLException {
+		Lease res = null;
+		
+		String sqlSale = "SELECT * FROM Lease WHERE id = ?";
+		
+	    Connection con = DBConnection.getInstance().getConnection();
+	    
+	    try {	    	
+	    	PreparedStatement preparedStmt = con.prepareStatement(sqlSale);	  
+	    	
+	    	preparedStmt.setLong(1, id);
+	    	
+	    	ResultSet rs = preparedStmt.executeQuery();
+	    	
+	    	if (rs.next()) {
+	    		Lease lease = buildLease(rs);
+	    		
+	    		lease.setOrder(orderDb.getOrder(lease.getId(), OrderPageType.LEASE));
+	    		lease.setCustomer(customerDb.getCustomerById(rs.getLong("customer_id")));
+	    		
+	    		res = lease;
+	    	}
+	    } catch (SQLException e) {
+	    	throw e;
+	    }
+	
+		return res;
+	}
+	
+	private Lease buildLease(ResultSet rs) throws SQLException {
+		Date sqlBorrowDate = rs.getDate("borrow_date");
+		Date sqlExpectedReturnDate = rs.getDate("expected_return_date");
+		Date sqlRealReturnDate = rs.getDate("real_return_date");
+		return new Lease(
+					-1,
+					-1,
+					null,
+					null,
+					null,
+					null,
+					null,
+					rs.getLong("id"),
+					sqlBorrowDate != null ? sqlBorrowDate.toLocalDate() : null,
+					sqlExpectedReturnDate != null ? sqlExpectedReturnDate.toLocalDate() : null,
+					sqlRealReturnDate != null ? sqlRealReturnDate.toLocalDate() : null,
+					null
+		);
 	}
 }

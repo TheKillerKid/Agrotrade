@@ -46,13 +46,16 @@ public class InvoiceDB implements InvoiceIF {
 		return invoice;
 	}
 	
-	public Invoice getInvoice (long invoiceId) throws SQLException {
+	public Invoice getInvoice(long orderId) throws SQLException {
 		Invoice res = null;
-		String sqlInvoice = "SELECT * FROM Invoice WHERE id = ?";
+		String sqlInvoice = "SELECT * FROM Invoice WHERE order_id = ?";
 		
 		Connection con = DBConnection.getInstance().getConnection();
 		try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlInvoice);
+			
+			preparedStmt.setLong(1, orderId);
+			
 			ResultSet rs = preparedStmt.executeQuery();
 			
 			if (rs.next()) {

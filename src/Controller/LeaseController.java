@@ -4,13 +4,22 @@ import java.sql.SQLException;
 
 import Model.DB.LeaseDB;
 import Model.Model.Lease;
+import Model.Model.Sale;
 
 public class LeaseController {
 	private LeaseDB leaseDb = new LeaseDB();
 	
-	public Lease createLease(Lease lease) throws SQLException {
+	public Lease createLease(Lease lease) throws Exception {
 		try {
 			return leaseDb.createLease(lease);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	public Lease getLease(long id) throws SQLException {
+		try {
+			return leaseDb.getLease(id);
 		} catch (SQLException e) {
 			throw e;
 		}

@@ -185,29 +185,6 @@ public class CustomerDB implements CustomerIF {
 			throw e;
 		}
 	}
-	
-	@Override
-	public void deleteCustomer(String cvrNo) throws SQLException {
-		 /* Connection connection = null;
-	       Statement stmt = null;
-		
-		try
-		{ (Statement s = DBConnection.getInstance().getConnection().createStatement()) {
-			
-			stmt.execute("DELETE FROM EMPLOYEE WHERE CPRNO >= 1");
-		}catch (Exception e) {
-            e.printStackTrace();
-        }finally {
-            try {   
-                stmt.close();
-                connection.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            	}
-        	}
-		}*/
-		
-	}
 
 	@Override
 	public ArrayList<Customer> getCustomerList() throws SQLException {
@@ -241,6 +218,6 @@ public class CustomerDB implements CustomerIF {
 							rs.getString("phone"), 
 							rs.getString("email"), 
 							rs.getString("cvr_no"), 
-							0);
+							rs.getDouble("static_discount"));
 	}
 }

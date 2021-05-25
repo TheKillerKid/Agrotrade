@@ -469,7 +469,9 @@ public class ProductPage extends JDialog {
 	public void loadData(long stockProductId) throws SQLException {
 		try {
 			txtpnRegisterProduct.setText("Edit product");
+			
 			StockProduct stockProduct = stockProductController.getStockProduct(stockProductId, LoginContainer.getInstance().getCurrentUser().getWarehouse().getId());
+			
 			barcodeField.setText(stockProduct.getProduct().getBarcode());
 			nameField.setText(stockProduct.getProduct().getName());
 			purchasePriceField.setText(Double.toString(stockProduct.getProduct().getPurchasePrice().getAmount()));
