@@ -9,6 +9,7 @@ public enum MessagesEnum {
 	VALUEHIGHERTHANZEROERROR("Value should be higher than 0!"),
 	EMPTYBORROWDATE("Borrow date cannot be empty!"),
 	EMPTYEXPECTEDRETURNDATE("Expected return date cannot be empty!"),
+	PURCHASEREACHMAXPRODUCTS("System cannot add there more product because warehouse doesn't have capacity for that! Maximum amount is: "),
 	//SUCCESS
 	PRODUCTSAVED("Product saved! You can go and create purchase to fill your warehouse."),
 	EMPLOYEESAVED("Employee saved!"),
@@ -17,6 +18,7 @@ public enum MessagesEnum {
 	PRODUCTADDEDTOORDER("Product was added to order!"),
 	SALECREATED("Sale was created!"),
 	LEASECREATED("Lease was created!"),
+	PURCHASECREATED("Purchase was created!"),
 	;
 	
 	public final String text;

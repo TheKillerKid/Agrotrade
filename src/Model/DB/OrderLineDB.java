@@ -13,7 +13,7 @@ import Model.Model.OrderLine;
 public class OrderLineDB implements OrderLineIF {
 	private StockProductDB stockProductDb = new StockProductDB();
 	
-	public long createOrderLine(OrderLine orderLine, long orderId) throws SQLException {
+	public long createOrderLine(OrderLine orderLine, long orderId, boolean isPurchase) throws SQLException {
 		String sqlCreate = "INSERT INTO OrderLine (requested_amount, amount, stock_product_id, order_id) VALUES (?,?,?,?)";
 		
 		long id = 0;
@@ -35,7 +35,9 @@ public class OrderLineDB implements OrderLineIF {
 			ResultSet rs = preparedStmt.getGeneratedKeys();
             if (rs.next()) {
             	id = rs.getLong(1);
-            	stockProductDb.sellOrLeaseStockProduct(orderLine.getStockProduct().getId(), orderLine.getAmount() ,orderLine.getStockProduct().getWarehouseId());
+            	if(!isPurchase) {
+            		stockProductDb.sellOrLeaseStockProduct(orderLine.getStockProduct().getId(), orderLine.getAmount() ,orderLine.getStockProduct().getWarehouseId());
+            	}
             }
             else {
                 throw new SQLException(MessagesEnum.DBSAVEERROR.text);

@@ -53,6 +53,7 @@ import Model.Model.MessagesEnum;
 import Model.Model.Order;
 import Model.Model.OrderLine;
 import Model.Model.OrderPageType;
+import Model.Model.Purchase;
 import Model.Model.Sale;
 
 import java.awt.event.ItemListener;
@@ -62,6 +63,8 @@ import javax.swing.SwingConstants;
 
 public class OrderPage extends JDialog {
 	private OrderController orderCtrl = new OrderController();
+	
+	private OrderPageType type;
 	
 	private final JPanel contentPanel = new JPanel();
 	private JPanel buttonPane = new JPanel();
@@ -107,6 +110,7 @@ public class OrderPage extends JDialog {
 	
 	private StockProduct selectedStockProduct = null;
 	private int availableAmountOfSelectedProduct;
+	private int currtentMaxAmountOfSelectedProduct;
 	private ArrayList<OrderLine> orderLines = new ArrayList<OrderLine>();
 	private Order order = null;
 	
@@ -135,6 +139,7 @@ public class OrderPage extends JDialog {
 	 * Create the dialog.
 	 */
 	public OrderPage(OrderPageType type) {
+		this.type = type;
 		setBounds(150, 150, 1280, 800);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -153,7 +158,9 @@ public class OrderPage extends JDialog {
 			if(type == OrderPageType.LEASE) {
 				title.setText("Register lease");
 			}
-			
+			if(type == OrderPageType.PURCHASE) {
+				title.setText("Register purchase");
+			}
 			
 			title.setFont(new Font("Tahoma", Font.BOLD, 14));
 			GridBagConstraints gbc_title = new GridBagConstraints();
@@ -162,24 +169,26 @@ public class OrderPage extends JDialog {
 			gbc_title.gridy = 1;
 			contentPanel.add(title, gbc_title);
 		}
-		{
-			JLabel customerCvrNoLbl = new JLabel("Customer");
-			GridBagConstraints gbc_customerCvrNoLbl = new GridBagConstraints();
-			gbc_customerCvrNoLbl.anchor = GridBagConstraints.WEST;
-			gbc_customerCvrNoLbl.insets = new Insets(0, 0, 5, 5);
-			gbc_customerCvrNoLbl.gridx = 1;
-			gbc_customerCvrNoLbl.gridy = 2;
-			contentPanel.add(customerCvrNoLbl, gbc_customerCvrNoLbl);
-		}
-		{
-
-			customersComboBox = new JComboBox<String>(customersDefaultModel);
-			GridBagConstraints gbc_customerComboBox = new GridBagConstraints();
-			gbc_customerComboBox.fill = GridBagConstraints.HORIZONTAL;
-			gbc_customerComboBox.insets = new Insets(0, 0, 5, 5);
-			gbc_customerComboBox.gridx = 2;
-			gbc_customerComboBox.gridy = 2;
-			contentPanel.add(customersComboBox, gbc_customerComboBox);
+		if(type != OrderPageType.PURCHASE) {
+			{
+				JLabel customerCvrNoLbl = new JLabel("Customer");
+				GridBagConstraints gbc_customerCvrNoLbl = new GridBagConstraints();
+				gbc_customerCvrNoLbl.anchor = GridBagConstraints.WEST;
+				gbc_customerCvrNoLbl.insets = new Insets(0, 0, 5, 5);
+				gbc_customerCvrNoLbl.gridx = 1;
+				gbc_customerCvrNoLbl.gridy = 2;
+				contentPanel.add(customerCvrNoLbl, gbc_customerCvrNoLbl);
+			}
+			{
+	
+				customersComboBox = new JComboBox<String>(customersDefaultModel);
+				GridBagConstraints gbc_customerComboBox = new GridBagConstraints();
+				gbc_customerComboBox.fill = GridBagConstraints.HORIZONTAL;
+				gbc_customerComboBox.insets = new Insets(0, 0, 5, 5);
+				gbc_customerComboBox.gridx = 2;
+				gbc_customerComboBox.gridy = 2;
+				contentPanel.add(customersComboBox, gbc_customerComboBox);
+			}
 		}
 		{
 			JPanel panel = new JPanel();
@@ -256,71 +265,7 @@ public class OrderPage extends JDialog {
 				btnAdd.setEnabled(false);
 				btnAdd.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						try {
-							contentPanel.remove(scrollPane);
-							int requestedAmount = ParsingHelper.tryParseInt(quantityField.getText());
-							
-							if(requestedAmount < 1) {
-								throw new Exception(MessagesEnum.VALUEHIGHERTHANZEROERROR.text);
-							}
-							
-							availableAmountOfSelectedProduct = selectedStockProduct.getAmount();
-							orderLines.stream().filter(ol -> ol.getStockProduct().getProduct().getBarcode() == selectedStockProduct.getProduct().getBarcode())
-											   .forEach(ol -> {
-												   availableAmountOfSelectedProduct -= ol.getAmount();
-											   });
-							int amount = requestedAmount > availableAmountOfSelectedProduct ? availableAmountOfSelectedProduct : requestedAmount;
-							orderLines.add(new OrderLine(-1, requestedAmount, amount, selectedStockProduct));
-							
-							totalPriceValue.setText(String.valueOf(orderCtrl.calculateTotalPrice(orderLines, type)));
-							
-							ols = new Object[orderLines.size()][];
-							
-							for(int i = 0; i < orderLines.size(); i++) {
-								OrderLine ol = orderLines.get(i);
-								Object [] newData = {
-									ol.getStockProduct().getProduct().getBarcode(),
-									ol.getStockProduct().getProduct().getName(),
-									Integer.toString(ol.getStockProduct().getAmount()),
-									Integer.toString(ol.getRequestedAmount()),
-									Integer.toString(ol.getAmount()),
-								};
-
-								ols[i] = newData;
-							}
-							
-							quantityField.setText("");
-							
-							olsTabelModel = new DefaultTableModel(ols, columns);
-							olsTable = new JTable(olsTabelModel);
-							scrollPane = new JScrollPane(olsTable);
-							
-							contentPanel.add(scrollPane, gbc_scrollPane);
-							contentPanel.revalidate();
-							contentPanel.repaint();
-							
-							
-							buttonPane.remove(saveBtn);
-							boolean enabled = orderLines.size() > 0;
-							saveBtn.setEnabled(enabled);
-							buttonPane.add(saveBtn, gbc_saveBtn);
-							buttonPane.revalidate();
-							buttonPane.repaint();
-							
-							msgOrderLineLbl.setText(MessagesEnum.PRODUCTADDEDTOORDER.text);
-							msgOrderLineLbl.setForeground(Color.GREEN);
-						}
-						catch(NumberFormatException e1) {
-							contentPanel.add(scrollPane, gbc_scrollPane);
-							e1.printStackTrace();
-							msgOrderLineLbl.setText(MessagesEnum.PARSEERROR.text);
-							msgOrderLineLbl.setForeground(Color.RED);
-						} catch (Exception e2) {
-							contentPanel.add(scrollPane, gbc_scrollPane);
-							e2.printStackTrace();
-							msgOrderLineLbl.setText(e2.getMessage());
-							msgOrderLineLbl.setForeground(Color.RED);
-						}
+						addProductToOrderLine();
 					}
 				});
 				gbc_btnAdd.insets = new Insets(0, 0, 5, 0);
@@ -450,6 +395,9 @@ public class OrderPage extends JDialog {
 						}
 						if(type == OrderPageType.LEASE) {
 							saveLease();
+						}
+						if(type == OrderPageType.PURCHASE) {
+							savePurchase();
 						}
 					}
 				});
@@ -587,6 +535,33 @@ public class OrderPage extends JDialog {
 				contentPanel.add(realReturnDatePicker, gbc_realReturnDatePicker);
 			}
 		}
+		if(type == OrderPageType.PURCHASE){
+			{
+				JLabel deliveryDateLbl = new JLabel("Delivery date");
+				GridBagConstraints gbc_deliveryDateLbl = new GridBagConstraints();
+				gbc_deliveryDateLbl.anchor = GridBagConstraints.WEST;
+				gbc_deliveryDateLbl.insets = new Insets(0, 0, 5, 5);
+				gbc_deliveryDateLbl.gridx = 1;
+				gbc_deliveryDateLbl.gridy = 7;
+				contentPanel.add(deliveryDateLbl, gbc_deliveryDateLbl);
+			}
+			{
+				deliveryDateModel = new UtilDateModel();
+				Properties p = new Properties();
+				p.put("text.today", "Today");
+				p.put("text.month", "Month");
+				p.put("text.year", "Year");
+				deliveryDatePanel = new JDatePanelImpl(deliveryDateModel, p);
+				deliveryDatePicker = new JDatePickerImpl(deliveryDatePanel, new CalendarFormater());
+				
+				GridBagConstraints gbc_deliveryDatePicker = new GridBagConstraints();
+				gbc_deliveryDatePicker.insets = new Insets(0, 0, 5, 5);
+				gbc_deliveryDatePicker.fill = GridBagConstraints.HORIZONTAL;
+				gbc_deliveryDatePicker.gridx = 2;
+				gbc_deliveryDatePicker.gridy = 7;
+				contentPanel.add(deliveryDatePicker, gbc_deliveryDatePicker);
+			}
+		}
 		
 		{
 			msgLbl.setVerticalAlignment(SwingConstants.TOP);
@@ -600,6 +575,9 @@ public class OrderPage extends JDialog {
 			}
 			if(type == OrderPageType.LEASE) {
 				gbc_msgLbl.gridy = 10;
+			}
+			if(type == OrderPageType.PURCHASE) {
+				gbc_msgLbl.gridy = 8;
 			}
 			
 			contentPanel.add(msgLbl, gbc_msgLbl);
@@ -735,6 +713,128 @@ public class OrderPage extends JDialog {
 			msgLbl.setText(e.getMessage());
 		} finally {
 			msgOrderLineLbl.setText("");
+		}
+	}
+	
+	private void savePurchase() {
+		try {	
+			order = new Purchase(-1,
+							  ParsingHelper.tryParseDouble(totalPriceValue.getText()),
+							  noteField.getText(),
+							  LocalDate.now(),
+							  LoginContainer.getInstance().getCurrentUser().getWarehouse(),
+							  orderLines,
+							  null,
+							  -1,
+							  ParsingHelper.convertToLocalDateViaInstant((Date)deliveryDatePicker.getModel().getValue())
+							);
+			
+			order = orderCtrl.createOrder(order);
+			
+			msgLbl.setText(MessagesEnum.LEASECREATED.text);
+			msgLbl.setForeground(Color.GREEN);
+			
+			loadData();
+			getCurrentStock();
+			
+		} catch(SQLException e) {
+			e.printStackTrace();
+			msgLbl.setText(MessagesEnum.DBERROR.text);
+			msgLbl.setForeground(Color.RED);
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			msgLbl.setForeground(Color.RED);
+			msgLbl.setText(MessagesEnum.PARSEERROR.text);
+		} catch (Exception e) {
+			e.printStackTrace();
+			msgLbl.setForeground(Color.RED);
+			msgLbl.setText(e.getMessage());
+		} finally {
+			msgOrderLineLbl.setText("");
+		}
+	}
+	
+	private void addProductToOrderLine() {
+		try {
+			contentPanel.remove(scrollPane);
+			int requestedAmount = ParsingHelper.tryParseInt(quantityField.getText());
+			
+			if(requestedAmount < 1) {
+				throw new Exception(MessagesEnum.VALUEHIGHERTHANZEROERROR.text);
+			}
+			
+			int amount = 0;
+			if(type != OrderPageType.PURCHASE) {
+				availableAmountOfSelectedProduct = selectedStockProduct.getAmount();
+				orderLines.stream().filter(ol -> ol.getStockProduct().getProduct().getBarcode() == selectedStockProduct.getProduct().getBarcode())
+								   .forEach(ol -> {
+									   availableAmountOfSelectedProduct -= ol.getAmount();
+								   });
+				amount = requestedAmount > availableAmountOfSelectedProduct ? availableAmountOfSelectedProduct : requestedAmount;
+			}
+			else {
+				currtentMaxAmountOfSelectedProduct = selectedStockProduct.getMaxStock();
+				orderLines.stream().filter(ol -> ol.getStockProduct().getProduct().getBarcode() == selectedStockProduct.getProduct().getBarcode())
+				   .forEach(ol -> {
+					   currtentMaxAmountOfSelectedProduct -= ol.getAmount();
+				   });
+				
+				if(currtentMaxAmountOfSelectedProduct < requestedAmount + selectedStockProduct.getAmount()) {
+					throw new Exception(MessagesEnum.PURCHASEREACHMAXPRODUCTS.text + (currtentMaxAmountOfSelectedProduct - selectedStockProduct.getAmount()));
+				}
+				amount = requestedAmount; 
+			}
+			
+			orderLines.add(new OrderLine(-1, requestedAmount, amount, selectedStockProduct));
+			
+			totalPriceValue.setText(String.valueOf(orderCtrl.calculateTotalPrice(orderLines, type)));
+			
+			ols = new Object[orderLines.size()][];
+			
+			for(int i = 0; i < orderLines.size(); i++) {
+				OrderLine ol = orderLines.get(i);
+				Object [] newData = {
+					ol.getStockProduct().getProduct().getBarcode(),
+					ol.getStockProduct().getProduct().getName(),
+					Integer.toString(ol.getStockProduct().getAmount()),
+					Integer.toString(ol.getRequestedAmount()),
+					Integer.toString(ol.getAmount()),
+				};
+
+				ols[i] = newData;
+			}
+			
+			quantityField.setText("");
+			
+			olsTabelModel = new DefaultTableModel(ols, columns);
+			olsTable = new JTable(olsTabelModel);
+			scrollPane = new JScrollPane(olsTable);
+			
+			contentPanel.add(scrollPane, gbc_scrollPane);
+			contentPanel.revalidate();
+			contentPanel.repaint();
+			
+			
+			buttonPane.remove(saveBtn);
+			boolean enabled = orderLines.size() > 0;
+			saveBtn.setEnabled(enabled);
+			buttonPane.add(saveBtn, gbc_saveBtn);
+			buttonPane.revalidate();
+			buttonPane.repaint();
+			
+			msgOrderLineLbl.setText(MessagesEnum.PRODUCTADDEDTOORDER.text);
+			msgOrderLineLbl.setForeground(Color.GREEN);
+		}
+		catch(NumberFormatException e1) {
+			contentPanel.add(scrollPane, gbc_scrollPane);
+			e1.printStackTrace();
+			msgOrderLineLbl.setText(MessagesEnum.PARSEERROR.text);
+			msgOrderLineLbl.setForeground(Color.RED);
+		} catch (Exception e2) {
+			contentPanel.add(scrollPane, gbc_scrollPane);
+			e2.printStackTrace();
+			msgOrderLineLbl.setText(e2.getMessage());
+			msgOrderLineLbl.setForeground(Color.RED);
 		}
 	}
 }

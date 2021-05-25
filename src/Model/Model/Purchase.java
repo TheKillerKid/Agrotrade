@@ -5,11 +5,23 @@ import java.util.ArrayList;
 
 public class Purchase extends Order {
 	private long id;
-	private LocalDate shippingDate;
+	private LocalDate deliveryDate;
 	
 	public Purchase(long orderId, double totalPrice, String note, LocalDate creationDate, Warehouse warehouse,
-			ArrayList<OrderLine> orderLines, Invoice invoice, LocalDate deliveryDate) {
+			ArrayList<OrderLine> orderLines, Invoice invoice, long id, LocalDate deliveryDate) {
 		super(orderId, totalPrice, note, creationDate, warehouse, orderLines, invoice);
+		this.id = id;
+		this.deliveryDate = deliveryDate;
+	}
+	
+	public void setOrder(Order order) {
+		this.setOrderId(order.getOrderId());
+		this.setTotalPrice(order.getTotalPrice());
+		this.setNote(order.getNote());
+		this.setCreationDate(order.getCreationDate());
+		this.setWarehouse(order.getWarehouse());
+		this.setOrderLines(order.getOrderLines());
+		this.setInvoice(order.getInvoice());
 	}
 	
 	public long getId() {
@@ -20,12 +32,12 @@ public class Purchase extends Order {
 		this.id = id;
 	}
 	
-	public LocalDate getShippingDate() {
-		return shippingDate;
+	public LocalDate getDeliveryDate() {
+		return deliveryDate;
 	}
 
-	public void setShippingDate(LocalDate shippingDate) {
-		this.shippingDate = shippingDate;
+	public void setDeliveryDate(LocalDate deliveryDate) {
+		this.deliveryDate = deliveryDate;
 	}
 
 }
