@@ -9,17 +9,21 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 import Model.DBIF.OrderIF;
+import Model.Model.Invoice;
 import Model.Model.Lease;
 import Model.Model.MessagesEnum;
 import Model.Model.Order;
 import Model.Model.OrderLine;
 import Model.Model.Purchase;
 import Model.Model.Sale;
+import Model.Model.Warehouse;
 
 public class OrderDB implements OrderIF {
 	
 	public InvoiceDB invoiceDb = new InvoiceDB();
 	public OrderLineDB ordeLineDb = new OrderLineDB();
+	public WarehouseDB warehouseDb = new WarehouseDB();
+	public SaleDB saleDb = new SaleDB();
 	
 	public Order createOrder(Order order) throws SQLException {
 		String sqlCreate = "INSERT INTO Orders (total_price, notes, creation_date, warehouse_id, sale_id, lease_id, purchase_id) VALUES (?,?,?,?,?,?,?)";
@@ -48,7 +52,7 @@ public class OrderDB implements OrderIF {
 		
 		Connection con = DBConnection.getInstance().getConnection();
 
-    try {
+		try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate, Statement.RETURN_GENERATED_KEYS);
 			preparedStmt.setDouble(1, totalPrice);
 			preparedStmt.setString(2, note);
@@ -93,5 +97,49 @@ public class OrderDB implements OrderIF {
 			throw e;
 		}
 		return order;
+	}
+	
+	public ArrayList<Order> getOrderList () throws SQLException {
+		ArrayList<Order> res = new ArrayList<Order>();
+		String sqlOrder = "SELECT * FROM Orders";
+		
+		
+		Connection con = DBConnection.getInstance().getConnection();
+		
+
+		try {
+			PreparedStatement preparedStmt = con.prepareStatement(sqlOrder);
+			
+			ResultSet rs = preparedStmt.executeQuery();
+			
+			while (rs.next()) {
+
+				if ((Long) rs.getLong("sale_id") != null) {
+					Sale sale = saleDb.getSale(rs.getLong("sale_id"));
+					sale.setOrderId(rs.getLong("id"));
+					sale.setTotalPrice(rs.getDouble("total_price"));
+					sale.setNote(rs.getString("note"));
+					sale.setCreationDate(rs.getDate("creation_date").toLocalDate());
+					sale.setWarehouse(warehouseDb.getWarehouse(rs.getLong("warehouse_id")));
+					sale.setOrderLines(null);
+					sale.setInvoice(null);
+
+					res.add(sale);  
+				}
+
+				if ((Long) rs.getLong("lease_id") != null) {
+					
+				}
+
+				if ((Long) rs.getLong("purchase_id") != null) {
+				
+				}
+			}
+		} catch (SQLException e) {
+			throw e;
+		}
+		
+		
+		return res;
 	}
 }

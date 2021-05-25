@@ -18,7 +18,7 @@ public class Sale extends Order {
 		this.deliveryDate = deliveryDate;
 		this.customer = customer;
 	}
-	
+
 	public void setOrder(Order order) {
 		this.setOrderId(order.getOrderId());
 		this.setTotalPrice(order.getTotalPrice());

@@ -74,7 +74,6 @@ public class OrderController {
 		
 	}
 	
-	
 	public ArrayList<Customer> getCustomers() throws SQLException{
 		try {
 			return this.customerCtrl.getCustomers();
