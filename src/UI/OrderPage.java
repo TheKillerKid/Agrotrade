@@ -53,6 +53,7 @@ import Model.Model.MessagesEnum;
 import Model.Model.Order;
 import Model.Model.OrderLine;
 import Model.Model.OrderPageType;
+import Model.Model.Purchase;
 import Model.Model.Sale;
 
 import java.awt.event.ItemListener;
@@ -62,6 +63,8 @@ import javax.swing.SwingConstants;
 
 public class OrderPage extends JDialog {
 	private OrderController orderCtrl = new OrderController();
+	
+	private OrderPageType type;
 	
 	private final JPanel contentPanel = new JPanel();
 	private JPanel buttonPane = new JPanel();
@@ -107,6 +110,7 @@ public class OrderPage extends JDialog {
 	
 	private StockProduct selectedStockProduct = null;
 	private int availableAmountOfSelectedProduct;
+	private int currtentMaxAmountOfSelectedProduct;
 	private ArrayList<OrderLine> orderLines = new ArrayList<OrderLine>();
 	private Order order = null;
 	
@@ -117,11 +121,13 @@ public class OrderPage extends JDialog {
 	private JScrollPane scrollPane;
 	private GridBagConstraints gbc_scrollPane = new GridBagConstraints();
 	
-	public static void start(OrderPageType type) {
+	private Long id;
+	
+	public static void start(OrderPageType type, Long id) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					OrderPage dialog = new OrderPage(type);
+					OrderPage dialog = new OrderPage(type, id);
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.setVisible(true);
 				} catch (Exception e) {
@@ -134,7 +140,9 @@ public class OrderPage extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public OrderPage(OrderPageType type) {
+	public OrderPage(OrderPageType type, Long id) {
+		this.type = type;
+		this.id = id;
 		setBounds(150, 150, 1280, 800);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -153,7 +161,9 @@ public class OrderPage extends JDialog {
 			if(type == OrderPageType.LEASE) {
 				title.setText("Register lease");
 			}
-			
+			if(type == OrderPageType.PURCHASE) {
+				title.setText("Register purchase");
+			}
 			
 			title.setFont(new Font("Tahoma", Font.BOLD, 14));
 			GridBagConstraints gbc_title = new GridBagConstraints();
@@ -162,24 +172,26 @@ public class OrderPage extends JDialog {
 			gbc_title.gridy = 1;
 			contentPanel.add(title, gbc_title);
 		}
-		{
-			JLabel customerCvrNoLbl = new JLabel("Customer");
-			GridBagConstraints gbc_customerCvrNoLbl = new GridBagConstraints();
-			gbc_customerCvrNoLbl.anchor = GridBagConstraints.WEST;
-			gbc_customerCvrNoLbl.insets = new Insets(0, 0, 5, 5);
-			gbc_customerCvrNoLbl.gridx = 1;
-			gbc_customerCvrNoLbl.gridy = 2;
-			contentPanel.add(customerCvrNoLbl, gbc_customerCvrNoLbl);
-		}
-		{
-
-			customersComboBox = new JComboBox<String>(customersDefaultModel);
-			GridBagConstraints gbc_customerComboBox = new GridBagConstraints();
-			gbc_customerComboBox.fill = GridBagConstraints.HORIZONTAL;
-			gbc_customerComboBox.insets = new Insets(0, 0, 5, 5);
-			gbc_customerComboBox.gridx = 2;
-			gbc_customerComboBox.gridy = 2;
-			contentPanel.add(customersComboBox, gbc_customerComboBox);
+		if(type != OrderPageType.PURCHASE) {
+			{
+				JLabel customerCvrNoLbl = new JLabel("Customer");
+				GridBagConstraints gbc_customerCvrNoLbl = new GridBagConstraints();
+				gbc_customerCvrNoLbl.anchor = GridBagConstraints.WEST;
+				gbc_customerCvrNoLbl.insets = new Insets(0, 0, 5, 5);
+				gbc_customerCvrNoLbl.gridx = 1;
+				gbc_customerCvrNoLbl.gridy = 2;
+				contentPanel.add(customerCvrNoLbl, gbc_customerCvrNoLbl);
+			}
+			{
+	
+				customersComboBox = new JComboBox<String>(customersDefaultModel);
+				GridBagConstraints gbc_customerComboBox = new GridBagConstraints();
+				gbc_customerComboBox.fill = GridBagConstraints.HORIZONTAL;
+				gbc_customerComboBox.insets = new Insets(0, 0, 5, 5);
+				gbc_customerComboBox.gridx = 2;
+				gbc_customerComboBox.gridy = 2;
+				contentPanel.add(customersComboBox, gbc_customerComboBox);
+			}
 		}
 		{
 			JPanel panel = new JPanel();
@@ -256,71 +268,7 @@ public class OrderPage extends JDialog {
 				btnAdd.setEnabled(false);
 				btnAdd.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						try {
-							contentPanel.remove(scrollPane);
-							int requestedAmount = ParsingHelper.tryParseInt(quantityField.getText());
-							
-							if(requestedAmount < 1) {
-								throw new Exception(MessagesEnum.VALUEHIGHERTHANZEROERROR.text);
-							}
-							
-							availableAmountOfSelectedProduct = selectedStockProduct.getAmount();
-							orderLines.stream().filter(ol -> ol.getStockProduct().getProduct().getBarcode() == selectedStockProduct.getProduct().getBarcode())
-											   .forEach(ol -> {
-												   availableAmountOfSelectedProduct -= ol.getAmount();
-											   });
-							int amount = requestedAmount > availableAmountOfSelectedProduct ? availableAmountOfSelectedProduct : requestedAmount;
-							orderLines.add(new OrderLine(-1, requestedAmount, amount, selectedStockProduct));
-							
-							totalPriceValue.setText(String.valueOf(orderCtrl.calculateTotalPrice(orderLines, type)));
-							
-							ols = new Object[orderLines.size()][];
-							
-							for(int i = 0; i < orderLines.size(); i++) {
-								OrderLine ol = orderLines.get(i);
-								Object [] newData = {
-									ol.getStockProduct().getProduct().getBarcode(),
-									ol.getStockProduct().getProduct().getName(),
-									Integer.toString(ol.getStockProduct().getAmount()),
-									Integer.toString(ol.getRequestedAmount()),
-									Integer.toString(ol.getAmount()),
-								};
-
-								ols[i] = newData;
-							}
-							
-							quantityField.setText("");
-							
-							olsTabelModel = new DefaultTableModel(ols, columns);
-							olsTable = new JTable(olsTabelModel);
-							scrollPane = new JScrollPane(olsTable);
-							
-							contentPanel.add(scrollPane, gbc_scrollPane);
-							contentPanel.revalidate();
-							contentPanel.repaint();
-							
-							
-							buttonPane.remove(saveBtn);
-							boolean enabled = orderLines.size() > 0;
-							saveBtn.setEnabled(enabled);
-							buttonPane.add(saveBtn, gbc_saveBtn);
-							buttonPane.revalidate();
-							buttonPane.repaint();
-							
-							msgOrderLineLbl.setText(MessagesEnum.PRODUCTADDEDTOORDER.text);
-							msgOrderLineLbl.setForeground(Color.GREEN);
-						}
-						catch(NumberFormatException e1) {
-							contentPanel.add(scrollPane, gbc_scrollPane);
-							e1.printStackTrace();
-							msgOrderLineLbl.setText(MessagesEnum.PARSEERROR.text);
-							msgOrderLineLbl.setForeground(Color.RED);
-						} catch (Exception e2) {
-							contentPanel.add(scrollPane, gbc_scrollPane);
-							e2.printStackTrace();
-							msgOrderLineLbl.setText(e2.getMessage());
-							msgOrderLineLbl.setForeground(Color.RED);
-						}
+						addProductToOrderLine();
 					}
 				});
 				gbc_btnAdd.insets = new Insets(0, 0, 5, 0);
@@ -412,51 +360,7 @@ public class OrderPage extends JDialog {
 			gbc_noteField.gridx = 2;
 			gbc_noteField.gridy = 6;
 			contentPanel.add(noteField, gbc_noteField);
-		}
-		{
-			getContentPane().add(buttonPane, BorderLayout.SOUTH);
-			GridBagLayout gbl_buttonPane = new GridBagLayout();
-			gbl_buttonPane.columnWidths = new int[]{81, 70, 311, 80, 84, 0};
-			gbl_buttonPane.rowHeights = new int[]{23, 0};
-			gbl_buttonPane.columnWeights = new double[]{1.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
-			gbl_buttonPane.rowWeights = new double[]{0.0, Double.MIN_VALUE};
-			buttonPane.setLayout(gbl_buttonPane);
-			{
-				JButton backBtn = new JButton("Back");
-				GridBagConstraints gbc_backBtn = new GridBagConstraints();
-				gbc_backBtn.anchor = GridBagConstraints.EAST;
-				gbc_backBtn.insets = new Insets(0, 0, 0, 5);
-				gbc_backBtn.gridx = 1;
-				gbc_backBtn.gridy = 0;
-				buttonPane.add(backBtn, gbc_backBtn);
-				backBtn.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						dispose();
-						HomePage.start();
-					}
-				});
-			}
-			{
-				saveBtn.setEnabled(false);
-				gbc_saveBtn.anchor = GridBagConstraints.WEST;
-				gbc_saveBtn.insets = new Insets(0, 0, 0, 5);
-				gbc_saveBtn.gridx = 3;
-				gbc_saveBtn.gridy = 0;
-				buttonPane.add(saveBtn, gbc_saveBtn);
-				saveBtn.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						if(type == OrderPageType.SALE) {
-							saveSale();
-						}
-						if(type == OrderPageType.LEASE) {
-							saveLease();
-						}
-					}
-				});
-			}
-		}
-			
-			
+		}	
 		if(type == OrderPageType.SALE) {
 			{
 				JLabel shippingDateLbl = new JLabel("Shipping date");
@@ -475,6 +379,7 @@ public class OrderPage extends JDialog {
 				p.put("text.year", "Year");
 				shippingDatePanel = new JDatePanelImpl(shippingDateModel, p);
 				shippingDatePicker = new JDatePickerImpl(shippingDatePanel, new CalendarFormater());
+				shippingDatePicker.getComponent(1).setEnabled(false);
 				
 				GridBagConstraints gbc_shippingDatePicker = new GridBagConstraints();
 				gbc_shippingDatePicker.insets = new Insets(0, 0, 5, 5);
@@ -500,6 +405,7 @@ public class OrderPage extends JDialog {
 				p.put("text.year", "Year");
 				deliveryDatePanel = new JDatePanelImpl(deliveryDateModel, p);
 				deliveryDatePicker = new JDatePickerImpl(deliveryDatePanel, new CalendarFormater());
+				deliveryDatePicker.getComponent(1).setEnabled(false);
 				
 				GridBagConstraints gbc_deliveryDatePicker = new GridBagConstraints();
 				gbc_deliveryDatePicker.insets = new Insets(0, 0, 5, 5);
@@ -578,6 +484,7 @@ public class OrderPage extends JDialog {
 				p.put("text.year", "Year");
 				realReturnDatePanel = new JDatePanelImpl(realReturnDateModel, p);
 				realReturnDatePicker = new JDatePickerImpl(realReturnDatePanel, new CalendarFormater());
+				realReturnDatePicker.getComponent(1).setEnabled(false);
 				
 				GridBagConstraints gbc_realReturnDatePicker = new GridBagConstraints();
 				gbc_realReturnDatePicker.insets = new Insets(0, 0, 5, 5);
@@ -585,6 +492,34 @@ public class OrderPage extends JDialog {
 				gbc_realReturnDatePicker.gridx = 2;
 				gbc_realReturnDatePicker.gridy = 9;
 				contentPanel.add(realReturnDatePicker, gbc_realReturnDatePicker);
+			}
+		}
+		if(type == OrderPageType.PURCHASE){
+			{
+				JLabel deliveryDateLbl = new JLabel("Delivery date");
+				GridBagConstraints gbc_deliveryDateLbl = new GridBagConstraints();
+				gbc_deliveryDateLbl.anchor = GridBagConstraints.WEST;
+				gbc_deliveryDateLbl.insets = new Insets(0, 0, 5, 5);
+				gbc_deliveryDateLbl.gridx = 1;
+				gbc_deliveryDateLbl.gridy = 7;
+				contentPanel.add(deliveryDateLbl, gbc_deliveryDateLbl);
+			}
+			{
+				deliveryDateModel = new UtilDateModel();
+				Properties p = new Properties();
+				p.put("text.today", "Today");
+				p.put("text.month", "Month");
+				p.put("text.year", "Year");
+				deliveryDatePanel = new JDatePanelImpl(deliveryDateModel, p);
+				deliveryDatePicker = new JDatePickerImpl(deliveryDatePanel, new CalendarFormater());
+				deliveryDatePicker.getComponent(1).setEnabled(false);
+				
+				GridBagConstraints gbc_deliveryDatePicker = new GridBagConstraints();
+				gbc_deliveryDatePicker.insets = new Insets(0, 0, 5, 5);
+				gbc_deliveryDatePicker.fill = GridBagConstraints.HORIZONTAL;
+				gbc_deliveryDatePicker.gridx = 2;
+				gbc_deliveryDatePicker.gridy = 7;
+				contentPanel.add(deliveryDatePicker, gbc_deliveryDatePicker);
 			}
 		}
 		
@@ -601,8 +536,107 @@ public class OrderPage extends JDialog {
 			if(type == OrderPageType.LEASE) {
 				gbc_msgLbl.gridy = 10;
 			}
+			if(type == OrderPageType.PURCHASE) {
+				gbc_msgLbl.gridy = 8;
+			}
 			
 			contentPanel.add(msgLbl, gbc_msgLbl);
+		}
+		
+
+		{
+			getContentPane().add(buttonPane, BorderLayout.SOUTH);
+			GridBagLayout gbl_buttonPane = new GridBagLayout();
+			gbl_buttonPane.columnWidths = new int[]{81, 70, 250, 0, 250, 80, 84, 0};
+			gbl_buttonPane.rowHeights = new int[]{23, 0};
+			gbl_buttonPane.columnWeights = new double[]{1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
+			gbl_buttonPane.rowWeights = new double[]{0.0, Double.MIN_VALUE};
+			buttonPane.setLayout(gbl_buttonPane);
+			{
+				JButton backBtn = new JButton("Back");
+				GridBagConstraints gbc_backBtn = new GridBagConstraints();
+				gbc_backBtn.anchor = GridBagConstraints.EAST;
+				gbc_backBtn.insets = new Insets(0, 0, 0, 5);
+				gbc_backBtn.gridx = 1;
+				gbc_backBtn.gridy = 0;
+				buttonPane.add(backBtn, gbc_backBtn);
+				backBtn.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						dispose();
+						HomePage.start();
+					}
+				});
+			}
+			{
+				JPanel panel = new JPanel();
+				GridBagConstraints gbc_panel = new GridBagConstraints();
+				gbc_panel.insets = new Insets(0, 0, 0, 5);
+				gbc_panel.fill = GridBagConstraints.BOTH;
+				gbc_panel.gridx = 3;
+				gbc_panel.gridy = 0;
+				buttonPane.add(panel, gbc_panel);
+				if(type == OrderPageType.PURCHASE && id != null){
+					{
+						JButton setAsReceivedBtn = new JButton("Set as received");
+						panel.add(setAsReceivedBtn);
+					}
+				}
+				if(type == OrderPageType.LEASE && id != null){
+					{
+						JButton returnLeaseBtn = new JButton("Return lease");
+						panel.add(returnLeaseBtn);
+					}
+				}
+				if(type == OrderPageType.SALE && id != null){
+					if((Date)shippingDatePicker.getModel().getValue() == null){
+						{
+							JButton sendSaleBtn = new JButton("Send sale");
+							panel.add(sendSaleBtn);
+						}
+					}
+					if((Date)shippingDatePicker.getModel().getValue() != null && (Date)deliveryDatePicker.getModel().getValue() == null){
+						{
+							JButton saleDeliveredBtn = new JButton("Saled delivered");
+							panel.add(saleDeliveredBtn);
+						}
+					}
+				}
+			}
+			{
+				saveBtn.setEnabled(false);
+				gbc_saveBtn.anchor = GridBagConstraints.WEST;
+				gbc_saveBtn.insets = new Insets(0, 0, 0, 5);
+				gbc_saveBtn.gridx = 5;
+				gbc_saveBtn.gridy = 0;
+				buttonPane.add(saveBtn, gbc_saveBtn);
+				saveBtn.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						if(type == OrderPageType.SALE) {
+							saveSale();
+							if(order != null) {
+								Sale sale = (Sale)order;
+								setId(sale.getId());
+							}
+						}
+						if(type == OrderPageType.LEASE) {
+							saveLease();
+							if(order != null) {
+								Lease lease = (Lease)order;
+								setId(lease.getId());
+							}
+						}
+						if(type == OrderPageType.PURCHASE) {
+							savePurchase();
+							if(order != null) {
+								Purchase purchase = (Purchase)order;
+								setId(purchase.getId());
+							}
+						}
+						
+						
+					}
+				});
+			}
 		}
 		
 		getCurrentStock();
@@ -736,5 +770,131 @@ public class OrderPage extends JDialog {
 		} finally {
 			msgOrderLineLbl.setText("");
 		}
+	}
+	
+	private void savePurchase() {
+		try {	
+			order = new Purchase(-1,
+							  ParsingHelper.tryParseDouble(totalPriceValue.getText()),
+							  noteField.getText(),
+							  LocalDate.now(),
+							  LoginContainer.getInstance().getCurrentUser().getWarehouse(),
+							  orderLines,
+							  null,
+							  -1,
+							  ParsingHelper.convertToLocalDateViaInstant((Date)deliveryDatePicker.getModel().getValue())
+							);
+			
+			order = orderCtrl.createOrder(order);
+			
+			msgLbl.setText(MessagesEnum.LEASECREATED.text);
+			msgLbl.setForeground(Color.GREEN);
+			
+			loadData();
+			getCurrentStock();
+			
+		} catch(SQLException e) {
+			e.printStackTrace();
+			msgLbl.setText(MessagesEnum.DBERROR.text);
+			msgLbl.setForeground(Color.RED);
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			msgLbl.setForeground(Color.RED);
+			msgLbl.setText(MessagesEnum.PARSEERROR.text);
+		} catch (Exception e) {
+			e.printStackTrace();
+			msgLbl.setForeground(Color.RED);
+			msgLbl.setText(e.getMessage());
+		} finally {
+			msgOrderLineLbl.setText("");
+		}
+	}
+	
+	private void addProductToOrderLine() {
+		try {
+			contentPanel.remove(scrollPane);
+			int requestedAmount = ParsingHelper.tryParseInt(quantityField.getText());
+			
+			if(requestedAmount < 1) {
+				throw new Exception(MessagesEnum.VALUEHIGHERTHANZEROERROR.text);
+			}
+			
+			int amount = 0;
+			if(type != OrderPageType.PURCHASE) {
+				availableAmountOfSelectedProduct = selectedStockProduct.getAmount();
+				orderLines.stream().filter(ol -> ol.getStockProduct().getProduct().getBarcode() == selectedStockProduct.getProduct().getBarcode())
+								   .forEach(ol -> {
+									   availableAmountOfSelectedProduct -= ol.getAmount();
+								   });
+				amount = requestedAmount > availableAmountOfSelectedProduct ? availableAmountOfSelectedProduct : requestedAmount;
+			}
+			else {
+				currtentMaxAmountOfSelectedProduct = selectedStockProduct.getMaxStock();
+				orderLines.stream().filter(ol -> ol.getStockProduct().getProduct().getBarcode() == selectedStockProduct.getProduct().getBarcode())
+				   .forEach(ol -> {
+					   currtentMaxAmountOfSelectedProduct -= ol.getAmount();
+				   });
+				
+				if(currtentMaxAmountOfSelectedProduct < requestedAmount + selectedStockProduct.getAmount()) {
+					throw new Exception(MessagesEnum.PURCHASEREACHMAXPRODUCTS.text + (currtentMaxAmountOfSelectedProduct - selectedStockProduct.getAmount()));
+				}
+				amount = requestedAmount; 
+			}
+			
+			orderLines.add(new OrderLine(-1, requestedAmount, amount, selectedStockProduct));
+			
+			totalPriceValue.setText(String.valueOf(orderCtrl.calculateTotalPrice(orderLines, type)));
+			
+			ols = new Object[orderLines.size()][];
+			
+			for(int i = 0; i < orderLines.size(); i++) {
+				OrderLine ol = orderLines.get(i);
+				Object [] newData = {
+					ol.getStockProduct().getProduct().getBarcode(),
+					ol.getStockProduct().getProduct().getName(),
+					Integer.toString(ol.getStockProduct().getAmount()),
+					Integer.toString(ol.getRequestedAmount()),
+					Integer.toString(ol.getAmount()),
+				};
+
+				ols[i] = newData;
+			}
+			
+			quantityField.setText("");
+			
+			olsTabelModel = new DefaultTableModel(ols, columns);
+			olsTable = new JTable(olsTabelModel);
+			scrollPane = new JScrollPane(olsTable);
+			
+			contentPanel.add(scrollPane, gbc_scrollPane);
+			contentPanel.revalidate();
+			contentPanel.repaint();
+			
+			
+			buttonPane.remove(saveBtn);
+			boolean enabled = orderLines.size() > 0;
+			saveBtn.setEnabled(enabled);
+			buttonPane.add(saveBtn, gbc_saveBtn);
+			buttonPane.revalidate();
+			buttonPane.repaint();
+			
+			msgOrderLineLbl.setText(MessagesEnum.PRODUCTADDEDTOORDER.text);
+			msgOrderLineLbl.setForeground(Color.GREEN);
+		}
+		catch(NumberFormatException e1) {
+			contentPanel.add(scrollPane, gbc_scrollPane);
+			e1.printStackTrace();
+			msgOrderLineLbl.setText(MessagesEnum.PARSEERROR.text);
+			msgOrderLineLbl.setForeground(Color.RED);
+		} catch (Exception e2) {
+			contentPanel.add(scrollPane, gbc_scrollPane);
+			e2.printStackTrace();
+			msgOrderLineLbl.setText(e2.getMessage());
+			msgOrderLineLbl.setForeground(Color.RED);
+		}
+	}
+	
+	public void setId(long id) {
+		this.id = id;
 	}
 }

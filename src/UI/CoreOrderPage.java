@@ -377,10 +377,10 @@ public class CoreOrderPage extends JDialog {
 			JPanel buttonPane = new JPanel();
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			GridBagLayout gbl_buttonPane = new GridBagLayout();
-			gbl_buttonPane.columnWidths = new int[]{81, 70, 311, 80, 84, 0};
+			gbl_buttonPane.columnWidths = new int[]{81, 70, 272, 0, 311, 80, 84, 0};
 			gbl_buttonPane.rowHeights = new int[]{23, 0};
-			gbl_buttonPane.columnWeights = new double[]{1.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
-			gbl_buttonPane.rowWeights = new double[]{0.0, Double.MIN_VALUE};
+			gbl_buttonPane.columnWeights = new double[]{1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
+			gbl_buttonPane.rowWeights = new double[]{1.0, Double.MIN_VALUE};
 			buttonPane.setLayout(gbl_buttonPane);
 			{
 				JButton backBtn = new JButton("Back");
@@ -397,11 +397,36 @@ public class CoreOrderPage extends JDialog {
 				});
 			}
 			{
+				JPanel panel = new JPanel();
+				GridBagConstraints gbc_panel = new GridBagConstraints();
+				gbc_panel.insets = new Insets(0, 0, 0, 5);
+				gbc_panel.fill = GridBagConstraints.BOTH;
+				gbc_panel.gridx = 3;
+				gbc_panel.gridy = 0;
+				buttonPane.add(panel, gbc_panel);
+				{
+					JButton setAsReceivedBtn = new JButton("Set as received");
+					panel.add(setAsReceivedBtn);
+				}
+				{
+					JButton returnLeaseBtn = new JButton("Return lease");
+					panel.add(returnLeaseBtn);
+				}
+				{
+					JButton sendSaleBtn = new JButton("Send sale");
+					panel.add(sendSaleBtn);
+				}
+				{
+					JButton saleDeliveredBtn = new JButton("Saled delivered");
+					panel.add(saleDeliveredBtn);
+				}
+			}
+			{
 				JButton saveBtn = new JButton("Save");
 				GridBagConstraints gbc_saveBtn = new GridBagConstraints();
 				gbc_saveBtn.anchor = GridBagConstraints.WEST;
 				gbc_saveBtn.insets = new Insets(0, 0, 0, 5);
-				gbc_saveBtn.gridx = 3;
+				gbc_saveBtn.gridx = 5;
 				gbc_saveBtn.gridy = 0;
 				buttonPane.add(saveBtn, gbc_saveBtn);
 			}

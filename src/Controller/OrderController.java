@@ -18,6 +18,7 @@ import Model.Model.OrderPageType;
 public class OrderController {
 	private SaleController saleCtrl = new SaleController();
 	private LeaseController leaseCtrl = new LeaseController();
+	private PurchaseController purchaseCtrl = new PurchaseController();
 	private StockProductContoller stockProrductCtrl = new StockProductContoller();
 	private CustomerController customerCtrl = new CustomerController();
 	
@@ -33,9 +34,10 @@ public class OrderController {
 			Lease lease = (Lease)order;
 			order.setInvoice(new Invoice(0, LocalDate.now().plusDays(30), lease.getTotalPrice() - (lease.getTotalPrice() * lease.getCustomer().getStaticDiscount())));
 		}
-		/*if(order instanceof Purchase) {Sale sale = (Sale)order;
-			order.setInvoice(new Invoice(0, LocalDate.now().plusDays(30), sale.getTotalPrice() * sale.getCustomer().getStaticDiscount()));
-		}*/
+		if(order instanceof Purchase) {
+			Purchase purchase = (Purchase)order;
+			order.setInvoice(new Invoice(0, LocalDate.now().plusDays(30), purchase.getTotalPrice()));
+		}
 		
 		try {
 			if(order instanceof Sale) {
@@ -43,6 +45,9 @@ public class OrderController {
 			}
 			if(order instanceof Lease) {
 				return this.leaseCtrl.createLease((Lease)order);
+			}
+			if(order instanceof Purchase) {
+				return this.purchaseCtrl.createPurchase((Purchase)order);
 			}
 		} catch (SQLException e) {
 			throw e;

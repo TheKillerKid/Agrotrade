@@ -14,6 +14,7 @@ import Model.Model.Lease;
 import Model.Model.MessagesEnum;
 import Model.Model.Order;
 import Model.Model.OrderLine;
+import Model.Model.Purchase;
 import Model.Model.Sale;
 import Model.Model.Warehouse;
 
@@ -44,6 +45,10 @@ public class OrderDB implements OrderIF {
 			Lease lease = (Lease)order;
 			leaseId = lease.getId();
 		}
+		if(order instanceof Purchase) {
+			Purchase purchase = (Purchase)order;
+			purchaseId = purchase.getId();
+		}
 		
 		Connection con = DBConnection.getInstance().getConnection();
 
@@ -64,6 +69,11 @@ public class OrderDB implements OrderIF {
 				preparedStmt.setLong(6, leaseId);
 				preparedStmt.setNull(7, java.sql.Types.INTEGER);
 			}
+			if(order instanceof Purchase) {
+				preparedStmt.setNull(5, java.sql.Types.INTEGER);
+				preparedStmt.setNull(6, java.sql.Types.INTEGER);
+				preparedStmt.setLong(7, purchaseId);
+			}
 
 			preparedStmt.executeUpdate();
 			
@@ -75,7 +85,7 @@ public class OrderDB implements OrderIF {
     			ArrayList<OrderLine> ols = new ArrayList<OrderLine>(); 
     			
     			for (OrderLine ol : order.getOrderLines()) {
-    				ol.setId(ordeLineDb.createOrderLine(ol, order.getOrderId()));
+    				ol.setId(ordeLineDb.createOrderLine(ol, order.getOrderId(), purchaseId != null));
     				ols.add(ol);
     			}
     			order.setOrderLines(ols);
