@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import Model.DBIF.OrderLineIF;
 import Model.Model.MessagesEnum;
@@ -23,7 +24,7 @@ public class OrderLineDB implements OrderLineIF {
 		
 		Connection con = DBConnection.getInstance().getConnection();
 
-    try {
+		try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate, Statement.RETURN_GENERATED_KEYS);
 			preparedStmt.setInt(1,requestedAmount);
 			preparedStmt.setInt(2, amount);
@@ -44,5 +45,39 @@ public class OrderLineDB implements OrderLineIF {
 			throw e;
 		}
 		return id;
+	}
+	
+	public ArrayList<OrderLine> getOrderLineList (long orderId, long warehouseId) throws SQLException {
+		ArrayList<OrderLine> res = new ArrayList<OrderLine>();  
+		String sqlGetOrder = "SELECT * FROM OrderView WHERE order_id = ?";
+		
+		Connection con = DBConnection.getInstance().getConnection();
+		
+		try {
+			PreparedStatement preparedStmt = con.prepareStatement(sqlGetOrder);
+			
+			preparedStmt.setLong(0, orderId);
+			
+			ResultSet rs = preparedStmt.executeQuery();
+			
+			while(rs.next()) {
+				OrderLine orderLine = buildOrderLine(rs);
+				
+				orderLine.setStockProduct(stockProductDb.getStockProduct(rs.getLong("stock_product_id"), warehouseId));
+				
+				res.add(orderLine);
+			}
+			
+		} catch (SQLException e) {
+			throw e;
+		}
+		
+		
+		
+		return res;
+	}
+	
+	public OrderLine buildOrderLine(ResultSet rs) throws SQLException {
+		return new OrderLine(rs.getLong("id"), rs.getInt("requested_amount"), rs.getInt("amount"), null);
 	}
 }

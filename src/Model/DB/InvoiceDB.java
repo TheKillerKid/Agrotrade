@@ -46,5 +46,27 @@ public class InvoiceDB implements InvoiceIF {
 		return invoice;
 	}
 	
+	public Invoice getInvoice (long invoiceId) throws SQLException {
+		Invoice res = null;
+		String sqlInvoice = "SELECT * FROM Invoice WHERE id = ?";
+		
+		Connection con = DBConnection.getInstance().getConnection();
+		try {
+			PreparedStatement preparedStmt = con.prepareStatement(sqlInvoice);
+			ResultSet rs = preparedStmt.executeQuery();
+			
+			if (rs.next()) {
+				res = buildInvoice(rs);
+			}
+			
+		} catch(SQLException e) {
+			throw e;
+		}
+		
+		return res;
+	}
 	
+	private Invoice buildInvoice(ResultSet rs) throws SQLException {
+		return new Invoice(rs.getLong("id"), rs.getDate("payment_date").toLocalDate(), rs.getDouble("amount"));
+	}
 }
