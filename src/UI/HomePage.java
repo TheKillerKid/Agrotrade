@@ -69,7 +69,7 @@ public class HomePage extends JDialog {
 		JMenuItem registerSaleMntm = new JMenuItem("Register sale");
 		registerSaleMntm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				OrderPage.start(OrderPageType.SALE);
+				OrderPage.start(OrderPageType.SALE, Long.valueOf(1));
 				dispose();
 			}
 		});
@@ -78,7 +78,7 @@ public class HomePage extends JDialog {
 		JMenuItem registerLeaseMntm = new JMenuItem("Register lease");
 		registerLeaseMntm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				OrderPage.start(OrderPageType.LEASE);
+				OrderPage.start(OrderPageType.LEASE, Long.valueOf(1));
 				dispose();
 			}
 		});
@@ -87,7 +87,7 @@ public class HomePage extends JDialog {
 		JMenuItem registerPurchaseMntm = new JMenuItem("Register purchase");
 		registerPurchaseMntm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				OrderPage.start(OrderPageType.PURCHASE);
+				OrderPage.start(OrderPageType.PURCHASE, Long.valueOf(1));
 				dispose();
 			}
 		});
@@ -177,7 +177,7 @@ public class HomePage extends JDialog {
 		panel.add(createSaleBtn, gbc_createSaleBtn);
 		createSaleBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				OrderPage.start(OrderPageType.SALE);
+				OrderPage.start(OrderPageType.SALE, null);
 				dispose();
 				
 			}

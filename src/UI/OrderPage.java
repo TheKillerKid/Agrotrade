@@ -121,11 +121,13 @@ public class OrderPage extends JDialog {
 	private JScrollPane scrollPane;
 	private GridBagConstraints gbc_scrollPane = new GridBagConstraints();
 	
-	public static void start(OrderPageType type) {
+	private Long id;
+	
+	public static void start(OrderPageType type, Long id) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					OrderPage dialog = new OrderPage(type);
+					OrderPage dialog = new OrderPage(type, id);
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.setVisible(true);
 				} catch (Exception e) {
@@ -138,8 +140,9 @@ public class OrderPage extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public OrderPage(OrderPageType type) {
+	public OrderPage(OrderPageType type, Long id) {
 		this.type = type;
+		this.id = id;
 		setBounds(150, 150, 1280, 800);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -357,54 +360,7 @@ public class OrderPage extends JDialog {
 			gbc_noteField.gridx = 2;
 			gbc_noteField.gridy = 6;
 			contentPanel.add(noteField, gbc_noteField);
-		}
-		{
-			getContentPane().add(buttonPane, BorderLayout.SOUTH);
-			GridBagLayout gbl_buttonPane = new GridBagLayout();
-			gbl_buttonPane.columnWidths = new int[]{81, 70, 311, 80, 84, 0};
-			gbl_buttonPane.rowHeights = new int[]{23, 0};
-			gbl_buttonPane.columnWeights = new double[]{1.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
-			gbl_buttonPane.rowWeights = new double[]{0.0, Double.MIN_VALUE};
-			buttonPane.setLayout(gbl_buttonPane);
-			{
-				JButton backBtn = new JButton("Back");
-				GridBagConstraints gbc_backBtn = new GridBagConstraints();
-				gbc_backBtn.anchor = GridBagConstraints.EAST;
-				gbc_backBtn.insets = new Insets(0, 0, 0, 5);
-				gbc_backBtn.gridx = 1;
-				gbc_backBtn.gridy = 0;
-				buttonPane.add(backBtn, gbc_backBtn);
-				backBtn.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						dispose();
-						HomePage.start();
-					}
-				});
-			}
-			{
-				saveBtn.setEnabled(false);
-				gbc_saveBtn.anchor = GridBagConstraints.WEST;
-				gbc_saveBtn.insets = new Insets(0, 0, 0, 5);
-				gbc_saveBtn.gridx = 3;
-				gbc_saveBtn.gridy = 0;
-				buttonPane.add(saveBtn, gbc_saveBtn);
-				saveBtn.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						if(type == OrderPageType.SALE) {
-							saveSale();
-						}
-						if(type == OrderPageType.LEASE) {
-							saveLease();
-						}
-						if(type == OrderPageType.PURCHASE) {
-							savePurchase();
-						}
-					}
-				});
-			}
-		}
-			
-			
+		}	
 		if(type == OrderPageType.SALE) {
 			{
 				JLabel shippingDateLbl = new JLabel("Shipping date");
@@ -423,6 +379,7 @@ public class OrderPage extends JDialog {
 				p.put("text.year", "Year");
 				shippingDatePanel = new JDatePanelImpl(shippingDateModel, p);
 				shippingDatePicker = new JDatePickerImpl(shippingDatePanel, new CalendarFormater());
+				shippingDatePicker.getComponent(1).setEnabled(false);
 				
 				GridBagConstraints gbc_shippingDatePicker = new GridBagConstraints();
 				gbc_shippingDatePicker.insets = new Insets(0, 0, 5, 5);
@@ -448,6 +405,7 @@ public class OrderPage extends JDialog {
 				p.put("text.year", "Year");
 				deliveryDatePanel = new JDatePanelImpl(deliveryDateModel, p);
 				deliveryDatePicker = new JDatePickerImpl(deliveryDatePanel, new CalendarFormater());
+				deliveryDatePicker.getComponent(1).setEnabled(false);
 				
 				GridBagConstraints gbc_deliveryDatePicker = new GridBagConstraints();
 				gbc_deliveryDatePicker.insets = new Insets(0, 0, 5, 5);
@@ -526,6 +484,7 @@ public class OrderPage extends JDialog {
 				p.put("text.year", "Year");
 				realReturnDatePanel = new JDatePanelImpl(realReturnDateModel, p);
 				realReturnDatePicker = new JDatePickerImpl(realReturnDatePanel, new CalendarFormater());
+				realReturnDatePicker.getComponent(1).setEnabled(false);
 				
 				GridBagConstraints gbc_realReturnDatePicker = new GridBagConstraints();
 				gbc_realReturnDatePicker.insets = new Insets(0, 0, 5, 5);
@@ -553,6 +512,7 @@ public class OrderPage extends JDialog {
 				p.put("text.year", "Year");
 				deliveryDatePanel = new JDatePanelImpl(deliveryDateModel, p);
 				deliveryDatePicker = new JDatePickerImpl(deliveryDatePanel, new CalendarFormater());
+				deliveryDatePicker.getComponent(1).setEnabled(false);
 				
 				GridBagConstraints gbc_deliveryDatePicker = new GridBagConstraints();
 				gbc_deliveryDatePicker.insets = new Insets(0, 0, 5, 5);
@@ -581,6 +541,102 @@ public class OrderPage extends JDialog {
 			}
 			
 			contentPanel.add(msgLbl, gbc_msgLbl);
+		}
+		
+
+		{
+			getContentPane().add(buttonPane, BorderLayout.SOUTH);
+			GridBagLayout gbl_buttonPane = new GridBagLayout();
+			gbl_buttonPane.columnWidths = new int[]{81, 70, 250, 0, 250, 80, 84, 0};
+			gbl_buttonPane.rowHeights = new int[]{23, 0};
+			gbl_buttonPane.columnWeights = new double[]{1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
+			gbl_buttonPane.rowWeights = new double[]{0.0, Double.MIN_VALUE};
+			buttonPane.setLayout(gbl_buttonPane);
+			{
+				JButton backBtn = new JButton("Back");
+				GridBagConstraints gbc_backBtn = new GridBagConstraints();
+				gbc_backBtn.anchor = GridBagConstraints.EAST;
+				gbc_backBtn.insets = new Insets(0, 0, 0, 5);
+				gbc_backBtn.gridx = 1;
+				gbc_backBtn.gridy = 0;
+				buttonPane.add(backBtn, gbc_backBtn);
+				backBtn.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						dispose();
+						HomePage.start();
+					}
+				});
+			}
+			{
+				JPanel panel = new JPanel();
+				GridBagConstraints gbc_panel = new GridBagConstraints();
+				gbc_panel.insets = new Insets(0, 0, 0, 5);
+				gbc_panel.fill = GridBagConstraints.BOTH;
+				gbc_panel.gridx = 3;
+				gbc_panel.gridy = 0;
+				buttonPane.add(panel, gbc_panel);
+				if(type == OrderPageType.PURCHASE && id != null){
+					{
+						JButton setAsReceivedBtn = new JButton("Set as received");
+						panel.add(setAsReceivedBtn);
+					}
+				}
+				if(type == OrderPageType.LEASE && id != null){
+					{
+						JButton returnLeaseBtn = new JButton("Return lease");
+						panel.add(returnLeaseBtn);
+					}
+				}
+				if(type == OrderPageType.SALE && id != null){
+					if((Date)shippingDatePicker.getModel().getValue() == null){
+						{
+							JButton sendSaleBtn = new JButton("Send sale");
+							panel.add(sendSaleBtn);
+						}
+					}
+					if((Date)shippingDatePicker.getModel().getValue() != null && (Date)deliveryDatePicker.getModel().getValue() == null){
+						{
+							JButton saleDeliveredBtn = new JButton("Saled delivered");
+							panel.add(saleDeliveredBtn);
+						}
+					}
+				}
+			}
+			{
+				saveBtn.setEnabled(false);
+				gbc_saveBtn.anchor = GridBagConstraints.WEST;
+				gbc_saveBtn.insets = new Insets(0, 0, 0, 5);
+				gbc_saveBtn.gridx = 5;
+				gbc_saveBtn.gridy = 0;
+				buttonPane.add(saveBtn, gbc_saveBtn);
+				saveBtn.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						if(type == OrderPageType.SALE) {
+							saveSale();
+							if(order != null) {
+								Sale sale = (Sale)order;
+								setId(sale.getId());
+							}
+						}
+						if(type == OrderPageType.LEASE) {
+							saveLease();
+							if(order != null) {
+								Lease lease = (Lease)order;
+								setId(lease.getId());
+							}
+						}
+						if(type == OrderPageType.PURCHASE) {
+							savePurchase();
+							if(order != null) {
+								Purchase purchase = (Purchase)order;
+								setId(purchase.getId());
+							}
+						}
+						
+						
+					}
+				});
+			}
 		}
 		
 		getCurrentStock();
@@ -836,5 +892,9 @@ public class OrderPage extends JDialog {
 			msgOrderLineLbl.setText(e2.getMessage());
 			msgOrderLineLbl.setForeground(Color.RED);
 		}
+	}
+	
+	public void setId(long id) {
+		this.id = id;
 	}
 }
