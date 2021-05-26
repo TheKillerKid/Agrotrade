@@ -341,6 +341,26 @@ public class PersonPage extends JDialog {
 					public void actionPerformed(ActionEvent e) {
 						if (type == PersonPageType.EMPLOYEE) {
 							try {
+								if(firstNameField.getText().isEmpty()) {
+									throw new Exception(MessagesEnum.FIRSTNAMEREQUIREDERROR.text);
+								}
+								if(lastNameField.getText().isEmpty()) {
+									throw new Exception(MessagesEnum.LASTNAMEREQUIREDERROR.text);
+								}
+								if(emailField.getText().isEmpty()) {
+									throw new Exception(MessagesEnum.EMAILREQUIREDERROR.text);
+								}
+								if(streetField.getText().isEmpty() ||
+									streetNoField.getText().isEmpty() ||
+									cityField.getText().isEmpty() ||
+									postalCodeField.getText().isEmpty() ||
+										countryField.getText().isEmpty()) {
+									throw new Exception(MessagesEnum.ADDRESSREQUIREDERROR.text);
+								}
+								if(passwordField.getText().isEmpty()) {
+									throw new Exception(MessagesEnum.PASSWORDREQUIREDERROR.text);
+								}
+								
 								Address address = new Address(-1, 
 										streetField.getText(), 
 										streetNoField.getText(),
@@ -398,7 +418,30 @@ public class PersonPage extends JDialog {
 						}
 						if (type == PersonPageType.CUSTOMER) {
 							try {
+								if(firstNameField.getText().isEmpty()) {
+									throw new Exception(MessagesEnum.FIRSTNAMEREQUIREDERROR.text);
+								}
+								if(lastNameField.getText().isEmpty()) {
+									throw new Exception(MessagesEnum.LASTNAMEREQUIREDERROR.text);
+								}
+								if(emailField.getText().isEmpty()) {
+									throw new Exception(MessagesEnum.EMAILREQUIREDERROR.text);
+								}
+								if(cvrNoField.getText().isEmpty()) {
+									throw new Exception(MessagesEnum.CVRNUMBERREQUIREDERROR.text);
+								}
+								if(cvrNoField.getText().length() != 8) {
+									throw new Exception(MessagesEnum.CVRLENGHTERROR.text);
+								}
+								if(staticDiscountField.getText().isEmpty()) {
+									throw new Exception(MessagesEnum.STATICDISCOUNTREQUIREDERROR.text);
+								}
+								
 								double staticDiscount = ParsingHelper.tryParseDouble(staticDiscountField.getText());
+								
+								if(staticDiscount <= 0 || staticDiscount >= 1) {
+									throw new Exception(MessagesEnum.STATICDISCOUNTAMOUNTERROR.text);
+								}
 								
 								Customer customer = new Customer(-1, 
 										firstNameField.getText(), 
@@ -437,10 +480,31 @@ public class PersonPage extends JDialog {
 								messageLabel.setForeground(Color.RED);
 								e2.printStackTrace();
 								return;
+							} catch (Exception e3) {
+								messageLabel.setText(e3.getMessage());
+								messageLabel.setForeground(Color.RED);
+								e3.printStackTrace();
+								return;
 							}
 						}
 						if (type == PersonPageType.SUPPLIER) {
 							try {
+								if(firstNameField.getText().isEmpty()) {
+									throw new Exception(MessagesEnum.FIRSTNAMEREQUIREDERROR.text);
+								}
+								if(lastNameField.getText().isEmpty()) {
+									throw new Exception(MessagesEnum.LASTNAMEREQUIREDERROR.text);
+								}
+								if(emailField.getText().isEmpty()) {
+									throw new Exception(MessagesEnum.EMAILREQUIREDERROR.text);
+								}
+								if(cvrNoField.getText().isEmpty()) {
+									throw new Exception(MessagesEnum.CVRNUMBERREQUIREDERROR.text);
+								}
+								if(cvrNoField.getText().length() != 8) {
+									throw new Exception(MessagesEnum.CVRLENGHTERROR.text);
+								}
+								
 								Supplier supplier = new Supplier(-1, 
 										firstNameField.getText(), 
 										lastNameField.getText(),
@@ -477,7 +541,12 @@ public class PersonPage extends JDialog {
 								messageLabel.setText(MessagesEnum.DBERROR.text);
 								e2.printStackTrace();
 								return;
-							}
+							} catch (Exception e3) {
+								messageLabel.setText(e3.getMessage());
+								messageLabel.setForeground(Color.RED);
+								e3.printStackTrace();
+								return;
+							}						
 						}
 					}
 				});

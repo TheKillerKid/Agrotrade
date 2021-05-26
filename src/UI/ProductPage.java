@@ -424,6 +424,13 @@ public class ProductPage extends JDialog {
 								leasePrice = new Price(-1, ParsingHelper.tryParseDouble(leasePriceField.getText()), LocalDate.now(), PriceType.LEASE);
 							}
 							
+							if(minStockField.getText().isEmpty()) {
+								throw new Exception(MessagesEnum.MINSTOCKREQUIREDERROR.text);
+							}
+							if(maxStockField.getText().isEmpty()) {
+								throw new Exception(MessagesEnum.MAXSTOCKREQUIREDERROR.text);
+							}
+							
 							product = new Product(-1, 
 												  barcodeField.getText(), 
 												  nameField.getText(),
@@ -460,6 +467,11 @@ public class ProductPage extends JDialog {
 							e2.printStackTrace();
 							msgLbl.setForeground(Color.RED);
 							msgLbl.setText(MessagesEnum.DBERROR.text);
+							return;
+						} catch (Exception e3) {
+							e3.printStackTrace();
+							msgLbl.setForeground(Color.RED);
+							msgLbl.setText(e3.getMessage());
 							return;
 						}
 					}

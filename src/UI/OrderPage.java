@@ -598,7 +598,7 @@ public class OrderPage extends JDialog {
 							buttonPane.revalidate();
 							buttonPane.repaint();
 							
-							msgLbl.setText(MessagesEnum.LEASERETURNEDSUCCESS.text);
+							msgLbl.setText(MessagesEnum.PURCHASERECIEVED.text);
 							msgLbl.setForeground(Color.GREEN); 
 							
 						} catch(SQLException e1) {
@@ -788,7 +788,7 @@ public class OrderPage extends JDialog {
 			}
 		}
 		if(type == OrderPageType.SALE && id != null){
-			if((Date)shippingDatePicker.getModel().getValue() == null && (position == PositionType.ADMIN || position == PositionType.SALESMAN)){
+			if((Date)shippingDatePicker.getModel().getValue() == null && (position == PositionType.ADMIN || position == PositionType.WAREHOUSEMAN)){
 				{
 					middleBtnPanel.add(sendSaleBtn);
 				}
@@ -987,7 +987,7 @@ public class OrderPage extends JDialog {
 			contentPanel.revalidate();
 			contentPanel.repaint();
 			
-			msgLbl.setText(MessagesEnum.LEASECREATED.text);
+			msgLbl.setText(MessagesEnum.PURCHASECREATED.text);
 			msgLbl.setForeground(Color.GREEN);
 			
 			loadLists();
@@ -1110,6 +1110,7 @@ public class OrderPage extends JDialog {
 	
 	private void setValuesToFields() {
 		totalPriceValue.setText(Double.toString(order.getTotalPrice()));
+		noteField.setText(order.getNote());
 		getCurrentStock();
 		
 		orderLines = order.getOrderLines();
