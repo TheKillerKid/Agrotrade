@@ -11,9 +11,11 @@ import Model.Model.Purchase;
 import Model.Model.Order;
 import Model.Model.Sale;
 import Model.Model.StockProduct;
-import Model.Model.Supplier;
 import Model.Model.OrderLine;
 import Model.Model.OrderPageType;
+import Model.Model.OrderView;
+import Model.DB.OrderDB;
+
 
 public class OrderController {
 	private SaleController saleCtrl = new SaleController();
@@ -21,6 +23,7 @@ public class OrderController {
 	private PurchaseController purchaseCtrl = new PurchaseController();
 	private StockProductContoller stockProrductCtrl = new StockProductContoller();
 	private CustomerController customerCtrl = new CustomerController();
+	private OrderDB orderDb = new OrderDB();
 	
 	
 	public Order createOrder(Order order) throws Exception{
@@ -71,6 +74,17 @@ public class OrderController {
 		} catch(SQLException e) {
 			throw e;
 		}
+	}
+	
+	public ArrayList<OrderView> getOrders(OrderPageType type) throws SQLException {
+		ArrayList<OrderView> orders = new ArrayList<OrderView>(); 
+		try {
+			orders = orderDb.getOrderList(type);
+		} catch(SQLException e) {
+			throw e;
+		}
+		
+		return orders; 
 	}
 	
 	public double calculateTotalPrice(ArrayList<OrderLine> ols, OrderPageType type) {

@@ -237,8 +237,9 @@ public class HomePage extends JDialog {
 		gbc_orderListBtn.gridy = 0;
 		panel.add(orderListBtn, gbc_orderListBtn);
 		orderListBtn.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) {
 				OrderListPage.start();
+				dispose();
 			}
 		});
 		
