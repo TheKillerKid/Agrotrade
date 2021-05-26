@@ -79,7 +79,7 @@ public class OrderListPage extends JDialog {
 				LocalDate shippingDate = order.getSaleShippingDate();
 				
 				Object [] newData = {
-						order.getOrderId(),
+						order.getSaleId(),
 						order.getOrderCreationDate(),
 						order.getCvrNo(),
 						order.getTotalPrice(),
@@ -106,7 +106,7 @@ public class OrderListPage extends JDialog {
 				LocalDate deliveryDate = order.getPurchaseDeliveryDate();
 				
 				Object [] newData = {
-						order.getOrderId(),
+						order.getPurchaseId(),
 						order.getOrderCreationDate(),
 						order.getCvrNo(),
 						order.getTotalPrice(),
@@ -134,7 +134,7 @@ public class OrderListPage extends JDialog {
 				LocalDate realDate = order.getLeaseRealReturnDate();
 				
 				Object [] newData = {
-						order.getOrderId(),
+						order.getLeaseId(),
 						order.getOrderCreationDate(),
 						order.getCvrNo(),
 						order.getTotalPrice(),
