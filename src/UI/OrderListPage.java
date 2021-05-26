@@ -25,19 +25,26 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
+import javax.swing.JTabbedPane;
 
 @SuppressWarnings("serial")
 public class OrderListPage extends JDialog {
 	private JScrollPane sp;
 	private OrderController orderController = new OrderController();
 	private ButtonGroup typeGroup;
+	private ButtonGroup saleGroup;
+	private JCheckBox saleWithFilter;
+	private JCheckBox purchaseWithFilter;
+	private JCheckBox returnDateExceded;
+	private JCheckBox returned;
+	private ButtonGroup purchaseGroup;
 	private final JPanel contentPanel = new JPanel();
 
 
@@ -69,7 +76,21 @@ public class OrderListPage extends JDialog {
 	
 	private Object[][] getData(String type, ArrayList<OrderView> list) {
 		if (type == OrderPageType.SALE.toString()) {			
-			List<OrderView> filteredList = list.stream().filter((order) -> order.getSaleId() != 0).collect(Collectors.toList());
+			ArrayList<OrderView> filteredList = list.stream()
+					.filter((order) -> {
+						Boolean isSale = order.getSaleId() != 0;
+
+						if (saleWithFilter.isSelected() && saleGroup.getSelection().getActionCommand() == "shipped") {
+							return isSale && order.getSaleShippingDate() != null;
+						}
+						
+						if (saleWithFilter.isSelected() && saleGroup.getSelection().getActionCommand() == "delivered") {
+							return isSale && order.getSaleDeliveryDate() != null;
+						}
+						
+						return isSale;
+					})
+					.collect(Collectors.toCollection(ArrayList::new));
 			Object[][] data = new Object[filteredList.size()][];
 
 			for (int i = 0; i < filteredList.size(); i++) {
@@ -82,7 +103,7 @@ public class OrderListPage extends JDialog {
 						order.getSaleId(),
 						order.getOrderCreationDate(),
 						order.getCvrNo(),
-						order.getTotalPrice(),
+						String.format("%s DKK", order.getTotalPrice()),
 						deliveryDate != null ? deliveryDate.format(DateTimeFormatter.ofPattern("dd MM yyyy")) : "–",
 						shippingDate != null ? shippingDate.format(DateTimeFormatter.ofPattern("dd MM yyyy")) : "–",
 						getType(order),
@@ -97,7 +118,22 @@ public class OrderListPage extends JDialog {
 		}
 		
 		if (type == OrderPageType.PURCHASE.toString()) {			
-			List<OrderView> filteredList = list.stream().filter((order) -> order.getPurchaseId() != 0).collect(Collectors.toList());
+			ArrayList<OrderView> filteredList = list.stream()
+			.filter((order) -> {
+				Boolean isPurchase = order.getPurchaseId() != 0;
+				
+				if (purchaseWithFilter.isSelected() && purchaseGroup.getSelection().getActionCommand() == "received") {
+					return isPurchase && order.getPurchaseDeliveryDate() != null;
+				}
+
+				if (purchaseWithFilter.isSelected() && purchaseGroup.getSelection().getActionCommand() == "notReceived") {
+					return isPurchase && order.getPurchaseDeliveryDate() == null;
+				}
+				
+				return isPurchase;
+			})
+			.collect(Collectors.toCollection(ArrayList::new));
+
 			Object[][] data = new Object[filteredList.size()][];
 			
 			for (int i = 0; i < filteredList.size(); i++) {
@@ -109,7 +145,7 @@ public class OrderListPage extends JDialog {
 						order.getPurchaseId(),
 						order.getOrderCreationDate(),
 						order.getCvrNo(),
-						order.getTotalPrice(),
+						String.format("%s DKK", order.getTotalPrice()),
 						deliveryDate != null ? deliveryDate.format(DateTimeFormatter.ofPattern("dd MM yyyy")) : "–",
 						getType(order),
 						"Open",
@@ -123,7 +159,26 @@ public class OrderListPage extends JDialog {
 		}
 		
 		if (type == OrderPageType.LEASE.toString()) {			
-			ArrayList<OrderView> filteredList = list.stream().filter((order) -> order.getLeaseId() != 0).collect(Collectors.toCollection(ArrayList::new));
+			ArrayList<OrderView> filteredList = list.stream()
+					.filter((order) -> {
+						Boolean isLease = order.getLeaseId() != 0;
+						Boolean isExceded = order.getLeaseRealReturnDate() != null && order.getLeaseRealReturnDate().isAfter(order.getLeaseExpectedReturnDate());
+						
+						if (returnDateExceded.isSelected()) {
+							return isLease && isExceded;
+						}
+						
+						if (returned.isSelected()) {
+							return isLease && order.getLeaseRealReturnDate() != null;
+						}
+						
+						if (returnDateExceded.isSelected() && returned.isSelected()) {
+							return isLease && isExceded && order.getLeaseRealReturnDate() != null;
+						}
+						
+						return isLease;
+					})
+					.collect(Collectors.toCollection(ArrayList::new));
 			Object[][] data = new Object[filteredList.size()][];
 			
 			
@@ -137,7 +192,7 @@ public class OrderListPage extends JDialog {
 						order.getLeaseId(),
 						order.getOrderCreationDate(),
 						order.getCvrNo(),
-						order.getTotalPrice(),
+						String.format("%s DKK", order.getTotalPrice()),
 						borrowDate != null ? borrowDate.format(DateTimeFormatter.ofPattern("dd MM yyyy")) : "–",
 						expectedDate != null ? expectedDate.format(DateTimeFormatter.ofPattern("dd MM yyyy")) : "–",
 						realDate != null ? realDate.format(DateTimeFormatter.ofPattern("dd MM yyyy")) : "–",
@@ -197,6 +252,8 @@ public class OrderListPage extends JDialog {
 	public OrderListPage() {
 		setBounds(300, 300, 1280, 800);
 		typeGroup = new ButtonGroup();
+		purchaseGroup = new ButtonGroup();
+		saleGroup = new ButtonGroup();
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{1279, 0};
 		gridBagLayout.rowHeights = new int[]{738, 29, 0};
@@ -211,9 +268,9 @@ public class OrderListPage extends JDialog {
 		gbc_contentPanel.gridy = 0;
 		getContentPane().add(contentPanel, gbc_contentPanel);
 		GridBagLayout gbl_contentPanel = new GridBagLayout();
-		gbl_contentPanel.columnWidths = new int[]{210, 210, 210, 0, 0};
+		gbl_contentPanel.columnWidths = new int[]{210, 0, 90, 0, 210, 0, 0};
 		gbl_contentPanel.rowHeights = new int[]{36, 0, 0, 0, 298, 0};
-		gbl_contentPanel.columnWeights = new double[]{1.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
+		gbl_contentPanel.columnWeights = new double[]{1.0, 0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
 		gbl_contentPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 		contentPanel.setLayout(gbl_contentPanel);
 		{
@@ -229,6 +286,37 @@ public class OrderListPage extends JDialog {
 			contentPanel.add(saleRadio, gbc_rdbtnNewRadioButton);
 		}
 		{
+			saleWithFilter = new JCheckBox("With filter");
+			GridBagConstraints gbc_saleWithFilter = new GridBagConstraints();
+			gbc_saleWithFilter.anchor = GridBagConstraints.WEST;
+			gbc_saleWithFilter.insets = new Insets(0, 0, 5, 5);
+			gbc_saleWithFilter.gridx = 1;
+			gbc_saleWithFilter.gridy = 0;
+			contentPanel.add(saleWithFilter, gbc_saleWithFilter);
+		}
+		{
+			JRadioButton saleShipped = new JRadioButton("Shipped");
+			saleShipped.setActionCommand("shipped");
+			GridBagConstraints gbc_saleShipped = new GridBagConstraints();
+			gbc_saleShipped.anchor = GridBagConstraints.WEST;
+			gbc_saleShipped.insets = new Insets(0, 0, 5, 5);
+			gbc_saleShipped.gridx = 2;
+			gbc_saleShipped.gridy = 0;
+			contentPanel.add(saleShipped, gbc_saleShipped);
+			saleGroup.add(saleShipped);
+		}
+		{
+			JRadioButton saleDelivered = new JRadioButton("Delivered");
+			saleDelivered.setActionCommand("delivered");
+			GridBagConstraints gbc_saleDelivered = new GridBagConstraints();
+			gbc_saleDelivered.anchor = GridBagConstraints.WEST;
+			gbc_saleDelivered.insets = new Insets(0, 0, 5, 5);
+			gbc_saleDelivered.gridx = 3;
+			gbc_saleDelivered.gridy = 0;
+			contentPanel.add(saleDelivered, gbc_saleDelivered);
+			saleGroup.add(saleDelivered);
+		}
+		{
 			JRadioButton purchaseRadio = new JRadioButton("Purchase");
 			purchaseRadio.setActionCommand(OrderPageType.PURCHASE.toString());
 			typeGroup.add(purchaseRadio);
@@ -240,6 +328,35 @@ public class OrderListPage extends JDialog {
 			contentPanel.add(purchaseRadio, gbc_rdbtnNewRadioButton_1);
 		}
 		{
+			purchaseWithFilter = new JCheckBox("With filter");
+			GridBagConstraints gbc_purchaseWithFilter = new GridBagConstraints();
+			gbc_purchaseWithFilter.anchor = GridBagConstraints.WEST;
+			gbc_purchaseWithFilter.insets = new Insets(0, 0, 5, 5);
+			gbc_purchaseWithFilter.gridx = 1;
+			gbc_purchaseWithFilter.gridy = 1;
+			contentPanel.add(purchaseWithFilter, gbc_purchaseWithFilter);
+		}
+		{
+			JRadioButton purchaseReceived = new JRadioButton("Recieved");
+			GridBagConstraints gbc_purchaseReceived = new GridBagConstraints();
+			gbc_purchaseReceived.insets = new Insets(0, 0, 5, 5);
+			gbc_purchaseReceived.gridx = 2;
+			gbc_purchaseReceived.gridy = 1;
+			contentPanel.add(purchaseReceived, gbc_purchaseReceived);
+			purchaseGroup.add(purchaseReceived);
+			purchaseReceived.setActionCommand("received");
+		}
+		{
+			JRadioButton purchaseNotRecieved = new JRadioButton("Not received");
+			GridBagConstraints gbc_purchaseNotRecieved = new GridBagConstraints();
+			gbc_purchaseNotRecieved.insets = new Insets(0, 0, 5, 5);
+			gbc_purchaseNotRecieved.gridx = 3;
+			gbc_purchaseNotRecieved.gridy = 1;
+			contentPanel.add(purchaseNotRecieved, gbc_purchaseNotRecieved);
+			purchaseGroup.add(purchaseNotRecieved);
+			purchaseNotRecieved.setActionCommand("notReceived");
+		}
+		{
 			JRadioButton leaseRadio = new JRadioButton("Lease");
 			leaseRadio.setActionCommand(OrderPageType.LEASE.toString());
 			typeGroup.add(leaseRadio);
@@ -249,6 +366,22 @@ public class OrderListPage extends JDialog {
 			gbc_rdbtnNewRadioButton_2.gridx = 0;
 			gbc_rdbtnNewRadioButton_2.gridy = 2;
 			contentPanel.add(leaseRadio, gbc_rdbtnNewRadioButton_2);
+		}
+		{
+			returnDateExceded = new JCheckBox("Return date exceded");
+			GridBagConstraints gbc_returnDateExceded = new GridBagConstraints();
+			gbc_returnDateExceded.insets = new Insets(0, 0, 5, 5);
+			gbc_returnDateExceded.gridx = 1;
+			gbc_returnDateExceded.gridy = 2;
+			contentPanel.add(returnDateExceded, gbc_returnDateExceded);
+		}
+		{
+			returned = new JCheckBox("Returned");
+			GridBagConstraints gbc_returned = new GridBagConstraints();
+			gbc_returned.insets = new Insets(0, 0, 5, 5);
+			gbc_returned.gridx = 2;
+			gbc_returned.gridy = 2;
+			contentPanel.add(returned, gbc_returned);
 		}
 		{
 			JButton searchButton = new JButton("Search");
@@ -291,7 +424,7 @@ public class OrderListPage extends JDialog {
 					buttonColumn.setMnemonic(KeyEvent.VK_D);
 					
 					GridBagConstraints gbc_table = new GridBagConstraints();
-					gbc_table.gridwidth = 4;
+					gbc_table.gridwidth = 5;
 					gbc_table.insets = new Insets(0, 0, 0, 5);
 					gbc_table.fill = GridBagConstraints.BOTH;
 					gbc_table.gridx = 0;
