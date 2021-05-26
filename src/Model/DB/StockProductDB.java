@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import Model.DBIF.StockProductIF;
+import Model.IF.StockProductIF;
 import Model.Model.MessagesEnum;
 import Model.Model.Price;
 import Model.Model.PriceType;
@@ -87,6 +87,28 @@ public class StockProductDB implements StockProductIF {
 		
 		StockProduct stockProduct = getStockProduct(stockProductId, warehouseId);
 		amount = stockProduct.getAmount() - amount;
+		
+	    Connection con = DBConnection.getInstance().getConnection();
+	
+	    try {
+			PreparedStatement preparedStmt = con.prepareStatement(sqlUpdate);
+			preparedStmt.setLong(1, amount);
+			preparedStmt.setLong(2, stockProductId);
+			preparedStmt.setLong(3, warehouseId);
+		
+			preparedStmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			throw e;
+		}
+	}
+	
+	@Override
+	public void returnLeaseOrPurchaseStockProduct(long stockProductId, int amount, long warehouseId) throws SQLException {
+		String sqlUpdate = "UPDATE StockProduct SET amount = ? WHERE id = ? AND warehouse_id = ?";
+		
+		StockProduct stockProduct = getStockProduct(stockProductId, warehouseId);
+		amount = stockProduct.getAmount() + amount;
 		
 	    Connection con = DBConnection.getInstance().getConnection();
 	

@@ -10,7 +10,7 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-import Model.DBIF.EmployeeIF;
+import Model.IF.EmployeeIF;
 import Model.Model.Address;
 import Model.Model.DepartmentType;
 import Model.Model.Employee;

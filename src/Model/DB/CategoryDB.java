@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import Model.DBIF.CategoryIF;
+import Model.IF.CategoryIF;
 import Model.Model.Category;
 
 public class CategoryDB implements CategoryIF{

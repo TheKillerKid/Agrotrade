@@ -1,4 +1,4 @@
-package Model.DBIF;
+package Model.IF;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -12,4 +12,6 @@ public interface StockProductIF {
 	StockProduct getStockProduct(long id, long warehouseId) throws SQLException;
 	
 	void sellOrLeaseStockProduct(long stockProductId, int amount, long warehouseId) throws SQLException;
+	
+	void returnLeaseOrPurchaseStockProduct(long stockProductId, int amount, long warehouseId) throws SQLException;
 }

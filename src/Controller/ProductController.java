@@ -6,12 +6,13 @@ import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 import Model.DB.ProductDB;
+import Model.IF.ProductIF;
 import Model.Model.Product;
 import Model.Model.StockProduct;
 
 public class ProductController {
 
-		private ProductDB productDb = new ProductDB();
+		private ProductIF productDb = new ProductDB();
 
 		public Product getProductByBarcode(String barcode) throws SQLException {
 			try {

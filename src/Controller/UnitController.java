@@ -4,11 +4,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import Model.DB.UnitDB;
+import Model.IF.UnitIF;
 import Model.Model.Unit;
 
 public class UnitController {
 
-	private UnitDB unitDb = new UnitDB();
+	private UnitIF unitDb = new UnitDB();
 	
 	public ArrayList<Unit> getUnits() throws SQLException{
 		try {

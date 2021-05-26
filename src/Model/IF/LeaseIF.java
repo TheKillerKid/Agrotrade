@@ -1,4 +1,4 @@
-package Model.DBIF;
+package Model.IF;
 
 import java.sql.SQLException;
 
@@ -8,4 +8,6 @@ public interface LeaseIF {
 	Lease createLease(Lease lease) throws Exception;
 	
 	Lease getLease(long id) throws SQLException;
+	
+	void returnLease(Lease lease) throws Exception;
 }

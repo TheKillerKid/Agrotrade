@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import Model.DBIF.UnitIF;
+import Model.IF.UnitIF;
 import Model.Model.Unit;
 
 public class UnitDB implements UnitIF{

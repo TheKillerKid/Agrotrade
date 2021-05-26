@@ -23,6 +23,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -68,6 +69,8 @@ public class OrderPage extends JDialog {
 	
 	private final JPanel contentPanel = new JPanel();
 	private JPanel buttonPane = new JPanel();
+	
+	private JLabel title = new JLabel("");
 	private JTextField quantityField = new JTextField();;
 	private JTextField noteField;
 	private JComboBox<String> customersComboBox;
@@ -160,32 +163,7 @@ public class OrderPage extends JDialog {
 		gbl_contentPanel.rowWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE, 1.0};
 		contentPanel.setLayout(gbl_contentPanel);
 		{
-			JLabel title = new JLabel("");
-			if(type == OrderPageType.SALE) {
-				if(id == null) {
-					title.setText("Register sale");
-				}
-				else {
-					title.setText("Edit sale");
-				}
-			}
-			if(type == OrderPageType.LEASE) {
-				if(id == null) {
-					title.setText("Register lease");
-				}
-				else {
-					title.setText("Edit lease");
-				}
-			}
-			if(type == OrderPageType.PURCHASE) {
-				if(id == null) {
-					title.setText("Register purchase");
-				}
-				else {
-					title.setText("Edit purchase");
-				}
-			}
-			
+			setTitle();
 			
 			title.setFont(new Font("Tahoma", Font.BOLD, 14));
 			GridBagConstraints gbc_title = new GridBagConstraints();
@@ -568,8 +546,6 @@ public class OrderPage extends JDialog {
 			
 			contentPanel.add(msgLbl, gbc_msgLbl);
 		}
-		
-
 		{
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			GridBagLayout gbl_buttonPane = new GridBagLayout();
@@ -604,27 +580,24 @@ public class OrderPage extends JDialog {
 				
 				
 				setAsReceivedBtn = new JButton("Set as received");
-				
-				
-				returnLeaseBtn = new JButton("Return lease");
-				
-				
-				sendSaleBtn = new JButton("Send sale");
-				sendSaleBtn.addActionListener(new ActionListener() {
+				setAsReceivedBtn.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						try {
-							Sale sale = (Sale)order;
+							Purchase purchase = (Purchase)order;
 							
-							orderCtrl.sendSale(sale.getId());
-							sale.setShippingDate(LocalDate.now());
+							orderCtrl.setAsReceived(purchase);
 							
+							loadLists();
+							loadData();
+							getCurrentStock();
 							setValuesToFields();
 							
-							msgLbl.setText(MessagesEnum.SENDSALESUCCESS.text);
+							middleBtnPanel.remove(setAsReceivedBtn);
+							buttonPane.revalidate();
+							buttonPane.repaint();
+							
+							msgLbl.setText(MessagesEnum.LEASERETURNEDSUCCESS.text);
 							msgLbl.setForeground(Color.GREEN); 
-							
-							order = sale;
-							setValuesToFields();
 							
 						} catch(SQLException e1) {
 							e1.printStackTrace();
@@ -635,36 +608,108 @@ public class OrderPage extends JDialog {
 							msgLbl.setForeground(Color.RED);
 							msgLbl.setText(e2.getMessage());
 						}
+						setTitle();
 					}
 				});
 				
 				
-				saleDeliveredBtn = new JButton("Saled delivered");
-				
-				if(type == OrderPageType.PURCHASE && id != null){
-					{
-						middleBtnPanel.add(setAsReceivedBtn);
-					}
-				}
-				if(type == OrderPageType.LEASE && id != null){
-					{
-						middleBtnPanel.add(returnLeaseBtn);
-					}
-				}
-				if(type == OrderPageType.SALE && id != null){
-					if((Date)shippingDatePicker.getModel().getValue() == null){
-						{
-							middleBtnPanel.add(sendSaleBtn);
+				returnLeaseBtn = new JButton("Return lease");
+				returnLeaseBtn.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						try {
+							Lease lease = (Lease)order;
+							
+							orderCtrl.returnLease(lease);
+							
+							loadLists();
+							loadData();
+							getCurrentStock();
+							setValuesToFields();
+							
+							middleBtnPanel.remove(returnLeaseBtn);
+							buttonPane.revalidate();
+							buttonPane.repaint();
+							
+							msgLbl.setText(MessagesEnum.LEASERETURNEDSUCCESS.text);
+							msgLbl.setForeground(Color.GREEN); 
+							
+						} catch(SQLException e1) {
+							e1.printStackTrace();
+							msgLbl.setForeground(Color.RED);
+							msgLbl.setText(MessagesEnum.DBUPDATEERROR.text);
+						} catch (Exception e2) {
+							e2.printStackTrace();
+							msgLbl.setForeground(Color.RED);
+							msgLbl.setText(e2.getMessage());
 						}
+						setTitle();
 					}
-					if((Date)shippingDatePicker.getModel().getValue() != null && (Date)deliveryDatePicker.getModel().getValue() == null){
-						{
+				});
+				
+				
+				sendSaleBtn = new JButton("Send sale");
+				saleDeliveredBtn = new JButton("Sales delivered");
+				
+				saleDeliveredBtn.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						try {
+							Sale sale = (Sale)order;
+							
+							orderCtrl.saleDelivered(sale.getId());
+							
+							loadData();
+							setValuesToFields();
+							
+							middleBtnPanel.remove(saleDeliveredBtn);
+							buttonPane.revalidate();
+							buttonPane.repaint();
+							
+							msgLbl.setText(MessagesEnum.SALEDELIVEREDSUCCESS.text);
+							msgLbl.setForeground(Color.GREEN); 
+							
+						} catch(SQLException e1) {
+							e1.printStackTrace();
+							msgLbl.setForeground(Color.RED);
+							msgLbl.setText(MessagesEnum.DBUPDATEERROR.text);
+						} catch (Exception e2) {
+							e2.printStackTrace();
+							msgLbl.setForeground(Color.RED);
+							msgLbl.setText(e2.getMessage());
+						}
+						setTitle();
+					}
+				});
+				
+				sendSaleBtn.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						try {
+							Sale sale = (Sale)order;
+							
+							orderCtrl.sendSale(sale.getId());
+							
+							loadData();
+							setValuesToFields();
+							
+							middleBtnPanel.remove(sendSaleBtn);
 							middleBtnPanel.add(saleDeliveredBtn);
+							buttonPane.revalidate();
+							buttonPane.repaint();
+							
+							msgLbl.setText(MessagesEnum.SENDSALESUCCESS.text);
+							msgLbl.setForeground(Color.GREEN); 
+							
+						} catch(SQLException e1) {
+							e1.printStackTrace();
+							msgLbl.setForeground(Color.RED);
+							msgLbl.setText(MessagesEnum.DBUPDATEERROR.text);
+						} catch (Exception e2) {
+							e2.printStackTrace();
+							msgLbl.setForeground(Color.RED);
+							msgLbl.setText(e2.getMessage());
 						}
+						setTitle();
 					}
-				}
-				
-				
+				});
 				
 			}
 			{
@@ -690,6 +735,7 @@ public class OrderPage extends JDialog {
 							if(order != null) {
 								Lease lease = (Lease)order;
 								setId(lease.getId());
+								middleBtnPanel.add(returnLeaseBtn);
 							}
 						}
 						if(type == OrderPageType.PURCHASE) {
@@ -697,10 +743,10 @@ public class OrderPage extends JDialog {
 							if(order != null) {
 								Purchase purchase = (Purchase)order;
 								setId(purchase.getId());
+								middleBtnPanel.add(setAsReceivedBtn);
 							}
 						}
-						
-						
+						setTitle();
 					}
 				});
 			}
@@ -710,8 +756,10 @@ public class OrderPage extends JDialog {
 		
 		try {
 			loadLists();
-			loadData();
-			setValuesToFields();
+			if(id != null) {
+				loadData();
+				setValuesToFields();
+			}
 			
 			stockProducts.stream().forEach(stockProduct -> stockProductsDefaultModel.addElement(String.valueOf(stockProduct.getProduct().getBarcode()) + " - " + stockProduct.getProduct().getName()));
 			customers.stream().forEach(customer -> customersDefaultModel.addElement(String.valueOf(customer.getCvrNo()) + " - " + customer.getFirstName() + " " + customer.getLastName()));
@@ -720,11 +768,43 @@ public class OrderPage extends JDialog {
 			msgLbl.setText(MessagesEnum.DBERROR.text);
 			msgLbl.setForeground(Color.RED);
 		}
+		
+		if(type == OrderPageType.PURCHASE && id != null){
+			{
+				middleBtnPanel.add(setAsReceivedBtn);
+			}
+		}
+		if(type == OrderPageType.LEASE && id != null){
+			{
+				middleBtnPanel.add(returnLeaseBtn);
+			}
+		}
+		if(type == OrderPageType.SALE && id != null){
+			if((Date)shippingDatePicker.getModel().getValue() == null){
+				{
+					middleBtnPanel.add(sendSaleBtn);
+				}
+			}
+			if((Date)shippingDatePicker.getModel().getValue() != null && (Date)deliveryDatePicker.getModel().getValue() == null){
+				{
+					middleBtnPanel.add(saleDeliveredBtn);
+				}
+			}
+		}
 	}
 	
 	private void loadLists () throws SQLException {	
 		try {
 			stockProducts = orderCtrl.getStockProducts(LoginContainer.getInstance().getCurrentUser().getWarehouse().getId());
+			if(type == OrderPageType.SALE) {
+				stockProducts = stockProducts.stream().filter(stockProduct -> stockProduct.getProduct().getSalePrice() != null).collect(Collectors.toCollection(ArrayList::new));
+			}
+			if(type == OrderPageType.LEASE) {
+				stockProducts = stockProducts.stream().filter(stockProduct -> stockProduct.getProduct().getLeasePrice() != null).collect(Collectors.toCollection(ArrayList::new));
+			}
+			if(type == OrderPageType.PURCHASE) {
+				stockProducts = stockProducts.stream().filter(stockProduct -> stockProduct.getProduct().getPurchasePrice() != null).collect(Collectors.toCollection(ArrayList::new));
+			}
 			customers = orderCtrl.getCustomers();
 		} catch (SQLException e) {
 			throw e;
@@ -779,11 +859,14 @@ public class OrderPage extends JDialog {
 					);
 			
 			order = orderCtrl.createOrder(order);
+			Sale sale = (Sale)order;
+			setId(sale.getId());
 			
 			msgLbl.setText(MessagesEnum.SALECREATED.text);
 			msgLbl.setForeground(Color.GREEN);
 			
 			loadLists();
+			loadData();
 			getCurrentStock();
 			setValuesToFields();
 			
@@ -831,11 +914,14 @@ public class OrderPage extends JDialog {
 							);
 			
 			order = orderCtrl.createOrder(order);
+			Lease lease = (Lease)order;
+			setId(lease.getId());
 			
 			msgLbl.setText(MessagesEnum.LEASECREATED.text);
 			msgLbl.setForeground(Color.GREEN);
 			
 			loadLists();
+			loadData();
 			getCurrentStock();
 			setValuesToFields();
 			
@@ -870,11 +956,14 @@ public class OrderPage extends JDialog {
 							);
 			
 			order = orderCtrl.createOrder(order);
+			Purchase purchase = (Purchase)order;
+			setId(purchase.getId());
 			
 			msgLbl.setText(MessagesEnum.LEASECREATED.text);
 			msgLbl.setForeground(Color.GREEN);
 			
 			loadLists();
+			loadData();
 			getCurrentStock();
 			setValuesToFields();
 			
@@ -989,6 +1078,7 @@ public class OrderPage extends JDialog {
 	
 	private void setValuesToFields() {
 		totalPriceValue.setText(Double.toString(order.getTotalPrice()));
+		onStockValue.setText(String.valueOf(selectedStockProduct.getAmount()));
 		
 		orderLines = order.getOrderLines();
 		fillOrderLinesToTableAndRefresh();
@@ -1036,6 +1126,33 @@ public class OrderPage extends JDialog {
 			if(purchase.getDeliveryDate() != null) {
 				deliveryDateModel.setDate(purchase.getDeliveryDate().getYear(), purchase.getDeliveryDate().getMonthValue(), purchase.getDeliveryDate().getDayOfMonth());
 				deliveryDateModel.setSelected(true);
+			}
+		}
+	}
+	
+	private void setTitle() {
+		if(type == OrderPageType.SALE) {
+			if(id == null) {
+				title.setText("Register sale");
+			}
+			else {
+				title.setText("Edit sale");
+			}
+		}
+		if(type == OrderPageType.LEASE) {
+			if(id == null) {
+				title.setText("Register lease");
+			}
+			else {
+				title.setText("Edit lease");
+			}
+		}
+		if(type == OrderPageType.PURCHASE) {
+			if(id == null) {
+				title.setText("Register purchase");
+			}
+			else {
+				title.setText("Edit purchase");
 			}
 		}
 	}

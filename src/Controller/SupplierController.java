@@ -4,12 +4,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import Model.DB.SupplierDB;
+import Model.IF.SupplierIF;
 import Model.Model.Customer;
 import Model.Model.Supplier;
 
 public class SupplierController {
 	
-	SupplierDB supplierDb = new SupplierDB();
+	SupplierIF supplierDb = new SupplierDB();
 	
 	public ArrayList<Supplier> getSuppliers() throws SQLException {
 		try {

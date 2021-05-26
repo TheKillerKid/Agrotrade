@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import Model.DBIF.AddressIF;
+import Model.IF.AddressIF;
 import Model.Model.Address;
 import Model.Model.MessagesEnum;
 

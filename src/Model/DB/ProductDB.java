@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import Model.IF.ProductIF;
 import Model.Model.Category;
 import Model.Model.MessagesEnum;
 import Model.Model.Price;
@@ -16,7 +17,6 @@ import Model.Model.StockProduct;
 import Model.Model.Supplier;
 import Model.Model.Unit;
 import Model.Model.Warehouse;
-import Model.DBIF.ProductIF;
 
 public class ProductDB implements ProductIF {
 	
@@ -111,9 +111,15 @@ public class ProductDB implements ProductIF {
                 throw new SQLException(MessagesEnum.DBSAVEERROR.text);
             }
 			
-			product.getPurchasePrice().setId(priceDb.createPrice(purchasePrice, product.getId()));
-			product.getSalePrice().setId(priceDb.createPrice(salePrice, product.getId()));
-			product.getLeasePrice().setId(priceDb.createPrice(leasePrice, product.getId()));
+            if(purchasePrice != null) {
+            	product.getPurchasePrice().setId(priceDb.createPrice(purchasePrice, product.getId()));
+            }
+            if(salePrice != null) {
+            	product.getSalePrice().setId(priceDb.createPrice(salePrice, product.getId()));
+            }
+            if(leasePrice != null) {
+            	product.getLeasePrice().setId(priceDb.createPrice(leasePrice, product.getId()));
+            }
 			
 			createStockProducts(product.getId(), minStock, maxStock);
 			
