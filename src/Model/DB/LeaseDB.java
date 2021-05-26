@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 
-import Model.DBIF.LeaseIF;
+import Model.IF.LeaseIF;
 import Model.Model.Lease;
 import Model.Model.MessagesEnum;
 import Model.Model.OrderLine;

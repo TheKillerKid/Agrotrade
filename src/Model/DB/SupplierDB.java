@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import Model.DBIF.SupplierIF;
+import Model.IF.SupplierIF;
 import Model.Model.Address;
 import Model.Model.MessagesEnum;
 import Model.Model.Supplier;

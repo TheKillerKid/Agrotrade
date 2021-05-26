@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import Model.DBIF.CityIF;
+import Model.IF.CityIF;
 import Model.Model.MessagesEnum;
 
 public class CityDB implements CityIF {

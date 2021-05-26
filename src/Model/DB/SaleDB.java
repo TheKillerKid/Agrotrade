@@ -9,7 +9,7 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-import Model.DBIF.SaleIF;
+import Model.IF.SaleIF;
 import Model.Model.MessagesEnum;
 import Model.Model.OrderLine;
 import Model.Model.OrderPageType;

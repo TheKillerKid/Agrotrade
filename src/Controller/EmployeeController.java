@@ -5,11 +5,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import Model.DB.EmployeeDB;
+import Model.IF.EmployeeIF;
 import Model.Model.Employee;
 
 public class EmployeeController {
 	
-	private EmployeeDB employeeDb = new EmployeeDB();
+	private EmployeeIF employeeDb = new EmployeeDB();
 	
 	public Employee getEmployeeByCprNo(String cprNo) throws SQLException{
 		try {

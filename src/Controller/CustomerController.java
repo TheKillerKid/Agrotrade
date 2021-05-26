@@ -4,11 +4,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import Model.DB.CustomerDB;
+import Model.IF.CustomerIF;
 import Model.Model.Customer;
 
 public class CustomerController {
 
-	private CustomerDB customerDb = new CustomerDB();
+	private CustomerIF customerDb = new CustomerDB();
 	
 	public Customer getCustomer(String cvrNo) throws SQLException{
 		try {

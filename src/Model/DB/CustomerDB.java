@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 import Model.Model.Address;
 import Model.DB.AddressDB;
-import Model.DBIF.CustomerIF;
+import Model.IF.CustomerIF;
 import Model.Model.Customer;
 import Model.Model.Employee;
 import Model.Model.MessagesEnum;

@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import Model.DBIF.CountryIF;
+import Model.IF.CountryIF;
 import Model.Model.MessagesEnum;
 
 public class CountryDB implements CountryIF{

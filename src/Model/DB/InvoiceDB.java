@@ -7,8 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 
-import Model.DBIF.InvoiceIF;
-
+import Model.IF.InvoiceIF;
 import Model.Model.Invoice;
 import Model.Model.MessagesEnum;
 

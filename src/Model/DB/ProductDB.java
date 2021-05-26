@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import Model.IF.ProductIF;
 import Model.Model.Category;
 import Model.Model.MessagesEnum;
 import Model.Model.Price;
@@ -16,7 +17,6 @@ import Model.Model.StockProduct;
 import Model.Model.Supplier;
 import Model.Model.Unit;
 import Model.Model.Warehouse;
-import Model.DBIF.ProductIF;
 
 public class ProductDB implements ProductIF {
 	

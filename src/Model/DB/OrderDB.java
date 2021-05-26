@@ -8,7 +8,7 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-import Model.DBIF.OrderIF;
+import Model.IF.OrderIF;
 import Model.Model.Invoice;
 import Model.Model.Lease;
 import Model.Model.MessagesEnum;

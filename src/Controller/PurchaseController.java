@@ -3,15 +3,16 @@ package Controller;
 import java.sql.SQLException;
 
 import Model.DB.PurchaseDB;
+import Model.IF.PurchaseIF;
 import Model.Model.Purchase;
 import Model.Model.Sale;
 
 public class PurchaseController {
-private PurchaseDB purchaseDB = new PurchaseDB();
+private PurchaseIF purchaseDb = new PurchaseDB();
 	
 	public Purchase createPurchase(Purchase purchase) throws Exception {
 		try {
-			return purchaseDB.createPurchase(purchase);
+			return purchaseDb.createPurchase(purchase);
 		} catch (Exception e) {
 			throw e;
 		}
@@ -19,7 +20,7 @@ private PurchaseDB purchaseDB = new PurchaseDB();
 	
 	public Purchase getPurchase(long id) throws SQLException {
 		try {
-			return purchaseDB.getPurchase(id);
+			return purchaseDb.getPurchase(id);
 		} catch (SQLException e) {
 			throw e;
 		}
@@ -27,7 +28,7 @@ private PurchaseDB purchaseDB = new PurchaseDB();
 	
 	public void setAsReceived(Purchase purchase) throws Exception {
 		try {
-			this.purchaseDB.setAsReceived(purchase);
+			this.purchaseDb.setAsReceived(purchase);
 		} catch (Exception e) {
 			throw e;
 		}

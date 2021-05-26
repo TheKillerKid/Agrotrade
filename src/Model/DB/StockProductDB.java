@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import Model.DBIF.StockProductIF;
+import Model.IF.StockProductIF;
 import Model.Model.MessagesEnum;
 import Model.Model.Price;
 import Model.Model.PriceType;

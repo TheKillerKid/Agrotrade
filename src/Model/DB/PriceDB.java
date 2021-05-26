@@ -6,7 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
-import Model.DBIF.PriceIF;
+
+import Model.IF.PriceIF;
 import Model.Model.Price;
 import Model.Model.PriceType;
 

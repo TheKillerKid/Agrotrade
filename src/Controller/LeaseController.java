@@ -3,11 +3,12 @@ package Controller;
 import java.sql.SQLException;
 
 import Model.DB.LeaseDB;
+import Model.IF.LeaseIF;
 import Model.Model.Lease;
 import Model.Model.Sale;
 
 public class LeaseController {
-	private LeaseDB leaseDb = new LeaseDB();
+	private LeaseIF leaseDb = new LeaseDB();
 	
 	public Lease createLease(Lease lease) throws Exception {
 		try {

@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import Model.DBIF.OrderLineIF;
+import Model.IF.OrderLineIF;
 import Model.Model.MessagesEnum;
 import Model.Model.OrderLine;
 

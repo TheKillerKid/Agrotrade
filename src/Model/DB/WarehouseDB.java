@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import Model.DBIF.WarehouseIF;
+import Model.IF.WarehouseIF;
 import Model.Model.Address;
 import Model.Model.Warehouse;
 

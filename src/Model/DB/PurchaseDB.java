@@ -10,7 +10,7 @@ import java.time.LocalDate;
 
 import Model.Model.Purchase;
 import Model.Model.Sale;
-import Model.DBIF.PurchaseIF;
+import Model.IF.PurchaseIF;
 import Model.Model.Lease;
 import Model.Model.MessagesEnum;
 import Model.Model.OrderLine;

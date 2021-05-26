@@ -1,4 +1,4 @@
-package Model.DBIF;
+package Model.IF;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
