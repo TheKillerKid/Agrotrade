@@ -136,7 +136,7 @@ public class OrderDB implements OrderIF {
 		return order;
 	}
 
-	public ArrayList<OrderView> getOrderList(OrderPageType type) throws SQLException {
+	public ArrayList<OrderView> getOrderList() throws SQLException {
 		ArrayList<OrderView> res = new ArrayList<OrderView>();
 		String sqlOrder = "SELECT * FROM OrderView";
 
@@ -189,7 +189,7 @@ public class OrderDB implements OrderIF {
 		Date saleShippingDate = rs.getDate("sale_shipping_date");
 		
 		return new OrderView(
-				rs.getLong("id"),
+				rs.getLong("order_id"),
 				rs.getDouble("total_price"),
 				leaseBorrowDate != null ? leaseBorrowDate.toLocalDate() : null,
 				leaseExpectedReturnDate != null ? leaseExpectedReturnDate.toLocalDate() : null,
@@ -198,7 +198,6 @@ public class OrderDB implements OrderIF {
 				purchaseDeliveryDate != null ? purchaseDeliveryDate.toLocalDate() : null,
 				saleDeliveryDate != null ? saleDeliveryDate.toLocalDate() : null,
 				saleShippingDate != null ? saleShippingDate.toLocalDate() : null,
-				rs.getLong("order_id"),
 				rs.getDate("orders_creation_date").toLocalDate(),
 				rs.getLong("sale_id"),
 				rs.getLong("purchase_id"),

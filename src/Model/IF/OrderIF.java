@@ -12,5 +12,5 @@ public interface OrderIF {
 	
 	public Order getOrder(long id, OrderPageType type) throws SQLException;
 	
-	public ArrayList<OrderView> getOrderList (OrderPageType type) throws SQLException;
+	public ArrayList<OrderView> getOrderList () throws SQLException;
 }

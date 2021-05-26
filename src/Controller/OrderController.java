@@ -76,10 +76,10 @@ public class OrderController {
 		}
 	}
 	
-	public ArrayList<OrderView> getOrders(OrderPageType type) throws SQLException {
+	public ArrayList<OrderView> getOrders() throws SQLException {
 		ArrayList<OrderView> orders = new ArrayList<OrderView>(); 
 		try {
-			orders = orderDb.getOrderList(type);
+			orders = orderDb.getOrderList();
 		} catch(SQLException e) {
 			throw e;
 		}

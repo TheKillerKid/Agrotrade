@@ -3,7 +3,6 @@ package Model.Model;
 import java.time.LocalDate;
 
 public class OrderView {
-	private long orderLineId;
 	private double totalPrice;
 	private LocalDate leaseBorrowDate;
 	private LocalDate leaseExpectedReturnDate;
@@ -20,12 +19,11 @@ public class OrderView {
 
 
 	public OrderView(
-			long orderLineId, double totalPrice, LocalDate leaseBorrowDate, LocalDate leaseExpectedReturnDate, LocalDate leaseRealReturnDate,
-			String cvrNo, LocalDate purchaseDeliveryDate, LocalDate saleDeliveryDate, LocalDate saleShippingDate, long orderId, LocalDate orderCreationDate,
+			long orderId, double totalPrice, LocalDate leaseBorrowDate, LocalDate leaseExpectedReturnDate, LocalDate leaseRealReturnDate,
+			String cvrNo, LocalDate purchaseDeliveryDate, LocalDate saleDeliveryDate, LocalDate saleShippingDate, LocalDate orderCreationDate,
 			long saleId, long purchaseId, long leaseId
 	) {
 		this.setOrderId(orderId);
-		this.setOrderLineId(orderLineId);
 		this.setTotalPrice(totalPrice);
 		this.setLeaseBorrowDate(leaseBorrowDate);
 		this.setLeaseExpectedReturnDate(leaseExpectedReturnDate);
@@ -46,14 +44,6 @@ public class OrderView {
 
 	public void setOrderId(long orderId) {
 		this.orderId = orderId;
-	}
-
-	public long getOrderLineId() {
-		return orderLineId;
-	}
-
-	public void setOrderLineId(long orderLineId) {
-		this.orderLineId = orderLineId;
 	}
 
 	public double getTotalPrice() {

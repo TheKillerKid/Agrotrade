@@ -22,7 +22,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -55,11 +59,123 @@ public class OrderListPage extends JDialog {
 		ArrayList<OrderView> res = new ArrayList<OrderView>();
 
 		try {
-			res = orderController.getOrders(OrderPageType.valueOf(getTypeSelection()));
+			res = orderController.getOrders();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return res;
+	}
+	
+	
+	private Object[][] getData(String type, ArrayList<OrderView> list) {
+		if (type == OrderPageType.SALE.toString()) {			
+			List<OrderView> filteredList = list.stream().filter((order) -> order.getSaleId() != 0).collect(Collectors.toList());
+			Object[][] data = new Object[filteredList.size()][];
+
+			for (int i = 0; i < filteredList.size(); i++) {
+				OrderView order = filteredList.get(i);
+				
+				LocalDate deliveryDate = order.getSaleDeliveryDate();
+				LocalDate shippingDate = order.getSaleShippingDate();
+				
+				Object [] newData = {
+						order.getOrderId(),
+						order.getOrderCreationDate(),
+						order.getCvrNo(),
+						order.getTotalPrice(),
+						deliveryDate != null ? deliveryDate.format(DateTimeFormatter.ofPattern("dd MM yyyy")) : "–",
+						shippingDate != null ? shippingDate.format(DateTimeFormatter.ofPattern("dd MM yyyy")) : "–",
+						getType(order),
+						"Open",
+				};
+				
+				data[i] = newData;
+				
+			}
+			
+			return data;
+		}
+		
+		if (type == OrderPageType.PURCHASE.toString()) {			
+			List<OrderView> filteredList = list.stream().filter((order) -> order.getPurchaseId() != 0).collect(Collectors.toList());
+			Object[][] data = new Object[filteredList.size()][];
+			
+			for (int i = 0; i < filteredList.size(); i++) {
+				OrderView order = filteredList.get(i);
+				
+				LocalDate deliveryDate = order.getPurchaseDeliveryDate();
+				
+				Object [] newData = {
+						order.getOrderId(),
+						order.getOrderCreationDate(),
+						order.getCvrNo(),
+						order.getTotalPrice(),
+						deliveryDate != null ? deliveryDate.format(DateTimeFormatter.ofPattern("dd MM yyyy")) : "–",
+						getType(order),
+						"Open",
+				};
+				
+				data[i] = newData;
+				
+			}
+			
+			return data;
+		}
+		
+		if (type == OrderPageType.LEASE.toString()) {			
+			ArrayList<OrderView> filteredList = list.stream().filter((order) -> order.getLeaseId() != 0).collect(Collectors.toCollection(ArrayList::new));
+			Object[][] data = new Object[filteredList.size()][];
+			
+			
+			for (int i = 0; i < filteredList.size(); i++) {
+				OrderView order = filteredList.get(i);
+				LocalDate borrowDate = order.getLeaseBorrowDate();
+				LocalDate expectedDate = order.getLeaseExpectedReturnDate();
+				LocalDate realDate = order.getLeaseRealReturnDate();
+				
+				Object [] newData = {
+						order.getOrderId(),
+						order.getOrderCreationDate(),
+						order.getCvrNo(),
+						order.getTotalPrice(),
+						borrowDate != null ? borrowDate.format(DateTimeFormatter.ofPattern("dd MM yyyy")) : "–",
+						expectedDate != null ? expectedDate.format(DateTimeFormatter.ofPattern("dd MM yyyy")) : "–",
+						realDate != null ? realDate.format(DateTimeFormatter.ofPattern("dd MM yyyy")) : "–",
+						getType(order),
+						"Open",
+				};
+				
+				data[i] = newData;
+				
+			}
+			
+			return data;
+		}
+		
+		
+		return new Object[0][];
+	}
+	
+	private String[] getColumns(String type) {
+		if (type == OrderPageType.SALE.toString()) {
+			String column[] = {"Id", "Created at", "CVR", "Total price", "Delivery date", "Shipping date", "Type", ""};
+			
+			return column;
+		}
+
+		if (type == OrderPageType.PURCHASE.toString()) {
+			String column[] = {"Id", "Created at", "CVR", "Total price", "Delivery date", "Type", ""};
+			
+			return column;
+		}
+
+		if (type == OrderPageType.LEASE.toString()) {
+			String column[] = {"Id", "Created at", "CVR", "Total price", "Borrow date", "Expected return date", "Real return date", "Type", ""};
+			
+			return column;
+		}
+
+		return new String[0];
 	}
 	
 	private OrderPageType getType(OrderView order) {
@@ -148,27 +264,14 @@ public class OrderListPage extends JDialog {
 						contentPanel.remove(sp);
 					}
 
+					String type = getTypeSelection();
 					ArrayList<OrderView> orders = loadData();
+
+					Object[][] data = getData(type, orders);
+					String[] columns = getColumns(getTypeSelection());
 					
-					Object[][] data = new Object[orders.size()][];
 
-					
-					for (int i = 0; i < orders.size(); i++) {
-						OrderView order = orders.get(i);
-						
-						Object [] newData = {
-							order.getOrderId(),
-							order.getTotalPrice(),
-							getType(order),
-							"Open",
-						};
-
-						data[i] = newData;
-
-					}
-					String column[] = {"Id", "Total price", "Type", ""};
-
-					DefaultTableModel model = new DefaultTableModel(data, column);
+					DefaultTableModel model = new DefaultTableModel(data, columns);
 					JTable table = new JTable(model);
 					
 					AbstractAction open = new AbstractAction() {
@@ -177,14 +280,14 @@ public class OrderListPage extends JDialog {
 					        int modelRow = Integer.valueOf(e.getActionCommand());
 
 					        long orderId = (Long) table.getValueAt(modelRow, 0);
-					        OrderPageType type = (OrderPageType) table.getValueAt(modelRow, 3);
+					        OrderPageType type = (OrderPageType) table.getValueAt(modelRow, columns.length - 2);
 
 					        OrderPage.start(type, orderId);
 					        dispose();
 					    }
 					};
 					
-					ButtonColumn buttonColumn = new ButtonColumn(table, open, 3);
+					ButtonColumn buttonColumn = new ButtonColumn(table, open, columns.length - 1);
 					buttonColumn.setMnemonic(KeyEvent.VK_D);
 					
 					GridBagConstraints gbc_table = new GridBagConstraints();
@@ -214,6 +317,12 @@ public class OrderListPage extends JDialog {
 				JButton cancelButton = new JButton("Cancel");
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
+				cancelButton.addActionListener(new ActionListener () {
+					public void actionPerformed(ActionEvent e) {
+						HomePage.start();
+						dispose();
+					}
+				});
 			}
 		}
 	}
