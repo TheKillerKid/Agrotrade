@@ -99,6 +99,32 @@ public class OrderController {
 		}
 	}
 	
+	public void saleDelivered(long id) throws Exception {
+		try {
+			this.saleCtrl.saleDelivered(id);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	public void returnLease(Lease lease) throws Exception {
+		try {
+			this.leaseCtrl.returnLease(lease);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	public void setAsReceived(Purchase purchase) throws Exception {
+		try {
+			this.purchaseCtrl.setAsReceived(purchase);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	
+	
 	public ArrayList<Customer> getCustomers() throws SQLException{
 		try {
 			return this.customerCtrl.getCustomers();

@@ -12,4 +12,6 @@ public interface StockProductIF {
 	StockProduct getStockProduct(long id, long warehouseId) throws SQLException;
 	
 	void sellOrLeaseStockProduct(long stockProductId, int amount, long warehouseId) throws SQLException;
+	
+	void returnLeaseOrPurchaseStockProduct(long stockProductId, int amount, long warehouseId) throws SQLException;
 }

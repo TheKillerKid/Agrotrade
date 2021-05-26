@@ -403,14 +403,27 @@ public class ProductPage extends JDialog {
 														 .filter(s -> stringSupplierCvrNo.equals(s.getCvrNo()))
 														 .findAny()
 														 .orElse(null);
+							Price purchasePrice = null;
+							Price salePrice = null;
+							Price leasePrice = null;
+							
+							if(!purchasePriceField.getText().isEmpty()) {
+								purchasePrice = new Price(-1, ParsingHelper.tryParseDouble(purchasePriceField.getText()), LocalDate.now(), PriceType.PURCHASE);
+							}
+							if(!salePriceField.getText().isEmpty()) {
+								salePrice = new Price(-1, ParsingHelper.tryParseDouble(salePriceField.getText()), LocalDate.now(), PriceType.SALE);
+							}
+							if(!leasePriceField.getText().isEmpty()) {
+								leasePrice = new Price(-1, ParsingHelper.tryParseDouble(leasePriceField.getText()), LocalDate.now(), PriceType.LEASE);
+							}
 							
 							product = new Product(-1, 
 												  barcodeField.getText(), 
 												  nameField.getText(),
 												  category,
-												  new Price(-1, ParsingHelper.tryParseDouble(purchasePriceField.getText()), LocalDate.now(), PriceType.PURCHASE),
-												  new Price(-1, ParsingHelper.tryParseDouble(salePriceField.getText()), LocalDate.now(), PriceType.SALE),
-												  new Price(-1, ParsingHelper.tryParseDouble(leasePriceField.getText()), LocalDate.now(), PriceType.LEASE),
+												  purchasePrice,
+												  salePrice,
+												  leasePrice,
 												  unit,
 												  supplier);
 							

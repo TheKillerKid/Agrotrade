@@ -17,6 +17,14 @@ public class LeaseController {
 		}
 	}
 	
+	public void returnLease(Lease lease) throws Exception {
+		try {
+			leaseDb.returnLease(lease);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
 	public Lease getLease(long id) throws SQLException {
 		try {
 			return leaseDb.getLease(id);

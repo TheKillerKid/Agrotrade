@@ -11,11 +11,13 @@ import java.time.LocalDate;
 import Model.DBIF.LeaseIF;
 import Model.Model.Lease;
 import Model.Model.MessagesEnum;
+import Model.Model.OrderLine;
 import Model.Model.OrderPageType;
 
 public class LeaseDB implements LeaseIF{
 
 	private OrderDB orderDb = new OrderDB();
+	private StockProductDB stockProductDb = new StockProductDB();
 	
 	private CustomerDB customerDb = new CustomerDB();
 	
@@ -53,6 +55,7 @@ public class LeaseDB implements LeaseIF{
 		return lease;
 	}
 	
+	@Override
 	public Lease getLease(long id) throws SQLException {
 		Lease res = null;
 		
@@ -80,6 +83,36 @@ public class LeaseDB implements LeaseIF{
 	    }
 	
 		return res;
+	}
+	
+	@Override
+	public void returnLease(Lease lease) throws Exception {
+		String sql = "UPDATE Lease SET real_return_date = ? WHERE id = ?";
+
+		LocalDate realReturnDate = LocalDate.now();
+		
+		
+	     Connection con = DBConnection.getInstance().getConnection();
+	
+	     try {
+			PreparedStatement preparedStmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			preparedStmt.setObject(1, realReturnDate != null ? java.sql.Date.valueOf(realReturnDate) : null);
+			preparedStmt.setLong(2, lease.getId());
+			
+			preparedStmt.executeUpdate();
+			
+			ResultSet rs = preparedStmt.getGeneratedKeys();
+            if (!rs.next()) {
+            	throw new Exception(MessagesEnum.DBUPDATEERROR.text);
+            }
+            else {
+            	for(OrderLine ol : lease.getOrderLines()) {
+            		stockProductDb.returnLeaseOrPurchaseStockProduct(ol.getStockProduct().getId(), ol.getAmount(), ol.getStockProduct().getWarehouseId());
+            	}
+            }
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 	
 	private Lease buildLease(ResultSet rs) throws SQLException {

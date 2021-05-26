@@ -9,6 +9,8 @@ public interface SaleIF {
 	
 	void sendSale(long id) throws Exception;
 	
+	void saleDelivered(long id) throws Exception;
+	
 	Sale getSale(long id) throws SQLException;
 	 
 	//Sale update(Sale sale) throws SQLException;

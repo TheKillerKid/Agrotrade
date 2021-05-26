@@ -103,6 +103,28 @@ public class StockProductDB implements StockProductIF {
 		}
 	}
 	
+	@Override
+	public void returnLeaseOrPurchaseStockProduct(long stockProductId, int amount, long warehouseId) throws SQLException {
+		String sqlUpdate = "UPDATE StockProduct SET amount = ? WHERE id = ? AND warehouse_id = ?";
+		
+		StockProduct stockProduct = getStockProduct(stockProductId, warehouseId);
+		amount = stockProduct.getAmount() + amount;
+		
+	    Connection con = DBConnection.getInstance().getConnection();
+	
+	    try {
+			PreparedStatement preparedStmt = con.prepareStatement(sqlUpdate);
+			preparedStmt.setLong(1, amount);
+			preparedStmt.setLong(2, stockProductId);
+			preparedStmt.setLong(3, warehouseId);
+		
+			preparedStmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			throw e;
+		}
+	}
+	
 	private StockProduct buildStockProduct(ResultSet rsStockProduct) throws SQLException {
 		return new StockProduct(rsStockProduct.getLong("id"),
 				rsStockProduct.getInt("amount"),

@@ -111,9 +111,15 @@ public class ProductDB implements ProductIF {
                 throw new SQLException(MessagesEnum.DBSAVEERROR.text);
             }
 			
-			product.getPurchasePrice().setId(priceDb.createPrice(purchasePrice, product.getId()));
-			product.getSalePrice().setId(priceDb.createPrice(salePrice, product.getId()));
-			product.getLeasePrice().setId(priceDb.createPrice(leasePrice, product.getId()));
+            if(purchasePrice != null) {
+            	product.getPurchasePrice().setId(priceDb.createPrice(purchasePrice, product.getId()));
+            }
+            if(salePrice != null) {
+            	product.getSalePrice().setId(priceDb.createPrice(salePrice, product.getId()));
+            }
+            if(leasePrice != null) {
+            	product.getLeasePrice().setId(priceDb.createPrice(leasePrice, product.getId()));
+            }
 			
 			createStockProducts(product.getId(), minStock, maxStock);
 			

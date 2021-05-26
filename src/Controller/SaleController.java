@@ -31,4 +31,12 @@ public class SaleController {
 			throw e;
 		} 
 	}
+	
+	public void saleDelivered(long id) throws Exception {
+		try {
+			saleDB.saleDelivered(id);
+		} catch (Exception e) {
+			throw e;
+		} 
+	}
 }

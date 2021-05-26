@@ -24,4 +24,12 @@ private PurchaseDB purchaseDB = new PurchaseDB();
 			throw e;
 		}
 	}
+	
+	public void setAsReceived(Purchase purchase) throws Exception {
+		try {
+			this.purchaseDB.setAsReceived(purchase);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
 }

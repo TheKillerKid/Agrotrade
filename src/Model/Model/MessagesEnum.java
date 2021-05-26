@@ -21,6 +21,8 @@ public enum MessagesEnum {
 	LEASECREATED("Lease was created!"),
 	PURCHASECREATED("Purchase was created!"),
 	SENDSALESUCCESS("Sale was send to customer!"),
+	SALEDELIVEREDSUCCESS("Sale was delivered to customer!"),
+	LEASERETURNEDSUCCESS("Lease was returned")
 	;
 	
 	public final String text;
