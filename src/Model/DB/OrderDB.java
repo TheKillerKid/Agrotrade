@@ -1,6 +1,8 @@
 package Model.DB;
 
+import java.security.spec.RSAKeyGenParameterSpec;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,15 +11,15 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 import Model.DBIF.OrderIF;
-import Model.Model.Invoice;
 import Model.Model.Lease;
 import Model.Model.MessagesEnum;
 import Model.Model.Order;
 import Model.Model.OrderLine;
 import Model.Model.OrderPageType;
+import Model.Model.OrderView;
 import Model.Model.Purchase;
 import Model.Model.Sale;
-import Model.Model.Warehouse;
+
 
 public class OrderDB implements OrderIF {
 
@@ -135,9 +137,9 @@ public class OrderDB implements OrderIF {
 		return order;
 	}
 
-	public ArrayList<Order> getOrderList() throws SQLException {
-		ArrayList<Order> res = new ArrayList<Order>();
-		String sqlOrder = "SELECT * FROM Orders";
+	public ArrayList<OrderView> getOrderList(OrderPageType type) throws SQLException {
+		ArrayList<OrderView> res = new ArrayList<OrderView>();
+		String sqlOrder = "SELECT * FROM OrderView";
 
 		Connection con = DBConnection.getInstance().getConnection();
 
@@ -147,30 +149,7 @@ public class OrderDB implements OrderIF {
 			ResultSet rs = preparedStmt.executeQuery();
 
 			while (rs.next()) {
-
-				// Pavole použij prosím buildOrder co je dole --Adam
-
-				if ((Long) rs.getLong("sale_id") != null) {
-					/*
-					 * Sale sale = saleDb.getSale(rs.getLong("sale_id"));
-					 * sale.setOrderId(rs.getLong("id"));
-					 * sale.setTotalPrice(rs.getDouble("total_price"));
-					 * sale.setNote(rs.getString("note"));
-					 * sale.setCreationDate(rs.getDate("creation_date").toLocalDate());
-					 * sale.setWarehouse(warehouseDb.getWarehouse(rs.getLong("warehouse_id")));
-					 * sale.setOrderLines(null); sale.setInvoice(null);
-					 * 
-					 * res.add(sale);
-					 */
-				}
-
-				if ((Long) rs.getLong("lease_id") != null) {
-
-				}
-
-				if ((Long) rs.getLong("purchase_id") != null) {
-
-				}
+				res.add(buildOrderView(rs));
 			}
 		} catch (SQLException e) {
 			throw e;
@@ -196,9 +175,35 @@ public class OrderDB implements OrderIF {
 		}
 		if (purchaseId != null) {
 			order = new Purchase(rs.getLong("id"), rs.getDouble("total_price"), rs.getString("notes"),
-					rs.getDate("creation_date").toLocalDate(), null, null, null, rs.getLong("lease_id"), null);
+					rs.getDate("creation_date").toLocalDate(), null, null, null, rs.getLong("purchase_id"), null);
 		}
 
 		return order;
+	}
+	
+	private OrderView buildOrderView(ResultSet rs) throws SQLException {
+		Date purchaseDeliveryDate = rs.getDate("purchase_delivery_date");
+		Date leaseBorrowDate = rs.getDate("lease_borrow_date");
+		Date leaseExpectedReturnDate = rs.getDate("lease_expected_return_date");
+		Date leaseRealReturnDate = rs.getDate("lease_real_return_date");
+		Date saleDeliveryDate = rs.getDate("sale_delivery_date");
+		Date saleShippingDate = rs.getDate("sale_shipping_date");
+		
+		return new OrderView(
+				rs.getLong("id"),
+				rs.getDouble("total_price"),
+				leaseBorrowDate != null ? leaseBorrowDate.toLocalDate() : null,
+				leaseExpectedReturnDate != null ? leaseExpectedReturnDate.toLocalDate() : null,
+				leaseRealReturnDate != null ? leaseRealReturnDate.toLocalDate() : null,
+				rs.getString("cvr_no"),
+				purchaseDeliveryDate != null ? purchaseDeliveryDate.toLocalDate() : null,
+				saleDeliveryDate != null ? saleDeliveryDate.toLocalDate() : null,
+				saleShippingDate != null ? saleShippingDate.toLocalDate() : null,
+				rs.getLong("order_id"),
+				rs.getDate("orders_creation_date").toLocalDate(),
+				rs.getLong("sale_id"),
+				rs.getLong("purchase_id"),
+				rs.getLong("lease_id")
+		);
 	}
 }

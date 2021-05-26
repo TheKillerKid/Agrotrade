@@ -75,7 +75,7 @@ public class PeopleListPage extends JDialog {
 		return res;
 	}
 	
-	public PersonPageType getType(Person person) {
+	private PersonPageType getType(Person person) {
 		if (person instanceof Customer) {
 			return PersonPageType.CUSTOMER;
 		}
