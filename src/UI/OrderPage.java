@@ -54,6 +54,7 @@ import Model.Model.MessagesEnum;
 import Model.Model.Order;
 import Model.Model.OrderLine;
 import Model.Model.OrderPageType;
+import Model.Model.PositionType;
 import Model.Model.Purchase;
 import Model.Model.Sale;
 
@@ -66,6 +67,7 @@ public class OrderPage extends JDialog {
 	private OrderController orderCtrl = new OrderController();
 	
 	private OrderPageType type;
+	private PositionType position = LoginContainer.getInstance().getCurrentUser().getPosition();
 	
 	private final JPanel contentPanel = new JPanel();
 	private JPanel buttonPane = new JPanel();
@@ -185,7 +187,7 @@ public class OrderPage extends JDialog {
 			{
 	
 				customersComboBox = new JComboBox<String>(customersDefaultModel);
-				customersComboBox.setEnabled(id == null);;
+				customersComboBox.setEnabled(id == null);
 				GridBagConstraints gbc_customerComboBox = new GridBagConstraints();
 				gbc_customerComboBox.fill = GridBagConstraints.HORIZONTAL;
 				gbc_customerComboBox.insets = new Insets(0, 0, 5, 5);
@@ -648,7 +650,7 @@ public class OrderPage extends JDialog {
 				
 				
 				sendSaleBtn = new JButton("Send sale");
-				saleDeliveredBtn = new JButton("Sales delivered");
+				saleDeliveredBtn = new JButton("Sale delivered");
 				
 				saleDeliveredBtn.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
@@ -691,7 +693,9 @@ public class OrderPage extends JDialog {
 							setValuesToFields();
 							
 							middleBtnPanel.remove(sendSaleBtn);
-							middleBtnPanel.add(saleDeliveredBtn);
+							if((position == PositionType.ADMIN || position == PositionType.SALESMAN)) {
+								middleBtnPanel.add(saleDeliveredBtn);
+							}
 							buttonPane.revalidate();
 							buttonPane.repaint();
 							
@@ -727,7 +731,9 @@ public class OrderPage extends JDialog {
 								Sale sale = (Sale)order;
 								setId(sale.getId());
 								setValuesToFields();
-								middleBtnPanel.add(sendSaleBtn);
+								if((position == PositionType.ADMIN || position == PositionType.SALESMAN)) {
+									middleBtnPanel.add(sendSaleBtn);
+								}
 							}
 						}
 						if(type == OrderPageType.LEASE) {
@@ -780,12 +786,12 @@ public class OrderPage extends JDialog {
 			}
 		}
 		if(type == OrderPageType.SALE && id != null){
-			if((Date)shippingDatePicker.getModel().getValue() == null){
+			if((Date)shippingDatePicker.getModel().getValue() == null && (position == PositionType.ADMIN || position == PositionType.SALESMAN)){
 				{
 					middleBtnPanel.add(sendSaleBtn);
 				}
 			}
-			if((Date)shippingDatePicker.getModel().getValue() != null && (Date)deliveryDatePicker.getModel().getValue() == null){
+			if((Date)shippingDatePicker.getModel().getValue() != null && (Date)deliveryDatePicker.getModel().getValue() == null && (position == PositionType.ADMIN || position == PositionType.SALESMAN)){
 				{
 					middleBtnPanel.add(saleDeliveredBtn);
 				}
@@ -1136,7 +1142,7 @@ public class OrderPage extends JDialog {
 				title.setText("Register sale");
 			}
 			else {
-				title.setText("Edit sale");
+				title.setText("Sale detail");
 			}
 		}
 		if(type == OrderPageType.LEASE) {
@@ -1144,7 +1150,7 @@ public class OrderPage extends JDialog {
 				title.setText("Register lease");
 			}
 			else {
-				title.setText("Edit lease");
+				title.setText("Lease detail");
 			}
 		}
 		if(type == OrderPageType.PURCHASE) {
@@ -1152,7 +1158,7 @@ public class OrderPage extends JDialog {
 				title.setText("Register purchase");
 			}
 			else {
-				title.setText("Edit purchase");
+				title.setText("Purchase detail");
 			}
 		}
 	}

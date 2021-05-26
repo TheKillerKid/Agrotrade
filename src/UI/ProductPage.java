@@ -66,6 +66,7 @@ public class ProductPage extends JDialog {
 	private StockProductContoller stockProductController = new StockProductContoller();
 	
 	private Product product = null;
+	private long stockProductId = -1;
 	
 	private ArrayList<Unit> units = new ArrayList<Unit>();
 	private ArrayList<Category> categories = new ArrayList<Category>();
@@ -93,6 +94,7 @@ public class ProductPage extends JDialog {
 	}
 
 	public ProductPage(long stockProductId) {
+		this.stockProductId = stockProductId;
 		
 		getContentPane().setBackground(SystemColor.menu);
 		setBounds(150, 150, 1280, 800);
@@ -111,7 +113,12 @@ public class ProductPage extends JDialog {
 			{
 				txtpnRegisterProduct = new JLabel();
 				txtpnRegisterProduct.setFont(new Font("Tahoma", Font.BOLD, 14));
-				txtpnRegisterProduct.setText("Register product");
+				if(stockProductId == -1) {
+					txtpnRegisterProduct.setText("Register product");
+				}
+				else {
+					txtpnRegisterProduct.setText("Product detail");
+				}
 				txtpnRegisterProduct.setBackground(SystemColor.menu);
 				GridBagConstraints gbc_txtpnRegisterProduct = new GridBagConstraints();
 				gbc_txtpnRegisterProduct.insets = new Insets(0, 0, 5, 5);
@@ -429,6 +436,18 @@ public class ProductPage extends JDialog {
 							
 							product = productCtrl.createProduct(product, ParsingHelper.tryParseInt(minStockField.getText()), ParsingHelper.tryParseInt(maxStockField.getText()));
 							
+							StockProduct stockProduct = productCtrl.getStockProductByProductId(product.getId(), LoginContainer.getInstance().getCurrentUser().getWarehouse().getId());
+							
+							setStockProductId(stockProduct.getId());
+							
+							txtpnRegisterProduct.setText("Edit product");
+							getContentPane().revalidate();
+							getContentPane().repaint();
+							
+							buttonsPanel.remove(saveBtn);
+							buttonsPanel.revalidate();
+							buttonsPanel.repaint();
+							
 							msgLbl.setForeground(Color.GREEN);
 							msgLbl.setText(MessagesEnum.PRODUCTSAVED.text);	
 						} catch (NumberFormatException e1) {
@@ -450,7 +469,9 @@ public class ProductPage extends JDialog {
 				gbc_saveBtn.anchor = GridBagConstraints.NORTH;
 				gbc_saveBtn.gridx = 3;
 				gbc_saveBtn.gridy = 0;
-				buttonsPanel.add(saveBtn, gbc_saveBtn);
+				if(stockProductId == -1) {
+					buttonsPanel.add(saveBtn, gbc_saveBtn);
+				}
 			}
 		}
 		try {
@@ -461,7 +482,7 @@ public class ProductPage extends JDialog {
 			categories.stream().forEach(category -> categoriesDefaultModel.addElement(category.getName()));
 			
 			if (stockProductId != -1) {				
-				loadData(stockProductId);
+				loadData();
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -479,17 +500,24 @@ public class ProductPage extends JDialog {
 		}
 	}
 
-	public void loadData(long stockProductId) throws SQLException {
+	public void loadData() throws SQLException {
 		try {
 			txtpnRegisterProduct.setText("Edit product");
 			
 			StockProduct stockProduct = stockProductController.getStockProduct(stockProductId, LoginContainer.getInstance().getCurrentUser().getWarehouse().getId());
 			
+			currentStockField.setText(String.valueOf(stockProduct.getAmount()));
 			barcodeField.setText(stockProduct.getProduct().getBarcode());
 			nameField.setText(stockProduct.getProduct().getName());
-			purchasePriceField.setText(Double.toString(stockProduct.getProduct().getPurchasePrice().getAmount()));
-			salePriceField.setText(Double.toString(stockProduct.getProduct().getSalePrice().getAmount()));
-			leasePriceField.setText(Double.toString(stockProduct.getProduct().getLeasePrice().getAmount()));
+			if(stockProduct.getProduct().getPurchasePrice() != null) {
+				purchasePriceField.setText(Double.toString(stockProduct.getProduct().getPurchasePrice().getAmount()));
+			}
+			if(stockProduct.getProduct().getSalePrice() != null) {
+				salePriceField.setText(Double.toString(stockProduct.getProduct().getSalePrice().getAmount()));
+			}
+			if(stockProduct.getProduct().getLeasePrice() != null) {
+				leasePriceField.setText(Double.toString(stockProduct.getProduct().getLeasePrice().getAmount()));
+			}
 			currentStockField.setText(Integer.toString(stockProduct.getAmount()));
 			minStockField.setText(Integer.toString(stockProduct.getMinStock()));
 			maxStockField.setText(Integer.toString(stockProduct.getMaxStock()));
@@ -500,5 +528,9 @@ public class ProductPage extends JDialog {
 		} catch (SQLException e) {
 			throw e;
 		}
+	}
+	
+	public void setStockProductId(long stockProductId) {
+		this.stockProductId = stockProductId;
 	}
 }

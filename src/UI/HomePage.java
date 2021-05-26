@@ -15,6 +15,7 @@ import Model.Model.Employee;
 import Model.Model.LoginContainer;
 import Model.Model.OrderPageType;
 import Model.Model.PersonPageType;
+import Model.Model.PositionType;
 
 import java.awt.Panel;
 import java.awt.GridBagConstraints;
@@ -34,6 +35,7 @@ public class HomePage extends JDialog {
 	private JLabel addressValue = new JLabel("");
 	private JLabel emailValue = new JLabel("");
 	private JLabel phoneValue = new JLabel("");
+	private PositionType position = loginContainer.getCurrentUser().getPosition();
 
 	/**
 	 * Launch the application.
@@ -66,46 +68,60 @@ public class HomePage extends JDialog {
 		JMenu mnNewMenu = new JMenu("Order");
 		menuBar.add(mnNewMenu);
 		
-		JMenuItem registerSaleMntm = new JMenuItem("Register sale");
-		registerSaleMntm.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				OrderPage.start(OrderPageType.SALE, null);
-				dispose();
-			}
-		});
-		mnNewMenu.add(registerSaleMntm);
+		if(position == PositionType.ADMIN || position == PositionType.SALESMAN) {
+			JMenuItem registerSaleMntm = new JMenuItem("Register sale");
+			registerSaleMntm.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					OrderPage.start(OrderPageType.SALE, null);
+					dispose();
+				}
+			});
+			mnNewMenu.add(registerSaleMntm);
+		}
 		
-		JMenuItem registerLeaseMntm = new JMenuItem("Register lease");
-		registerLeaseMntm.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				OrderPage.start(OrderPageType.LEASE, null);
-				dispose();
-			}
-		});
-		mnNewMenu.add(registerLeaseMntm);
+		if(position == PositionType.ADMIN || position == PositionType.SALESMAN) {
+			JMenuItem registerLeaseMntm = new JMenuItem("Register lease");
+			registerLeaseMntm.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					OrderPage.start(OrderPageType.LEASE, null);
+					dispose();
+				}
+			});
+			mnNewMenu.add(registerLeaseMntm);
+		}
 		
-		JMenuItem registerPurchaseMntm = new JMenuItem("Register purchase");
-		registerPurchaseMntm.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				OrderPage.start(OrderPageType.PURCHASE, null);
-				dispose();
+		if(position == PositionType.ADMIN || position == PositionType.SALESMAN) {
+			JMenuItem registerPurchaseMntm = new JMenuItem("Register purchase");
+			registerPurchaseMntm.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					OrderPage.start(OrderPageType.PURCHASE, null);
+					dispose();
+				}
+			});
+			mnNewMenu.add(registerPurchaseMntm);
 			}
-		});
-		mnNewMenu.add(registerPurchaseMntm);
 		
 		JMenu mnNewMenu_1 = new JMenu("Product");
 		menuBar.add(mnNewMenu_1);
 		
-		JMenuItem registerProductMntm = new JMenuItem("Register product");
-		registerProductMntm.addActionListener(new ActionListener() {
+		if(position == PositionType.ADMIN || position == PositionType.SALESMAN) {
+			JMenuItem registerProductMntm = new JMenuItem("Register product");
+			registerProductMntm.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					ProductPage.start(-1);
+					dispose();
+				}
+			});
+			mnNewMenu_1.add(registerProductMntm);
+		}
+		
+		JMenuItem productListMntm = new JMenuItem("Product list");
+		productListMntm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ProductPage.start(-1);
+				ProductListPage.start();
 				dispose();
 			}
 		});
-		mnNewMenu_1.add(registerProductMntm);
-		
-		JMenuItem productListMntm = new JMenuItem("Product list");
 		mnNewMenu_1.add(productListMntm);
 		
 		JMenu mnNewMenu_2 = new JMenu("Person");
@@ -115,36 +131,49 @@ public class HomePage extends JDialog {
 		addressValue.setText(getFullAddress());
 		emailValue.setText(getEmail());
 		
-		JMenuItem registerEmployeeMntm = new JMenuItem("Register employee");
-		mnNewMenu_2.add(registerEmployeeMntm);
-		registerEmployeeMntm.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				PersonPage.start(PersonPageType.EMPLOYEE, -1);
-				dispose();
-			}
-		});
+		if(position == PositionType.ADMIN || position == PositionType.SALESMAN) {
+			JMenuItem registerEmployeeMntm = new JMenuItem("Register employee");
+			mnNewMenu_2.add(registerEmployeeMntm);
+			registerEmployeeMntm.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					PersonPage.start(PersonPageType.EMPLOYEE, -1);
+					dispose();
+				}
+			});
+		}
 		
-		JMenuItem registerCustomerMntm = new JMenuItem("Register customer ");
-		mnNewMenu_2.add(registerCustomerMntm);
-		registerCustomerMntm.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				PersonPage.start(PersonPageType.CUSTOMER, -1);
-				dispose();
-				
-			}
-		});
 		
-		JMenuItem registerSupplierMntm = new JMenuItem("Register supplier");
-		mnNewMenu_2.add(registerSupplierMntm);
-		registerSupplierMntm.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				PersonPage.start(PersonPageType.SUPPLIER, -1);
-				dispose();
-				
-			}
+		if(position == PositionType.ADMIN || position == PositionType.SALESMAN) {
+			JMenuItem registerCustomerMntm = new JMenuItem("Register customer ");
+			mnNewMenu_2.add(registerCustomerMntm);
+			registerCustomerMntm.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					PersonPage.start(PersonPageType.CUSTOMER, -1);
+					dispose();
+					
+				}
+			});
+		}
+		
+		if(position == PositionType.ADMIN || position == PositionType.SALESMAN) {
+			JMenuItem registerSupplierMntm = new JMenuItem("Register supplier");
+			mnNewMenu_2.add(registerSupplierMntm);
+			registerSupplierMntm.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					PersonPage.start(PersonPageType.SUPPLIER, -1);
+					dispose();
+					
+				}
 		});
+		}
 		
 		JMenuItem peopleListMntm = new JMenuItem("People list");
+		peopleListMntm.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				PeopleListPage.start();
+				dispose();
+			}
+		});
 		mnNewMenu_2.add(peopleListMntm);
 		
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -169,27 +198,37 @@ public class HomePage extends JDialog {
 		gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panel.setLayout(gbl_panel);
 		
-		JButton createSaleBtn = new JButton("Register sale");
-		GridBagConstraints gbc_createSaleBtn = new GridBagConstraints();
-		gbc_createSaleBtn.insets = new Insets(0, 0, 5, 5);
-		gbc_createSaleBtn.gridx = 0;
-		gbc_createSaleBtn.gridy = 0;
-		panel.add(createSaleBtn, gbc_createSaleBtn);
-		createSaleBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				OrderPage.start(OrderPageType.SALE, null);
-				dispose();
-				
-			}
-		});
+		if(position == PositionType.ADMIN || position == PositionType.SALESMAN) {
+			JButton createSaleBtn = new JButton("Register sale");
+			GridBagConstraints gbc_createSaleBtn = new GridBagConstraints();
+			gbc_createSaleBtn.insets = new Insets(0, 0, 5, 5);
+			gbc_createSaleBtn.gridx = 0;
+			gbc_createSaleBtn.gridy = 0;
+			panel.add(createSaleBtn, gbc_createSaleBtn);
+			createSaleBtn.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					OrderPage.start(OrderPageType.SALE, null);
+					dispose();
+					
+				}
+			});
+		}
 		
-		JButton createEmployeeBtn = new JButton("Register employee");
-		createEmployeeBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				PersonPage.start(PersonPageType.EMPLOYEE, -1);
-				dispose();
-			}
-		});
+		if(position == PositionType.ADMIN || position == PositionType.SALESMAN) {
+			JButton createEmployeeBtn = new JButton("Register employee");
+			createEmployeeBtn.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					PersonPage.start(PersonPageType.EMPLOYEE, -1);
+					dispose();
+				}
+			});
+			
+			GridBagConstraints gbc_createEmployeeBtn = new GridBagConstraints();
+			gbc_createEmployeeBtn.insets = new Insets(0, 0, 5, 5);
+			gbc_createEmployeeBtn.gridx = 0;
+			gbc_createEmployeeBtn.gridy = 1;
+			panel.add(createEmployeeBtn, gbc_createEmployeeBtn);
+		}
 		
 		JButton orderListBtn = new JButton("Order list");
 		GridBagConstraints gbc_orderListBtn = new GridBagConstraints();
@@ -203,11 +242,6 @@ public class HomePage extends JDialog {
 			}
 		});
 		
-		GridBagConstraints gbc_createEmployeeBtn = new GridBagConstraints();
-		gbc_createEmployeeBtn.insets = new Insets(0, 0, 5, 5);
-		gbc_createEmployeeBtn.gridx = 0;
-		gbc_createEmployeeBtn.gridy = 1;
-		panel.add(createEmployeeBtn, gbc_createEmployeeBtn);
 		
 		JButton peopleListBtn = new JButton("People list");
 		GridBagConstraints gbc_peopleListBtn = new GridBagConstraints();
@@ -222,18 +256,20 @@ public class HomePage extends JDialog {
 			}
 		});
 		
-		JButton createProductBtn = new JButton("Register product");
-		GridBagConstraints gbc_createProductBtn = new GridBagConstraints();
-		gbc_createProductBtn.insets = new Insets(0, 0, 0, 5);
-		gbc_createProductBtn.gridx = 0;
-		gbc_createProductBtn.gridy = 2;
-		panel.add(createProductBtn, gbc_createProductBtn);
-		createProductBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				ProductPage.start(-1);
-				dispose();
-			}
-		});
+		if(position == PositionType.ADMIN || position == PositionType.SALESMAN) {
+			JButton createProductBtn = new JButton("Register product");
+			GridBagConstraints gbc_createProductBtn = new GridBagConstraints();
+			gbc_createProductBtn.insets = new Insets(0, 0, 0, 5);
+			gbc_createProductBtn.gridx = 0;
+			gbc_createProductBtn.gridy = 2;
+			panel.add(createProductBtn, gbc_createProductBtn);
+			createProductBtn.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					ProductPage.start(-1);
+					dispose();
+				}
+			});
+		}
 		
 		JButton productListButton = new JButton("Product list");
 		GridBagConstraints gbc_productListButton = new GridBagConstraints();
@@ -256,9 +292,9 @@ public class HomePage extends JDialog {
 		getContentPane().add(loggedUserDetail, gbc_loggedUserDetail);
 		GridBagLayout gbl_loggedUserDetail = new GridBagLayout();
 		gbl_loggedUserDetail.columnWidths = new int[]{90, 61, 0};
-		gbl_loggedUserDetail.rowHeights = new int[]{16, 0, 0, 0, 0, 0, 0};
+		gbl_loggedUserDetail.rowHeights = new int[]{16, 0, 0, 0, 0, 0, 0, 0};
 		gbl_loggedUserDetail.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
-		gbl_loggedUserDetail.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_loggedUserDetail.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		loggedUserDetail.setLayout(gbl_loggedUserDetail);
 		
 		JLabel nameLbl = new JLabel("Name:");
@@ -338,11 +374,27 @@ public class HomePage extends JDialog {
 		gbc_warehouseValue.gridy = 4;
 		loggedUserDetail.add(warehouseValue, gbc_warehouseValue);
 		
+		JLabel positionLbl = new JLabel("Position:");
+		GridBagConstraints gbc_positionLbl = new GridBagConstraints();
+		gbc_positionLbl.anchor = GridBagConstraints.WEST;
+		gbc_positionLbl.insets = new Insets(0, 0, 5, 5);
+		gbc_positionLbl.gridx = 0;
+		gbc_positionLbl.gridy = 5;
+		loggedUserDetail.add(positionLbl, gbc_positionLbl);
+		
+		JLabel positionValue = new JLabel(position.name());
+		GridBagConstraints gbc_positionValue = new GridBagConstraints();
+		gbc_positionValue.anchor = GridBagConstraints.WEST;
+		gbc_positionValue.insets = new Insets(0, 0, 5, 0);
+		gbc_positionValue.gridx = 1;
+		gbc_positionValue.gridy = 5;
+		loggedUserDetail.add(positionValue, gbc_positionValue);
+		
 		JButton logoutBtn = new JButton("Log out");
 		GridBagConstraints gbc_logoutBtn = new GridBagConstraints();
 		gbc_logoutBtn.anchor = GridBagConstraints.EAST;
 		gbc_logoutBtn.gridx = 1;
-		gbc_logoutBtn.gridy = 5;
+		gbc_logoutBtn.gridy = 6;
 		loggedUserDetail.add(logoutBtn, gbc_logoutBtn);
 		logoutBtn.addMouseListener(new MouseAdapter() {
 			@Override

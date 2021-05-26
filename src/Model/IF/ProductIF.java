@@ -15,5 +15,7 @@ public interface ProductIF {
 	
 	void createStockProducts(long productId, int minStock, int maxStock) throws SQLException;
 	
+	StockProduct getStockProductByProductId(long productId, long warehouseId) throws SQLException;
+	
 	void updateProduct(Product product) throws SQLException;
 }

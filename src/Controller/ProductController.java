@@ -37,6 +37,14 @@ public class ProductController {
 				throw e;
 			}
 		}
+		
+		public StockProduct getStockProductByProductId(long productId, long warehouseId) throws SQLException{
+			try {
+				return productDb.getStockProductByProductId(productId, warehouseId);
+			} catch (SQLException e) {
+				throw e;
+			}
+		}
 
 		
 		public String generateBarcode() throws SQLException {

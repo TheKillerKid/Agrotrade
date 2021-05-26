@@ -28,6 +28,7 @@ import Model.Model.DepartmentType;
 import Model.Model.Employee;
 import Model.Model.LoginContainer;
 import Model.Model.MessagesEnum;
+import Model.Model.OrderPageType;
 import Model.Model.Person;
 import Model.Model.PersonPageType;
 import Model.Model.PositionType;
@@ -41,7 +42,10 @@ public class PersonPage extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	JPanel panel = new JPanel();
 	JPanel buttonPane = new JPanel();
-	Person person = null;
+	public Person person = null;
+	private PersonPageType type = null;
+	private long personId = -1;
+	
 
 	private PersonController personCtrl = new PersonController();
 	private EmployeeController employeeCtrl = new EmployeeController();
@@ -91,6 +95,9 @@ public class PersonPage extends JDialog {
 	 */
 	public PersonPage(PersonPageType type, long personId) {
 		loadComboBoxData();		
+		this.type = type;
+		this.personId = personId;
+		setTitle();
 
 		setBounds(150, 150, 1280, 800);
 		getContentPane().setLayout(new BorderLayout());
@@ -360,6 +367,15 @@ public class PersonPage extends JDialog {
 										LoginContainer.getInstance().getCurrentUser().getWarehouse());
 
 								person = personCtrl.createPerson(employee);
+								setPersonId(person.getId());
+								
+								setTitle();
+								getContentPane().revalidate();
+								getContentPane().repaint();
+								
+								buttonPane.remove(btnSave);
+								buttonPane.revalidate();
+								buttonPane.repaint();
 
 								messageLabel.setText(MessagesEnum.EMPLOYEESAVED.text);
 								messageLabel.setForeground(Color.GREEN);
@@ -399,6 +415,15 @@ public class PersonPage extends JDialog {
 										staticDiscount);
 								
 								person = personCtrl.createPerson(customer);
+								setPersonId(person.getId());
+								
+								setTitle();
+								getContentPane().revalidate();
+								getContentPane().repaint();
+								
+								buttonPane.remove(btnSave);
+								buttonPane.revalidate();
+								buttonPane.repaint();
 								
 								messageLabel.setText(MessagesEnum.CUSTOMERSAVED.text);
 								messageLabel.setForeground(Color.GREEN);
@@ -431,6 +456,15 @@ public class PersonPage extends JDialog {
 										companyNameField.getText());
 								
 								person = personCtrl.createPerson(supplier);
+								setPersonId(person.getId());
+								
+								setTitle();
+								getContentPane().revalidate();
+								getContentPane().repaint();
+								
+								buttonPane.remove(btnSave);
+								buttonPane.revalidate();
+								buttonPane.repaint();
 								
 								messageLabel.setText(MessagesEnum.SUPPLIERSAVED.text);
 								messageLabel.setForeground(Color.GREEN);
@@ -451,13 +485,14 @@ public class PersonPage extends JDialog {
 				gbc_btnSave.insets = new Insets(0, 0, 0, 5);
 				gbc_btnSave.gridx = 3;
 				gbc_btnSave.gridy = 0;
-				buttonPane.add(btnSave, gbc_btnSave);
+				if(personId == -1) {
+					buttonPane.add(btnSave, gbc_btnSave);
+				}
 			}
 		}
 
 		if (type == PersonPageType.EMPLOYEE) {
 			{
-				headingLabel.setText("Register employee");
 				GridBagConstraints gbc_lblCreateEmployee = new GridBagConstraints();
 				gbc_lblCreateEmployee.insets = new Insets(0, 0, 5, 0);
 				gbc_lblCreateEmployee.gridx = 1;
@@ -555,7 +590,6 @@ public class PersonPage extends JDialog {
 
 		if (type == PersonPageType.SUPPLIER) {
 			{
-				headingLabel.setText("Register supplier");
 				GridBagConstraints gbc_lblCreateCustomer = new GridBagConstraints();
 				gbc_lblCreateCustomer.insets = new Insets(0, 0, 5, 0);
 				gbc_lblCreateCustomer.gridx = 1;
@@ -606,7 +640,6 @@ public class PersonPage extends JDialog {
 		if (type == PersonPageType.CUSTOMER) {
 
 			{
-				headingLabel.setText("Register customer");
 				GridBagConstraints gbc_lblCreateCustomer = new GridBagConstraints();
 				gbc_lblCreateCustomer.insets = new Insets(0, 0, 5, 0);
 				gbc_lblCreateCustomer.gridx = 1;
@@ -687,9 +720,8 @@ public class PersonPage extends JDialog {
 	
 	public void loadData(PersonPageType type, long id) throws SQLException {
 		try {
-			
+			setTitle();
 			if(type == PersonPageType.EMPLOYEE) {
-				headingLabel.setText("Edit employee");
 				Employee employee = personCtrl.getEmployeeById(id);
 				cprNoField.setText(employee.getCprNo());
 				departmentComboBox.getModel().setSelectedItem(employee.getDepartment());;
@@ -698,7 +730,6 @@ public class PersonPage extends JDialog {
 			}
 		
 			if(type == PersonPageType.CUSTOMER) {
-				headingLabel.setText("Edit customer");
 				Customer customer = personCtrl.getCustomerById(id);
 				cvrNoField.setText(customer.getCvrNo());
 				staticDiscountField.setText(Double.toString(customer.getStaticDiscount()));
@@ -706,7 +737,6 @@ public class PersonPage extends JDialog {
 			}
 		
 			if(type == PersonPageType.SUPPLIER) {
-				headingLabel.setText("Edit supplier");
 				Supplier supplier = personCtrl.getSupplierById(id);
 				cvrNoField.setText(supplier.getCvrNo());
 				companyNameField.setText(supplier.getSupplierName());
@@ -726,5 +756,36 @@ public class PersonPage extends JDialog {
 		} catch (SQLException e5) {
 			e5.printStackTrace();
 		}
+	}
+	
+	private void setTitle() {
+		if(type == PersonPageType.EMPLOYEE) {
+			if(personId == -1) {
+				headingLabel.setText("Register employee");
+			}
+			else {
+				headingLabel.setText("Employee detail");
+			}
+		}
+		if(type == PersonPageType.CUSTOMER) {
+			if(personId == -1) {
+				headingLabel.setText("Register customer");
+			}
+			else {
+				headingLabel.setText("Customer detail");
+			}
+		}
+		if(type == PersonPageType.SUPPLIER) {
+			if(personId == -1) {
+				headingLabel.setText("Register supplier");
+			}
+			else {
+				headingLabel.setText("Supplier detail");
+			}
+		}
+	}
+	
+	public void setPersonId(long id) {
+		personId = id;
 	}
 }

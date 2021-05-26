@@ -55,6 +55,7 @@ public class StockProductDB implements StockProductIF {
 		return stockProducts;
 	}
 	
+	@Override
 	public StockProduct getStockProduct(long id, long warehouseId) throws SQLException {
 		StockProduct stockProduct = null;
 		String sqlProduct = "SELECT * FROM StockProduct WHERE id = ? AND warehouse_id = ?";

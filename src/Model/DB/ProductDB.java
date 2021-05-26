@@ -172,6 +172,33 @@ public class ProductDB implements ProductIF {
 		}
 	}
 	
+	@Override
+	public StockProduct getStockProductByProductId(long productId, long warehouseId) throws SQLException {
+		StockProduct stockProduct = null;
+		String sqlProduct = "SELECT * FROM StockProduct WHERE product_id = ? AND warehouse_id = ?";
+		
+		Connection con = DBConnection.getInstance().getConnection();
+
+		try {
+				PreparedStatement preparedStmt = con.prepareStatement(sqlProduct);
+				preparedStmt.setLong(1, productId);
+				preparedStmt.setLong(2, warehouseId);
+
+				ResultSet rsStockProduct = preparedStmt.executeQuery();
+
+				if (rsStockProduct.next()) {
+					stockProduct = buildStockProduct(rsStockProduct);
+
+					Product product = getProductById(productId);
+					stockProduct.setProduct(product);
+				}
+		} catch (SQLException e) {
+			throw e;
+		}
+
+		return stockProduct;
+	}
+	
 	private Product buildProduct(ResultSet rsProduct) throws SQLException {
 		return new Product(rsProduct.getLong("id"), 
 						   rsProduct.getString("barcode"), 
@@ -182,5 +209,14 @@ public class ProductDB implements ProductIF {
 						   null, 
 						   null, 
 						   null);
+	}
+	
+	private StockProduct buildStockProduct(ResultSet rsStockProduct) throws SQLException {
+		return new StockProduct(rsStockProduct.getLong("id"),
+				rsStockProduct.getInt("amount"),
+				rsStockProduct.getInt("min_stock"),
+				rsStockProduct.getInt("max_stock"),
+				null,
+				rsStockProduct.getLong("warehouse_id"));
 	}
 }
