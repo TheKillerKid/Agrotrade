@@ -3,7 +3,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 
-public class DBConnection {
+public class DBConnection implements Runnable {
     
     private static final String  driver = "jdbc:sqlserver://hildur.ucn.dk:1433";
     private static final String  databaseName = ";databaseName=dmaj0920_1089350";
@@ -61,7 +61,7 @@ public class DBConnection {
     {
         if (instance == null)
         {
-          instance = new DBConnection();
+          (new Thread(instance = new DBConnection())).start();
         }
         return instance;
     }
@@ -69,4 +69,9 @@ public class DBConnection {
     public Connection getConnection() {
         return con;
     }
+
+	@Override
+	public void run() {
+		
+	}
 }

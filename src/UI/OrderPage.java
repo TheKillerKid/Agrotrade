@@ -876,6 +876,10 @@ public class OrderPage extends JDialog {
 			getCurrentStock();
 			setValuesToFields();
 			
+			buttonPane.remove(saveBtn);
+			buttonPane.revalidate();
+			buttonPane.repaint();
+			
 		} catch(SQLException e) {
 			e.printStackTrace();
 			msgLbl.setText(MessagesEnum.DBERROR.text);
@@ -931,6 +935,10 @@ public class OrderPage extends JDialog {
 			getCurrentStock();
 			setValuesToFields();
 			
+			buttonPane.remove(saveBtn);
+			buttonPane.revalidate();
+			buttonPane.repaint();
+			
 		} catch(SQLException e) {
 			e.printStackTrace();
 			msgLbl.setText(MessagesEnum.DBERROR.text);
@@ -972,6 +980,10 @@ public class OrderPage extends JDialog {
 			loadData();
 			getCurrentStock();
 			setValuesToFields();
+			
+			buttonPane.remove(saveBtn);
+			buttonPane.revalidate();
+			buttonPane.repaint();
 			
 		} catch(SQLException e) {
 			e.printStackTrace();
