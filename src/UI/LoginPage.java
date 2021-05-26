@@ -16,6 +16,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import Controller.LoginController;
+import Model.DB.DBConnection;
 
 import javax.swing.SwingConstants;
 import java.awt.Color;
@@ -40,6 +41,7 @@ public class LoginPage extends JDialog {
 	 */
 	public static void main(String[] args) {
 		LoginPage.start();
+		DBConnection.getInstance().getConnection();
 	}
 	
 	public static void start() {
