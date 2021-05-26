@@ -1096,7 +1096,7 @@ public class OrderPage extends JDialog {
 	
 	private void setValuesToFields() {
 		totalPriceValue.setText(Double.toString(order.getTotalPrice()));
-		onStockValue.setText(String.valueOf(selectedStockProduct.getAmount()));
+		getCurrentStock();
 		
 		orderLines = order.getOrderLines();
 		fillOrderLinesToTableAndRefresh();
