@@ -88,6 +88,9 @@ public class ProductPage extends JDialog {
 					dialog.setVisible(true);
 				} catch (Exception e) {
 					throw e;
+				} finally {
+					LoadingPage loadingPage = LoadingPage.getInstance();
+					loadingPage.destroy();
 				}
 			}
 		});
@@ -372,6 +375,9 @@ public class ProductPage extends JDialog {
 				backBtn.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
+						LoadingPage loadingPage = LoadingPage.getInstance();
+						new Thread(loadingPage, "thread_loading").start();
+						
 						if (stockProductId == -1) {
 							HomePage.start();							
 						} else {
@@ -391,6 +397,9 @@ public class ProductPage extends JDialog {
 				saveBtn = new JButton("Save");
 				saveBtn.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent e) {
+						LoadingPage loadingPage = LoadingPage.getInstance();
+						new Thread(loadingPage, "thread_loading").start();
+						
 						try {
 							
 							String stringCategory = String.valueOf(categoryComboBox.getSelectedItem());
@@ -474,6 +483,8 @@ public class ProductPage extends JDialog {
 							msgLbl.setText(e3.getMessage());
 							return;
 						}
+						
+						loadingPage.destroy();
 					}
 				});
 				GridBagConstraints gbc_saveBtn = new GridBagConstraints();

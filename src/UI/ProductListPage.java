@@ -1,6 +1,7 @@
 package UI;
 
 import java.awt.BorderLayout;
+import java.awt.EventQueue;
 import java.awt.FlowLayout;
 
 import javax.swing.AbstractAction;
@@ -32,13 +33,22 @@ public class ProductListPage extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 
 	public static void start() {
-		try {
-			ProductListPage dialog = new ProductListPage();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					ProductListPage dialog = new ProductListPage();
+					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+					dialog.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				finally {
+					LoadingPage loadingPage = LoadingPage.getInstance();
+					loadingPage.destroy();
+				}
+			}
+		});
+
 	}
 	
 	private ArrayList<StockProduct> loadData () {

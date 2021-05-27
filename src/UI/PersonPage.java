@@ -85,6 +85,9 @@ public class PersonPage extends JDialog {
 					dialog.setVisible(true);
 				} catch (Exception e) {
 					throw e;
+				} finally {
+					LoadingPage loadingPage = LoadingPage.getInstance();
+					loadingPage.destroy();
 				}
 			}
 		});
@@ -320,6 +323,9 @@ public class PersonPage extends JDialog {
 				btnBack = new JButton("Back");
 				btnBack.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
+						LoadingPage loadingPage = LoadingPage.getInstance();
+						new Thread(loadingPage, "thread_loading").start();
+						
 						if (personId == -1 ) {
 							HomePage.start();							
 						} else {
@@ -339,6 +345,9 @@ public class PersonPage extends JDialog {
 				btnSave = new JButton("Save");
 				btnSave.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
+						LoadingPage loadingPage = LoadingPage.getInstance();
+						new Thread(loadingPage, "thread_loading").start();
+						
 						if (type == PersonPageType.EMPLOYEE) {
 							try {
 								if(firstNameField.getText().isEmpty()) {
@@ -486,6 +495,7 @@ public class PersonPage extends JDialog {
 								e3.printStackTrace();
 								return;
 							}
+							
 						}
 						if (type == PersonPageType.SUPPLIER) {
 							try {
@@ -546,8 +556,10 @@ public class PersonPage extends JDialog {
 								messageLabel.setForeground(Color.RED);
 								e3.printStackTrace();
 								return;
-							}						
+							}
 						}
+						
+						loadingPage.destroy();
 					}
 				});
 				GridBagConstraints gbc_btnSave = new GridBagConstraints();
