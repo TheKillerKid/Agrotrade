@@ -147,6 +147,10 @@ public class OrderPage extends JDialog {
 				} catch (Exception e) {
 					throw e;
 				}
+				finally {
+					LoadingPage loadingPage = LoadingPage.getInstance();
+					loadingPage.destroy();
+				}
 			}
 		});
 	}
@@ -157,6 +161,9 @@ public class OrderPage extends JDialog {
 	public OrderPage(OrderPageType type, Long id) {
 		this.type = type;
 		this.id = id;
+
+		loadingPage = LoadingPage.getInstance();
+		
 		setBounds(150, 150, 1280, 800);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -569,6 +576,9 @@ public class OrderPage extends JDialog {
 				buttonPane.add(backBtn, gbc_backBtn);
 				backBtn.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
+						loadingPage = LoadingPage.getInstance();
+						new Thread(loadingPage, "thread_loading").start();
+						
 						dispose();
 						HomePage.start();
 					}
@@ -588,6 +598,9 @@ public class OrderPage extends JDialog {
 				setAsReceivedBtn.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						try {
+							loadingPage = LoadingPage.getInstance();
+							new Thread(loadingPage, "thread_loading").start();
+							
 							Purchase purchase = (Purchase)order;
 							
 							orderCtrl.setAsReceived(purchase);
@@ -602,7 +615,9 @@ public class OrderPage extends JDialog {
 							buttonPane.repaint();
 							
 							msgLbl.setText(MessagesEnum.PURCHASERECIEVED.text);
-							msgLbl.setForeground(Color.GREEN); 
+							msgLbl.setForeground(Color.GREEN);
+							
+							loadingPage.destroy();
 							
 						} catch(SQLException e1) {
 							e1.printStackTrace();
@@ -622,6 +637,9 @@ public class OrderPage extends JDialog {
 				returnLeaseBtn.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						try {
+							loadingPage = LoadingPage.getInstance();
+							new Thread(loadingPage, "thread_loading").start();
+							
 							Lease lease = (Lease)order;
 							
 							orderCtrl.returnLease(lease);
@@ -637,6 +655,8 @@ public class OrderPage extends JDialog {
 							
 							msgLbl.setText(MessagesEnum.LEASERETURNEDSUCCESS.text);
 							msgLbl.setForeground(Color.GREEN); 
+							
+							loadingPage.destroy();
 							
 						} catch(SQLException e1) {
 							e1.printStackTrace();
@@ -658,6 +678,9 @@ public class OrderPage extends JDialog {
 				saleDeliveredBtn.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						try {
+							loadingPage = LoadingPage.getInstance();
+							new Thread(loadingPage, "thread_loading").start();
+							
 							Sale sale = (Sale)order;
 							
 							orderCtrl.saleDelivered(sale.getId());
@@ -671,6 +694,8 @@ public class OrderPage extends JDialog {
 							
 							msgLbl.setText(MessagesEnum.SALEDELIVEREDSUCCESS.text);
 							msgLbl.setForeground(Color.GREEN); 
+							
+							loadingPage.destroy();
 							
 						} catch(SQLException e1) {
 							e1.printStackTrace();
@@ -737,7 +762,6 @@ public class OrderPage extends JDialog {
 					{
 						loadingPage = LoadingPage.getInstance();
 						new Thread(loadingPage, "thread_loading").start();
-
 						
 						if(type == OrderPageType.SALE) {
 							saveSale();

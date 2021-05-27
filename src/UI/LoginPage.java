@@ -20,6 +20,8 @@ import Model.DB.DBConnection;
 
 import javax.swing.SwingConstants;
 import java.awt.Color;
+import java.awt.EventQueue;
+
 import javax.swing.ImageIcon;
 import javax.swing.UIManager;
 import java.awt.event.MouseAdapter;
@@ -42,23 +44,32 @@ public class LoginPage extends JDialog {
 	public static void main(String[] args) {
 		LoadingPage loadingPage = LoadingPage.getInstance();
 		new Thread(loadingPage, "thread_loading").start();
+		
 		LoginPage.start();
 		DBConnection.getInstance().getConnection();
 		loadingPage.destroy();
 	}
 	
 	public static void start() {
-		try {
-			LoginPage dialog = new LoginPage();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			throw e;
-		}
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					LoginPage dialog = new LoginPage();
+					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+					dialog.setVisible(true);
+				} catch (Exception e) {
+					throw e;
+				}
+			}
+		});
+		LoadingPage loadingPage = LoadingPage.getInstance();
 	}
 	
 	private void logIn() {
 		try {
+			LoadingPage loadingPage = LoadingPage.getInstance();
+			new Thread(loadingPage, "thread_loading").start();
+			
 			String password = String.valueOf(passwordField.getPassword());
 			boolean loggedIn = loginCtrl.login(emailField.getText(), password);
 
@@ -67,6 +78,7 @@ public class LoginPage extends JDialog {
 				HomePage.start();
 			}
 			else {
+				loadingPage.destroy();
 				messageLabel.setText("Wrong credentials. Please try again or contact the administrator.");
 			}
 		} catch (SQLException e) {

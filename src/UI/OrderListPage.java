@@ -70,6 +70,9 @@ public class OrderListPage extends JDialog {
 					dialog.setVisible(true);
 				} catch (Exception e) {
 					throw e;
+				} finally {
+					LoadingPage loadingPage = LoadingPage.getInstance();
+					loadingPage.destroy();
 				}
 			}
 		});
@@ -271,7 +274,7 @@ public class OrderListPage extends JDialog {
 	public OrderListPage() {
 		setBounds(150, 150, 1280, 800);
 
-		
+		loadingPage = LoadingPage.getInstance();
 		
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{1279, 0};
@@ -453,6 +456,9 @@ public class OrderListPage extends JDialog {
 					
 					AbstractAction open = new AbstractAction() {
 						public void actionPerformed(ActionEvent e) {
+							loadingPage = LoadingPage.getInstance();
+							new Thread(loadingPage, "thread_loading").start();
+							
 					        JTable table = (JTable)e.getSource();
 					        int modelRow = Integer.valueOf(e.getActionCommand());
 
@@ -582,6 +588,10 @@ public class OrderListPage extends JDialog {
 				buttonPane.add(cancelButton);
 				cancelButton.addActionListener(new ActionListener () {
 					public void actionPerformed(ActionEvent e) {
+
+						loadingPage = LoadingPage.getInstance();
+						new Thread(loadingPage, "thread_loading").start();
+						
 						HomePage.start();
 						dispose();
 					}

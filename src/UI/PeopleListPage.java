@@ -38,6 +38,8 @@ public class PeopleListPage extends JDialog {
 	private JCheckBox suppliersCheckbox = new JCheckBox("Suppliers");
 	
 	private PersonFilter filter = new PersonFilter();
+	
+	private LoadingPage loadingPage;
 
 	/**
 	 * Launch the application.
@@ -52,6 +54,9 @@ public class PeopleListPage extends JDialog {
 	
 				} catch (Exception e) {
 					throw e;
+				} finally {
+					LoadingPage loadingPage = LoadingPage.getInstance();
+					loadingPage.destroy();
 				}
 			}
 		});
@@ -91,6 +96,9 @@ public class PeopleListPage extends JDialog {
 
 	public PeopleListPage() {
 		setBounds(150, 150, 1280, 800);
+
+		loadingPage = LoadingPage.getInstance();
+		
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{109, 100, 0, 0, 599, 0, 0};
 		gridBagLayout.rowHeights = new int[]{0, 0, 22, 733, 39, 0};
@@ -134,6 +142,9 @@ public class PeopleListPage extends JDialog {
 			getContentPane().add(searchButton, gbc_btnNewButton);
 			searchButton.addActionListener(new ActionListener () {
 				public void actionPerformed(ActionEvent e) {
+					loadingPage = LoadingPage.getInstance();
+					new Thread(loadingPage, "thread_loading").start();
+					
 					if (sp != null) {
 						getContentPane().remove(sp);
 					}
@@ -190,6 +201,8 @@ public class PeopleListPage extends JDialog {
 					getContentPane().add(sp, gbc_table);
 					getContentPane().revalidate();
 					getContentPane().repaint();
+					
+					loadingPage.destroy();
 				}
 			});
 		}
@@ -211,6 +224,9 @@ public class PeopleListPage extends JDialog {
 				buttonPane.add(cancelButton);
 				cancelButton.addActionListener(new ActionListener () {
 					public void actionPerformed(ActionEvent e) {
+						loadingPage = LoadingPage.getInstance();
+						new Thread(loadingPage, "thread_loading").start();
+						
 						HomePage.start();
 						dispose();
 					}

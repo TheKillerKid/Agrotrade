@@ -60,6 +60,9 @@ public class HomePage extends JDialog {
 
 				} catch (Exception e) {
 					throw e;
+				} finally {
+					LoadingPage loadingPage = LoadingPage.getInstance();
+					loadingPage.destroy();
 				}
 			}
 		});
@@ -82,6 +85,10 @@ public class HomePage extends JDialog {
 			JMenuItem registerSaleMntm = new JMenuItem("Register sale");
 			registerSaleMntm.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					
+					loadingPage = LoadingPage.getInstance();
+					new Thread(loadingPage, "thread_loading").start();
+					
 					OrderPage.start(OrderPageType.SALE, null);
 					dispose();
 				}
@@ -93,6 +100,10 @@ public class HomePage extends JDialog {
 			JMenuItem registerLeaseMntm = new JMenuItem("Register lease");
 			registerLeaseMntm.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					
+					loadingPage = LoadingPage.getInstance();
+					new Thread(loadingPage, "thread_loading").start();
+					
 					OrderPage.start(OrderPageType.LEASE, null);
 					dispose();
 				}
@@ -104,6 +115,10 @@ public class HomePage extends JDialog {
 			JMenuItem registerPurchaseMntm = new JMenuItem("Register purchase");
 			registerPurchaseMntm.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					
+					loadingPage = LoadingPage.getInstance();
+					new Thread(loadingPage, "thread_loading").start();
+					
 					OrderPage.start(OrderPageType.PURCHASE, null);
 					dispose();
 				}
@@ -118,6 +133,10 @@ public class HomePage extends JDialog {
 			JMenuItem registerProductMntm = new JMenuItem("Register product");
 			registerProductMntm.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					
+					loadingPage = LoadingPage.getInstance();
+					new Thread(loadingPage, "thread_loading").start();
+					
 					ProductPage.start(-1);
 					dispose();
 				}
@@ -128,6 +147,10 @@ public class HomePage extends JDialog {
 		JMenuItem productListMntm = new JMenuItem("Product list");
 		productListMntm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				loadingPage = LoadingPage.getInstance();
+				new Thread(loadingPage, "thread_loading").start();
+				
 				ProductListPage.start();
 				dispose();
 			}
@@ -142,6 +165,10 @@ public class HomePage extends JDialog {
 			mnNewMenu_2.add(registerEmployeeMntm);
 			registerEmployeeMntm.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					
+					loadingPage = LoadingPage.getInstance();
+					new Thread(loadingPage, "thread_loading").start();
+					
 					PersonPage.start(PersonPageType.EMPLOYEE, -1);
 					dispose();
 				}
@@ -154,6 +181,10 @@ public class HomePage extends JDialog {
 			mnNewMenu_2.add(registerCustomerMntm);
 			registerCustomerMntm.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					
+					loadingPage = LoadingPage.getInstance();
+					new Thread(loadingPage, "thread_loading").start();
+					
 					PersonPage.start(PersonPageType.CUSTOMER, -1);
 					dispose();
 					
@@ -166,6 +197,10 @@ public class HomePage extends JDialog {
 			mnNewMenu_2.add(registerSupplierMntm);
 			registerSupplierMntm.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					
+					loadingPage = LoadingPage.getInstance();
+					new Thread(loadingPage, "thread_loading").start();
+					
 					PersonPage.start(PersonPageType.SUPPLIER, -1);
 					dispose();
 					
@@ -176,6 +211,10 @@ public class HomePage extends JDialog {
 		JMenuItem peopleListMntm = new JMenuItem("People list");
 		peopleListMntm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				loadingPage = LoadingPage.getInstance();
+				new Thread(loadingPage, "thread_loading").start();
+				
 				PeopleListPage.start();
 				dispose();
 			}
@@ -250,6 +289,10 @@ public class HomePage extends JDialog {
 		panel.add(orderListBtn, gbc_orderListBtn);
 		orderListBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				loadingPage = LoadingPage.getInstance();
+				new Thread(loadingPage, "thread_loading").start();
+				
 				OrderListPage.start();
 				dispose();
 			}
@@ -264,6 +307,10 @@ public class HomePage extends JDialog {
 		panel.add(peopleListBtn, gbc_peopleListBtn);
 		peopleListBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				loadingPage = LoadingPage.getInstance();
+				new Thread(loadingPage, "thread_loading").start();
+				
 				PeopleListPage.start();
 				dispose();
 			}
@@ -276,6 +323,10 @@ public class HomePage extends JDialog {
 		panel.add(productListButton, gbc_productListButton);
 		productListButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				loadingPage = LoadingPage.getInstance();
+				new Thread(loadingPage, "thread_loading").start();
+				
 				ProductListPage.start();
 				dispose();
 			}
@@ -445,6 +496,10 @@ public class HomePage extends JDialog {
 			panel.add(createSaleBtn, gbc_createSaleBtn);
 			createSaleBtn.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					
+					loadingPage = LoadingPage.getInstance();
+					new Thread(loadingPage, "thread_loading").start();
+					
 					OrderPage.start(OrderPageType.SALE, null);
 					dispose();
 					
@@ -456,6 +511,10 @@ public class HomePage extends JDialog {
 			JButton createEmployeeBtn = new JButton("Register employee");
 			createEmployeeBtn.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					
+					loadingPage = LoadingPage.getInstance();
+					new Thread(loadingPage, "thread_loading").start();
+					
 					PersonPage.start(PersonPageType.EMPLOYEE, -1);
 					dispose();
 				}
@@ -477,6 +536,10 @@ public class HomePage extends JDialog {
 			panel.add(createProductBtn, gbc_createProductBtn);
 			createProductBtn.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					
+					loadingPage = LoadingPage.getInstance();
+					new Thread(loadingPage, "thread_loading").start();
+					
 					ProductPage.start(-1);
 					dispose();
 				}
