@@ -4,8 +4,10 @@ public class LoginContainer {
 private static LoginContainer INSTANCE;
 	
 	private Employee employee;
+	public boolean betaEnabled; 
 
 	private LoginContainer() {
+		betaEnabled = false;
 	}
 	
     public static LoginContainer getInstance() {

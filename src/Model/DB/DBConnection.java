@@ -14,10 +14,15 @@ public class DBConnection implements Runnable {
     private DatabaseMetaData dma;
     private static Connection con;
 
-    private static DBConnection  instance = null;
+    private static DBConnection instance = null;
+
+    private static boolean hasBeenLoaded = false;
+    private static boolean loadingFinished = false;
+    private static boolean isLoading = true;
 
     private DBConnection()
     {
+        hasBeenLoaded = true;
         String url = driver + databaseName + userName + password;
 
         try{
@@ -43,6 +48,10 @@ public class DBConnection implements Runnable {
             System.out.println(e.getMessage());
             System.out.println(url);
         }
+        
+        
+        isLoading = false;
+        loadingFinished = true;
     }
        
 	public static void closeConnection()
@@ -50,6 +59,7 @@ public class DBConnection implements Runnable {
        try{
             con.close();
             instance= null;
+            isLoading= false;
             System.out.println("The connection is closed");
         }
          catch (Exception e){
@@ -59,10 +69,16 @@ public class DBConnection implements Runnable {
 	
     public static DBConnection getInstance()
     {
-        if (instance == null)
-        {
-          (new Thread(instance = new DBConnection())).start();
-        }
+    	/*while(isLoading && !loadingFinished) {
+	        if (instance == null && !loadingFinished && !hasBeenLoaded)
+	        {
+	        	(new Thread(instance = new DBConnection())).start();
+	        }
+        }*/
+    	
+    	if(instance == null) {
+    		instance = new DBConnection();
+    	}
         return instance;
     }
     

@@ -45,6 +45,8 @@ public class OrderListPage extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	private JScrollPane sp;
 	
+	private LoadingPage loadingPage;
+	
 	private OrderController orderController = new OrderController();
 
 	private ButtonGroup typeGroup = new ButtonGroup();
@@ -267,7 +269,7 @@ public class OrderListPage extends JDialog {
 
 
 	public OrderListPage() {
-		setBounds(300, 300, 1280, 800);
+		setBounds(150, 150, 1280, 800);
 
 		
 		
@@ -432,6 +434,9 @@ public class OrderListPage extends JDialog {
 			contentPanel.add(searchButton, gbc_searchButton);
 			searchButton.addActionListener(new ActionListener () {
 				public void actionPerformed(ActionEvent e) {
+					loadingPage = LoadingPage.getInstance();
+					new Thread(loadingPage, "thread_loading").start();
+					
 					if (sp != null) {
 						contentPanel.remove(sp);
 					}
@@ -474,6 +479,8 @@ public class OrderListPage extends JDialog {
 					contentPanel.add(sp, gbc_table);
 					contentPanel.revalidate();
 					contentPanel.repaint();
+					
+					loadingPage.destroy();
 				}
 			});
 		}

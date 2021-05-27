@@ -40,8 +40,11 @@ public class LoginPage extends JDialog {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		LoadingPage loadingPage = LoadingPage.getInstance();
+		new Thread(loadingPage, "thread_loading").start();
 		LoginPage.start();
 		DBConnection.getInstance().getConnection();
+		loadingPage.destroy();
 	}
 	
 	public static void start() {
@@ -75,7 +78,7 @@ public class LoginPage extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public LoginPage() {		
+	public LoginPage() {	
 		setBounds(150, 150, 1280, 800);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(Color.WHITE);

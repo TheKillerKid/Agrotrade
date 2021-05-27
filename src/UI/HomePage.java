@@ -26,6 +26,9 @@ import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.JCheckBox;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
  
 public class HomePage extends JDialog {
 	
@@ -36,6 +39,13 @@ public class HomePage extends JDialog {
 	private JLabel emailValue = new JLabel("");
 	private JLabel phoneValue = new JLabel("");
 	private PositionType position = loginContainer.getCurrentUser().getPosition();
+	private LoadingPage loadingPage;
+	
+	private JButton stopLoadingBtn;
+	private GridBagConstraints gbc_stopLoadingBtn;
+	
+	private JButton startLoadingBtn;
+	private GridBagConstraints gbc_startLoadingBtn;
 
 	/**
 	 * Launch the application.
@@ -127,10 +137,6 @@ public class HomePage extends JDialog {
 		JMenu mnNewMenu_2 = new JMenu("Person");
 		menuBar.add(mnNewMenu_2);
 		
-		nameValue.setText(getFullname());
-		addressValue.setText(getFullAddress());
-		emailValue.setText(getEmail());
-		
 		if(position == PositionType.ADMIN || position == PositionType.SALESMAN) {
 			JMenuItem registerEmployeeMntm = new JMenuItem("Register employee");
 			mnNewMenu_2.add(registerEmployeeMntm);
@@ -175,20 +181,58 @@ public class HomePage extends JDialog {
 			}
 		});
 		mnNewMenu_2.add(peopleListMntm);
-		
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[]{0, 0, 0, 0, 0, 0};
-		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0};
-		gridBagLayout.columnWeights = new double[]{1.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
+		gridBagLayout.columnWidths = new int[]{0, 0, 146, 0, 0, 182, 0, 100};
+		gridBagLayout.rowHeights = new int[]{0, 155, 0, 0};
+		gridBagLayout.columnWeights = new double[]{1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0};
 		gridBagLayout.rowWeights = new double[]{1.0, 0.0, 1.0, Double.MIN_VALUE};
 		getContentPane().setLayout(gridBagLayout);
 		
+		JPanel betaPanel = new JPanel();
+		GridBagConstraints gbc_betaPanel = new GridBagConstraints();
+		gbc_betaPanel.anchor = GridBagConstraints.EAST;
+		gbc_betaPanel.fill = GridBagConstraints.VERTICAL;
+		gbc_betaPanel.insets = new Insets(0, 0, 5, 0);
+		gbc_betaPanel.gridx = 7;
+		gbc_betaPanel.gridy = 0;
+		getContentPane().add(betaPanel, gbc_betaPanel);
+		GridBagLayout gbl_betaPanel = new GridBagLayout();
+		gbl_betaPanel.columnWidths = new int[] {0, 130, 130, 0, 0};
+		gbl_betaPanel.rowHeights = new int[]{40, 40, 0};
+		gbl_betaPanel.columnWeights = new double[]{1.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
+		gbl_betaPanel.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
+		betaPanel.setLayout(gbl_betaPanel);
+		
+		JCheckBox betaCheckbox = new JCheckBox("Beta version");
+		
+		betaCheckbox.setSelected(LoginContainer.getInstance().betaEnabled);
+		betaCheckbox.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				LoginContainer.getInstance().betaEnabled = betaCheckbox.isSelected();
+				if(LoginContainer.getInstance().betaEnabled) {
+					betaPanel.add(startLoadingBtn, gbc_startLoadingBtn);
+					betaPanel.add(stopLoadingBtn, gbc_stopLoadingBtn);
+				}
+				else {
+					betaPanel.remove(startLoadingBtn);
+					betaPanel.remove(stopLoadingBtn);
+				}
+				
+				betaPanel.revalidate();
+				betaPanel.repaint();
+			}
+		});
+		GridBagConstraints gbc_betaCheckbox = new GridBagConstraints();
+		gbc_betaCheckbox.insets = new Insets(0, 0, 5, 5);
+		gbc_betaCheckbox.gridx = 2;
+		gbc_betaCheckbox.gridy = 0;
+		betaPanel.add(betaCheckbox, gbc_betaCheckbox);
 		
 		JPanel panel = new JPanel();
 		GridBagConstraints gbc_panel = new GridBagConstraints();
-		gbc_panel.insets = new Insets(0, 0, 5, 5);
 		gbc_panel.fill = GridBagConstraints.HORIZONTAL;
-		gbc_panel.gridx = 1;
+		gbc_panel.insets = new Insets(0, 0, 5, 5);
+		gbc_panel.gridx = 2;
 		gbc_panel.gridy = 1;
 		getContentPane().add(panel, gbc_panel);
 		GridBagLayout gbl_panel = new GridBagLayout();
@@ -197,38 +241,6 @@ public class HomePage extends JDialog {
 		gbl_panel.columnWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
 		gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panel.setLayout(gbl_panel);
-		
-		if(position == PositionType.ADMIN || position == PositionType.SALESMAN) {
-			JButton createSaleBtn = new JButton("Register sale");
-			GridBagConstraints gbc_createSaleBtn = new GridBagConstraints();
-			gbc_createSaleBtn.insets = new Insets(0, 0, 5, 5);
-			gbc_createSaleBtn.gridx = 0;
-			gbc_createSaleBtn.gridy = 0;
-			panel.add(createSaleBtn, gbc_createSaleBtn);
-			createSaleBtn.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					OrderPage.start(OrderPageType.SALE, null);
-					dispose();
-					
-				}
-			});
-		}
-		
-		if(position == PositionType.ADMIN || position == PositionType.SALESMAN) {
-			JButton createEmployeeBtn = new JButton("Register employee");
-			createEmployeeBtn.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					PersonPage.start(PersonPageType.EMPLOYEE, -1);
-					dispose();
-				}
-			});
-			
-			GridBagConstraints gbc_createEmployeeBtn = new GridBagConstraints();
-			gbc_createEmployeeBtn.insets = new Insets(0, 0, 5, 5);
-			gbc_createEmployeeBtn.gridx = 0;
-			gbc_createEmployeeBtn.gridy = 1;
-			panel.add(createEmployeeBtn, gbc_createEmployeeBtn);
-		}
 		
 		JButton orderListBtn = new JButton("Order list");
 		GridBagConstraints gbc_orderListBtn = new GridBagConstraints();
@@ -257,21 +269,6 @@ public class HomePage extends JDialog {
 			}
 		});
 		
-		if(position == PositionType.ADMIN || position == PositionType.SALESMAN) {
-			JButton createProductBtn = new JButton("Register product");
-			GridBagConstraints gbc_createProductBtn = new GridBagConstraints();
-			gbc_createProductBtn.insets = new Insets(0, 0, 0, 5);
-			gbc_createProductBtn.gridx = 0;
-			gbc_createProductBtn.gridy = 2;
-			panel.add(createProductBtn, gbc_createProductBtn);
-			createProductBtn.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					ProductPage.start(-1);
-					dispose();
-				}
-			});
-		}
-		
 		JButton productListButton = new JButton("Product list");
 		GridBagConstraints gbc_productListButton = new GridBagConstraints();
 		gbc_productListButton.gridx = 1;
@@ -284,11 +281,15 @@ public class HomePage extends JDialog {
 			}
 		});
 		
+		nameValue.setText(getFullname());
+		addressValue.setText(getFullAddress());
+		emailValue.setText(getEmail());
+		
 		Panel loggedUserDetail = new Panel();
 		GridBagConstraints gbc_loggedUserDetail = new GridBagConstraints();
 		gbc_loggedUserDetail.fill = GridBagConstraints.HORIZONTAL;
 		gbc_loggedUserDetail.insets = new Insets(0, 0, 5, 5);
-		gbc_loggedUserDetail.gridx = 3;
+		gbc_loggedUserDetail.gridx = 5;
 		gbc_loggedUserDetail.gridy = 1;
 		getContentPane().add(loggedUserDetail, gbc_loggedUserDetail);
 		GridBagLayout gbl_loggedUserDetail = new GridBagLayout();
@@ -405,6 +406,82 @@ public class HomePage extends JDialog {
 				LoginPage.start();
 			}
 		});
+		
+		startLoadingBtn = new JButton("Start loading");
+		gbc_startLoadingBtn = new GridBagConstraints();
+		gbc_startLoadingBtn.insets = new Insets(0, 0, 0, 5);
+		gbc_startLoadingBtn.gridx = 1;
+		gbc_startLoadingBtn.gridy = 1;
+		if(betaCheckbox.isSelected()) {
+			betaPanel.add(startLoadingBtn, gbc_startLoadingBtn);
+		}
+		startLoadingBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				loadingPage = LoadingPage.getInstance();
+				new Thread(loadingPage, "thread_loading").start();
+			}
+		});
+		
+		stopLoadingBtn = new JButton("Stop loading");
+		gbc_stopLoadingBtn = new GridBagConstraints();
+		gbc_stopLoadingBtn.gridx = 2;
+		gbc_stopLoadingBtn.gridy = 1;
+		if(betaCheckbox.isSelected()) {
+			betaPanel.add(stopLoadingBtn, gbc_stopLoadingBtn);
+		}
+		stopLoadingBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				loadingPage = LoadingPage.getInstance();
+				loadingPage.destroy();
+			}
+		});
+		
+		if(position == PositionType.ADMIN || position == PositionType.SALESMAN) {
+			JButton createSaleBtn = new JButton("Register sale");
+			GridBagConstraints gbc_createSaleBtn = new GridBagConstraints();
+			gbc_createSaleBtn.insets = new Insets(0, 0, 5, 5);
+			gbc_createSaleBtn.gridx = 0;
+			gbc_createSaleBtn.gridy = 0;
+			panel.add(createSaleBtn, gbc_createSaleBtn);
+			createSaleBtn.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					OrderPage.start(OrderPageType.SALE, null);
+					dispose();
+					
+				}
+			});
+		}
+		
+		if(position == PositionType.ADMIN || position == PositionType.SALESMAN) {
+			JButton createEmployeeBtn = new JButton("Register employee");
+			createEmployeeBtn.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					PersonPage.start(PersonPageType.EMPLOYEE, -1);
+					dispose();
+				}
+			});
+			
+			GridBagConstraints gbc_createEmployeeBtn = new GridBagConstraints();
+			gbc_createEmployeeBtn.insets = new Insets(0, 0, 5, 5);
+			gbc_createEmployeeBtn.gridx = 0;
+			gbc_createEmployeeBtn.gridy = 1;
+			panel.add(createEmployeeBtn, gbc_createEmployeeBtn);
+		}
+		
+		if(position == PositionType.ADMIN || position == PositionType.SALESMAN) {
+			JButton createProductBtn = new JButton("Register product");
+			GridBagConstraints gbc_createProductBtn = new GridBagConstraints();
+			gbc_createProductBtn.insets = new Insets(0, 0, 0, 5);
+			gbc_createProductBtn.gridx = 0;
+			gbc_createProductBtn.gridy = 2;
+			panel.add(createProductBtn, gbc_createProductBtn);
+			createProductBtn.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					ProductPage.start(-1);
+					dispose();
+				}
+			});
+		}
 	}
 	
 	private String getFullname() {
