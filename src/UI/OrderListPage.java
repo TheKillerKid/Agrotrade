@@ -8,6 +8,7 @@ import javax.swing.ButtonModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
@@ -27,27 +28,37 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-import javax.swing.JRadioButton;
+import javax.swing.JCheckBox;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JTabbedPane;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
 
 @SuppressWarnings("serial")
 public class OrderListPage extends JDialog {
-	private JScrollPane sp;
-	private OrderController orderController = new OrderController();
-	private ButtonGroup typeGroup;
-	private ButtonGroup saleGroup;
-	private JCheckBox saleWithFilter;
-	private JCheckBox purchaseWithFilter;
-	private JCheckBox returnDateExceded;
-	private JCheckBox returned;
-	private ButtonGroup purchaseGroup;
+
 	private final JPanel contentPanel = new JPanel();
+	private JScrollPane sp;
+	
+	private OrderController orderController = new OrderController();
 
-
+	private ButtonGroup typeGroup = new ButtonGroup();
+	
+	private JCheckBox saleShipped = new JCheckBox("Shipped");
+	private JCheckBox saleNotShipped = new JCheckBox("Not shipped");
+	private JCheckBox saleDelivered = new JCheckBox("Delivered");
+	private JCheckBox saleNotDelivered = new JCheckBox("Not delivered");
+	private JCheckBox purchaseReceived = new JCheckBox("Recieved");
+	private JCheckBox purchaseNotReceived = new JCheckBox("Not received");
+	
+	private JCheckBox leaseReturnDateExceded = new JCheckBox("Return date exceded");
+	private JCheckBox leaseReturned = new JCheckBox("Returned");
+	
 	public static void start() {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -80,12 +91,18 @@ public class OrderListPage extends JDialog {
 					.filter((order) -> {
 						Boolean isSale = order.getSaleId() != 0;
 
-						if (saleWithFilter.isSelected() && saleGroup.getSelection().getActionCommand() == "shipped") {
+						if (saleShipped.isSelected()) {
 							return isSale && order.getSaleShippingDate() != null;
 						}
+						if (saleNotShipped.isSelected()) {
+							return isSale && order.getSaleShippingDate() == null;
+						}
 						
-						if (saleWithFilter.isSelected() && saleGroup.getSelection().getActionCommand() == "delivered") {
+						if (saleDelivered.isSelected() ) {
 							return isSale && order.getSaleDeliveryDate() != null;
+						}
+						if (saleNotDelivered.isSelected()) {
+							return isSale && order.getSaleDeliveryDate() == null;
 						}
 						
 						return isSale;
@@ -104,8 +121,8 @@ public class OrderListPage extends JDialog {
 						order.getOrderCreationDate(),
 						order.getCvrNo(),
 						String.format("%s DKK", order.getTotalPrice()),
-						deliveryDate != null ? deliveryDate.format(DateTimeFormatter.ofPattern("dd MM yyyy")) : "–",
 						shippingDate != null ? shippingDate.format(DateTimeFormatter.ofPattern("dd MM yyyy")) : "–",
+						deliveryDate != null ? deliveryDate.format(DateTimeFormatter.ofPattern("dd MM yyyy")) : "–",
 						getType(order),
 						"Open",
 				};
@@ -122,11 +139,11 @@ public class OrderListPage extends JDialog {
 			.filter((order) -> {
 				Boolean isPurchase = order.getPurchaseId() != 0;
 				
-				if (purchaseWithFilter.isSelected() && purchaseGroup.getSelection().getActionCommand() == "received") {
+				if (purchaseReceived.isSelected()) {
 					return isPurchase && order.getPurchaseDeliveryDate() != null;
 				}
 
-				if (purchaseWithFilter.isSelected() && purchaseGroup.getSelection().getActionCommand() == "notReceived") {
+				if (purchaseNotReceived.isSelected()) {
 					return isPurchase && order.getPurchaseDeliveryDate() == null;
 				}
 				
@@ -164,15 +181,15 @@ public class OrderListPage extends JDialog {
 						Boolean isLease = order.getLeaseId() != 0;
 						Boolean isExceded = order.getLeaseRealReturnDate() != null && order.getLeaseRealReturnDate().isAfter(order.getLeaseExpectedReturnDate());
 						
-						if (returnDateExceded.isSelected()) {
+						if (leaseReturnDateExceded.isSelected()) {
 							return isLease && isExceded;
 						}
 						
-						if (returned.isSelected()) {
+						if (leaseReturned.isSelected()) {
 							return isLease && order.getLeaseRealReturnDate() != null;
 						}
 						
-						if (returnDateExceded.isSelected() && returned.isSelected()) {
+						if (leaseReturnDateExceded.isSelected() && leaseReturned.isSelected()) {
 							return isLease && isExceded && order.getLeaseRealReturnDate() != null;
 						}
 						
@@ -213,7 +230,7 @@ public class OrderListPage extends JDialog {
 	
 	private String[] getColumns(String type) {
 		if (type == OrderPageType.SALE.toString()) {
-			String column[] = {"Id", "Created at", "CVR", "Total price", "Delivery date", "Shipping date", "Type", ""};
+			String column[] = {"Id", "Created at", "CVR", "Total price", "Shipping date", "Delivery date", "Type", ""};
 			
 			return column;
 		}
@@ -251,9 +268,9 @@ public class OrderListPage extends JDialog {
 
 	public OrderListPage() {
 		setBounds(300, 300, 1280, 800);
-		typeGroup = new ButtonGroup();
-		purchaseGroup = new ButtonGroup();
-		saleGroup = new ButtonGroup();
+
+		
+		
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{1279, 0};
 		gridBagLayout.rowHeights = new int[]{738, 29, 0};
@@ -268,13 +285,34 @@ public class OrderListPage extends JDialog {
 		gbc_contentPanel.gridy = 0;
 		getContentPane().add(contentPanel, gbc_contentPanel);
 		GridBagLayout gbl_contentPanel = new GridBagLayout();
-		gbl_contentPanel.columnWidths = new int[]{210, 0, 90, 0, 210, 0, 0};
-		gbl_contentPanel.rowHeights = new int[]{36, 0, 0, 0, 298, 0};
-		gbl_contentPanel.columnWeights = new double[]{1.0, 0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
-		gbl_contentPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
+		gbl_contentPanel.columnWidths = new int[]{179, 156, 90, 0, 210, 0};
+		gbl_contentPanel.rowHeights = new int[]{35, 34, 35, 35, 0};
+		gbl_contentPanel.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
+		gbl_contentPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		contentPanel.setLayout(gbl_contentPanel);
 		{
 			JRadioButton saleRadio = new JRadioButton("Sale");
+			saleRadio.addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent e) {
+					if(saleRadio.isSelected()) {
+						saleShipped.setEnabled(true);
+						saleNotShipped.setEnabled(true);
+						saleDelivered.setEnabled(true);
+						saleNotDelivered.setEnabled(true);
+					}
+					else {
+						saleShipped.setEnabled(false);
+						saleNotShipped.setEnabled(false);
+						saleDelivered.setEnabled(false);
+						saleNotDelivered.setEnabled(false);
+						
+						saleShipped.setSelected(false);
+						saleNotShipped.setSelected(false);
+						saleDelivered.setSelected(false);
+						saleNotDelivered.setSelected(false);
+					}
+				}
+			});
 			saleRadio.setActionCommand(OrderPageType.SALE.toString());
 			saleRadio.setSelected(true);
 			typeGroup.add(saleRadio);
@@ -286,109 +324,110 @@ public class OrderListPage extends JDialog {
 			contentPanel.add(saleRadio, gbc_rdbtnNewRadioButton);
 		}
 		{
-			saleWithFilter = new JCheckBox("With filter");
-			GridBagConstraints gbc_saleWithFilter = new GridBagConstraints();
-			gbc_saleWithFilter.anchor = GridBagConstraints.WEST;
-			gbc_saleWithFilter.insets = new Insets(0, 0, 5, 5);
-			gbc_saleWithFilter.gridx = 1;
-			gbc_saleWithFilter.gridy = 0;
-			contentPanel.add(saleWithFilter, gbc_saleWithFilter);
-		}
-		{
-			JRadioButton saleShipped = new JRadioButton("Shipped");
-			saleShipped.setActionCommand("shipped");
+			saleShipped.addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent e) {
+					if(saleShipped.isSelected()) {
+						saleNotShipped.setSelected(false);
+						saleDelivered.setSelected(false);
+						saleNotDelivered.setSelected(false);
+					}
+				}
+			});
 			GridBagConstraints gbc_saleShipped = new GridBagConstraints();
 			gbc_saleShipped.anchor = GridBagConstraints.WEST;
 			gbc_saleShipped.insets = new Insets(0, 0, 5, 5);
 			gbc_saleShipped.gridx = 2;
 			gbc_saleShipped.gridy = 0;
 			contentPanel.add(saleShipped, gbc_saleShipped);
-			saleGroup.add(saleShipped);
 		}
 		{
-			JRadioButton saleDelivered = new JRadioButton("Delivered");
-			saleDelivered.setActionCommand("delivered");
+			saleNotShipped.addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent e) {
+					if(saleNotShipped.isSelected()) {
+						saleShipped.setSelected(false);
+						saleDelivered.setSelected(false);
+						saleNotDelivered.setSelected(false);
+					}
+				}
+			});
+			GridBagConstraints gbc_saleNotShipped = new GridBagConstraints();
+			gbc_saleNotShipped.anchor = GridBagConstraints.WEST;
+			gbc_saleNotShipped.insets = new Insets(0, 0, 5, 5);
+			gbc_saleNotShipped.gridx = 3;
+			gbc_saleNotShipped.gridy = 0;
+			contentPanel.add(saleNotShipped, gbc_saleNotShipped);
+		}
+		{
+			saleDelivered.addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent e) {
+					if(saleDelivered.isSelected()) {
+						saleShipped.setSelected(false);
+						saleNotShipped.setSelected(false);
+						saleNotDelivered.setSelected(false);
+					}
+				}
+			});
 			GridBagConstraints gbc_saleDelivered = new GridBagConstraints();
 			gbc_saleDelivered.anchor = GridBagConstraints.WEST;
 			gbc_saleDelivered.insets = new Insets(0, 0, 5, 5);
-			gbc_saleDelivered.gridx = 3;
-			gbc_saleDelivered.gridy = 0;
+			gbc_saleDelivered.gridx = 2;
+			gbc_saleDelivered.gridy = 1;
 			contentPanel.add(saleDelivered, gbc_saleDelivered);
-			saleGroup.add(saleDelivered);
 		}
 		{
-			JRadioButton purchaseRadio = new JRadioButton("Purchase");
-			purchaseRadio.setActionCommand(OrderPageType.PURCHASE.toString());
-			typeGroup.add(purchaseRadio);
-			GridBagConstraints gbc_rdbtnNewRadioButton_1 = new GridBagConstraints();
-			gbc_rdbtnNewRadioButton_1.anchor = GridBagConstraints.WEST;
-			gbc_rdbtnNewRadioButton_1.insets = new Insets(0, 0, 5, 5);
-			gbc_rdbtnNewRadioButton_1.gridx = 0;
-			gbc_rdbtnNewRadioButton_1.gridy = 1;
-			contentPanel.add(purchaseRadio, gbc_rdbtnNewRadioButton_1);
+			saleNotDelivered.addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent e) {
+					if(saleNotDelivered.isSelected()) {
+						saleShipped.setSelected(false);
+						saleNotShipped.setSelected(false);
+						saleDelivered.setSelected(false);
+					}
+				}
+			});
+			GridBagConstraints gbc_saleNotDelivered = new GridBagConstraints();
+			gbc_saleNotDelivered.anchor = GridBagConstraints.WEST;
+			gbc_saleNotDelivered.insets = new Insets(0, 0, 5, 5);
+			gbc_saleNotDelivered.gridx = 3;
+			gbc_saleNotDelivered.gridy = 1;
+			contentPanel.add(saleNotDelivered, gbc_saleNotDelivered);
 		}
 		{
-			purchaseWithFilter = new JCheckBox("With filter");
-			GridBagConstraints gbc_purchaseWithFilter = new GridBagConstraints();
-			gbc_purchaseWithFilter.anchor = GridBagConstraints.WEST;
-			gbc_purchaseWithFilter.insets = new Insets(0, 0, 5, 5);
-			gbc_purchaseWithFilter.gridx = 1;
-			gbc_purchaseWithFilter.gridy = 1;
-			contentPanel.add(purchaseWithFilter, gbc_purchaseWithFilter);
+			leaseReturned.setEnabled(false);
+			leaseReturned.addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent e) {
+					if(leaseReturned.isSelected()) {
+						leaseReturnDateExceded.setSelected(false);
+					}
+				}
+			});
+			GridBagConstraints gbc_leaseReturned = new GridBagConstraints();
+			gbc_leaseReturned.anchor = GridBagConstraints.WEST;
+			gbc_leaseReturned.insets = new Insets(0, 0, 0, 5);
+			gbc_leaseReturned.gridx = 2;
+			gbc_leaseReturned.gridy = 3;
+			contentPanel.add(leaseReturned, gbc_leaseReturned);
 		}
 		{
-			JRadioButton purchaseReceived = new JRadioButton("Recieved");
-			GridBagConstraints gbc_purchaseReceived = new GridBagConstraints();
-			gbc_purchaseReceived.insets = new Insets(0, 0, 5, 5);
-			gbc_purchaseReceived.gridx = 2;
-			gbc_purchaseReceived.gridy = 1;
-			contentPanel.add(purchaseReceived, gbc_purchaseReceived);
-			purchaseGroup.add(purchaseReceived);
-			purchaseReceived.setActionCommand("received");
-		}
-		{
-			JRadioButton purchaseNotRecieved = new JRadioButton("Not received");
-			GridBagConstraints gbc_purchaseNotRecieved = new GridBagConstraints();
-			gbc_purchaseNotRecieved.insets = new Insets(0, 0, 5, 5);
-			gbc_purchaseNotRecieved.gridx = 3;
-			gbc_purchaseNotRecieved.gridy = 1;
-			contentPanel.add(purchaseNotRecieved, gbc_purchaseNotRecieved);
-			purchaseGroup.add(purchaseNotRecieved);
-			purchaseNotRecieved.setActionCommand("notReceived");
-		}
-		{
-			JRadioButton leaseRadio = new JRadioButton("Lease");
-			leaseRadio.setActionCommand(OrderPageType.LEASE.toString());
-			typeGroup.add(leaseRadio);
-			GridBagConstraints gbc_rdbtnNewRadioButton_2 = new GridBagConstraints();
-			gbc_rdbtnNewRadioButton_2.anchor = GridBagConstraints.WEST;
-			gbc_rdbtnNewRadioButton_2.insets = new Insets(0, 0, 5, 5);
-			gbc_rdbtnNewRadioButton_2.gridx = 0;
-			gbc_rdbtnNewRadioButton_2.gridy = 2;
-			contentPanel.add(leaseRadio, gbc_rdbtnNewRadioButton_2);
-		}
-		{
-			returnDateExceded = new JCheckBox("Return date exceded");
-			GridBagConstraints gbc_returnDateExceded = new GridBagConstraints();
-			gbc_returnDateExceded.insets = new Insets(0, 0, 5, 5);
-			gbc_returnDateExceded.gridx = 1;
-			gbc_returnDateExceded.gridy = 2;
-			contentPanel.add(returnDateExceded, gbc_returnDateExceded);
-		}
-		{
-			returned = new JCheckBox("Returned");
-			GridBagConstraints gbc_returned = new GridBagConstraints();
-			gbc_returned.insets = new Insets(0, 0, 5, 5);
-			gbc_returned.gridx = 2;
-			gbc_returned.gridy = 2;
-			contentPanel.add(returned, gbc_returned);
+			leaseReturnDateExceded.setEnabled(false);
+			leaseReturnDateExceded.addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent e) {
+					if(leaseReturnDateExceded.isSelected()) {
+						leaseReturned.setSelected(false);
+					}
+				}
+			});
+			GridBagConstraints gbc_leaseReturnDateExceded = new GridBagConstraints();
+			gbc_leaseReturnDateExceded.anchor = GridBagConstraints.WEST;
+			gbc_leaseReturnDateExceded.insets = new Insets(0, 0, 0, 5);
+			gbc_leaseReturnDateExceded.gridx = 3;
+			gbc_leaseReturnDateExceded.gridy = 3;
+			contentPanel.add(leaseReturnDateExceded, gbc_leaseReturnDateExceded);
 		}
 		{
 			JButton searchButton = new JButton("Search");
 			GridBagConstraints gbc_searchButton = new GridBagConstraints();
-			gbc_searchButton.anchor = GridBagConstraints.WEST;
-			gbc_searchButton.insets = new Insets(0, 0, 5, 5);
-			gbc_searchButton.gridx = 0;
+			gbc_searchButton.anchor = GridBagConstraints.EAST;
+			gbc_searchButton.gridx = 4;
 			gbc_searchButton.gridy = 3;
 			contentPanel.add(searchButton, gbc_searchButton);
 			searchButton.addActionListener(new ActionListener () {
@@ -437,6 +476,90 @@ public class OrderListPage extends JDialog {
 					contentPanel.repaint();
 				}
 			});
+		}
+		{
+			JRadioButton purchaseRadio = new JRadioButton("Purchase");
+			purchaseRadio.addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent e) {
+					if(purchaseRadio.isSelected()) {
+						purchaseReceived.setEnabled(true);
+						purchaseNotReceived.setEnabled(true);
+					}
+					else {
+						purchaseReceived.setEnabled(false);
+						purchaseNotReceived.setEnabled(false);
+						
+						purchaseReceived.setSelected(false);
+						purchaseNotReceived.setSelected(false);
+					}
+				}
+			});
+			purchaseRadio.setActionCommand(OrderPageType.PURCHASE.toString());
+			typeGroup.add(purchaseRadio);
+			GridBagConstraints gbc_rdbtnNewRadioButton_1 = new GridBagConstraints();
+			gbc_rdbtnNewRadioButton_1.anchor = GridBagConstraints.WEST;
+			gbc_rdbtnNewRadioButton_1.insets = new Insets(0, 0, 5, 5);
+			gbc_rdbtnNewRadioButton_1.gridx = 0;
+			gbc_rdbtnNewRadioButton_1.gridy = 2;
+			contentPanel.add(purchaseRadio, gbc_rdbtnNewRadioButton_1);
+		}
+		{
+			purchaseReceived.addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent e) {
+					if(purchaseReceived.isSelected()) {
+						purchaseNotReceived.setSelected(false);
+					}
+				}
+			});
+			GridBagConstraints gbc_purchaseReceived = new GridBagConstraints();
+			gbc_purchaseReceived.anchor = GridBagConstraints.WEST;
+			gbc_purchaseReceived.insets = new Insets(0, 0, 5, 5);
+			gbc_purchaseReceived.gridx = 2;
+			gbc_purchaseReceived.gridy = 2;
+			contentPanel.add(purchaseReceived, gbc_purchaseReceived);
+			purchaseReceived.setEnabled(false);
+		}
+		{
+			purchaseNotReceived.addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent e) {
+					if(purchaseNotReceived.isSelected()) {
+						purchaseReceived.setSelected(false);
+					}
+				}
+			});
+			GridBagConstraints gbc_purchaseNotRecieved = new GridBagConstraints();
+			gbc_purchaseNotRecieved.anchor = GridBagConstraints.WEST;
+			gbc_purchaseNotRecieved.insets = new Insets(0, 0, 5, 5);
+			gbc_purchaseNotRecieved.gridx = 3;
+			gbc_purchaseNotRecieved.gridy = 2;
+			contentPanel.add(purchaseNotReceived, gbc_purchaseNotRecieved);
+			purchaseNotReceived.setEnabled(false);
+		}
+		{
+			JRadioButton leaseRadio = new JRadioButton("Lease");
+			leaseRadio.addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent e) {
+					if(leaseRadio.isSelected()) {
+						leaseReturned.setEnabled(true);
+						leaseReturnDateExceded.setEnabled(true);
+					}
+					else {
+						leaseReturned.setEnabled(false);
+						leaseReturnDateExceded.setEnabled(false);
+						
+						leaseReturned.setSelected(false);
+						leaseReturnDateExceded.setSelected(false);
+					}
+				}
+			});
+			leaseRadio.setActionCommand(OrderPageType.LEASE.toString());
+			typeGroup.add(leaseRadio);
+			GridBagConstraints gbc_rdbtnNewRadioButton_2 = new GridBagConstraints();
+			gbc_rdbtnNewRadioButton_2.anchor = GridBagConstraints.WEST;
+			gbc_rdbtnNewRadioButton_2.insets = new Insets(0, 0, 0, 5);
+			gbc_rdbtnNewRadioButton_2.gridx = 0;
+			gbc_rdbtnNewRadioButton_2.gridy = 3;
+			contentPanel.add(leaseRadio, gbc_rdbtnNewRadioButton_2);
 		}
 		{
 			JPanel buttonPane = new JPanel();
