@@ -81,6 +81,7 @@ public class HomePage extends JDialog {
 		JMenu mnNewMenu = new JMenu("Order");
 		menuBar.add(mnNewMenu);
 		
+		
 		if(position == PositionType.ADMIN || position == PositionType.SALESMAN) {
 			JMenuItem registerSaleMntm = new JMenuItem("Register sale");
 			registerSaleMntm.addActionListener(new ActionListener() {
@@ -124,7 +125,19 @@ public class HomePage extends JDialog {
 				}
 			});
 			mnNewMenu.add(registerPurchaseMntm);
+		}
+		
+		JMenuItem orderListMntm = new JMenuItem("Order list");
+		orderListMntm.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				loadingPage = LoadingPage.getInstance();
+				new Thread(loadingPage, "thread_loading").start();
+				
+				OrderListPage.start();
+				dispose();
 			}
+		});
+		mnNewMenu.add(orderListMntm);
 		
 		JMenu mnNewMenu_1 = new JMenu("Product");
 		menuBar.add(mnNewMenu_1);

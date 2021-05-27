@@ -579,8 +579,13 @@ public class OrderPage extends JDialog {
 						loadingPage = LoadingPage.getInstance();
 						new Thread(loadingPage, "thread_loading").start();
 						
+						if(id == null) {
+							HomePage.start();
+						}
+						else {
+							OrderListPage.start();
+						}
 						dispose();
-						HomePage.start();
 					}
 				});
 			}
