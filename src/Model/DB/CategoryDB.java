@@ -4,10 +4,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import Model.IF.CategoryIF;
 import Model.Model.Category;
+import Model.Model.MessagesEnum;
 
 public class CategoryDB implements CategoryIF{
 	
@@ -61,4 +63,30 @@ public class CategoryDB implements CategoryIF{
 		return categories;
 	}
 
+	public Category createCategory(Category category) throws SQLException {
+		String sqlCreate = "INSERT INTO Category (name) VALUES (?)";
+		
+	    Connection con = DBConnection.getInstance().getConnection();
+	
+	    try {
+			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate, Statement.RETURN_GENERATED_KEYS);
+	
+			preparedStmt.setString(1, category.getName());
+			preparedStmt.executeUpdate();
+			
+			
+			ResultSet rs = preparedStmt.getGeneratedKeys();
+            if (rs.next()) {
+            	category.setId(rs.getLong(1));
+            }
+            else {
+            	throw new SQLException(MessagesEnum.DBSAVEERROR.text);
+            }
+            
+		} catch (SQLException e) {
+			throw e;
+		}
+
+		return category;
+	}
 }

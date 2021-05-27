@@ -7,11 +7,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 import Model.IF.SaleIF;
 import Model.Model.MessagesEnum;
-import Model.Model.OrderLine;
 import Model.Model.OrderPageType;
 import Model.Model.Sale;
 
@@ -31,17 +29,17 @@ public class SaleDB implements SaleIF {
 	     Connection con = DBConnection.getInstance().getConnection();
 	
 	     try {
-			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate, Statement.RETURN_GENERATED_KEYS);
-			preparedStmt.setObject(1, shippingDate != null ? java.sql.Date.valueOf(shippingDate) : null);
-			preparedStmt.setObject(2, deliveryDate != null ? java.sql.Date.valueOf(deliveryDate) : null);
-			preparedStmt.setLong(3, customerId);
-			
-			preparedStmt.executeUpdate();
-			
-			ResultSet rs = preparedStmt.getGeneratedKeys();
+					PreparedStatement preparedStmt = con.prepareStatement(sqlCreate, Statement.RETURN_GENERATED_KEYS);
+					preparedStmt.setObject(1, shippingDate != null ? java.sql.Date.valueOf(shippingDate) : null);
+					preparedStmt.setObject(2, deliveryDate != null ? java.sql.Date.valueOf(deliveryDate) : null);
+					preparedStmt.setLong(3, customerId);
+					
+					preparedStmt.executeUpdate();
+					
+					ResultSet rs = preparedStmt.getGeneratedKeys();
             if (rs.next()) {
                 sale.setId(rs.getLong(1)); 
-    			sale.setOrder(orderDb.createOrder(sale));
+    						sale.setOrder(orderDb.createOrder(sale));
             }
             else {
                 throw new Exception(MessagesEnum.DBSAVEERROR.text);

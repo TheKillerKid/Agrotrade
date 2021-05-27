@@ -4,10 +4,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import Model.IF.WarehouseIF;
 import Model.Model.Address;
+import Model.Model.MessagesEnum;
 import Model.Model.Warehouse;
 
 public class WarehouseDB implements WarehouseIF {
@@ -65,6 +67,33 @@ public class WarehouseDB implements WarehouseIF {
 			throw e;
 		}
 		return warehouses;
+	}
+	
+	public Warehouse createWarehouse(Warehouse warehouse) throws SQLException {
+		String sqlCreate = "INSERT INTO Warehouse (address_id) VALUES (?)";
+		
+	    Connection con = DBConnection.getInstance().getConnection();
+	
+	    try {
+			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate, Statement.RETURN_GENERATED_KEYS);
+	
+			preparedStmt.setLong(1, warehouse.getAddress().getId());
+
+			preparedStmt.executeUpdate();						
+			ResultSet rs = preparedStmt.getGeneratedKeys();
+
+            if (rs.next()) {
+            	warehouse.setId(rs.getLong(1));
+            }
+            else {
+            	throw new SQLException(MessagesEnum.DBSAVEERROR.text);
+            }
+            
+		} catch (SQLException e) {
+			throw e;
+		}
+
+		return warehouse;
 	}
 	
 	private Warehouse buildWarehouse(ResultSet rsWarehouse) throws SQLException {

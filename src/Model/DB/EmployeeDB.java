@@ -3,7 +3,6 @@ package Model.DB;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Date;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -16,7 +15,6 @@ import Model.Model.DepartmentType;
 import Model.Model.Employee;
 import Model.Model.MessagesEnum;
 import Model.Model.PositionType;
-import Model.Model.Supplier;
 import Model.Model.Warehouse;
 
 public class EmployeeDB implements EmployeeIF{

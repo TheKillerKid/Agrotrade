@@ -4,25 +4,20 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 import Model.IF.StockProductIF;
-import Model.Model.MessagesEnum;
-import Model.Model.Price;
-import Model.Model.PriceType;
 import Model.Model.Product;
 import Model.Model.StockProduct;
-import Model.Model.Warehouse;
 
 public class StockProductDB implements StockProductIF {
 	private ProductDB productDb = new ProductDB();
 
 	@Override
 	public ArrayList<StockProduct> getStockProducts(long warehouseId) throws SQLException {
-		
+
 		ArrayList<StockProduct> stockProducts = new ArrayList<StockProduct>();
-		
+
 		String sqlWarehouse = "";
 		if(warehouseId != 0) {
 			 sqlWarehouse = ("SELECT * FROM StockProduct WHERE warehouse_id = ?");
@@ -30,19 +25,18 @@ public class StockProductDB implements StockProductIF {
 		else {
 			sqlWarehouse = ("SELECT * FROM StockProduct");
 		}
-		
-		
+
 		Connection con = DBConnection.getInstance().getConnection();
 
 		try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlWarehouse);
-			
+
 			if(warehouseId != 0) {
 				preparedStmt.setLong(1, warehouseId);
 			}
-			
+
 			ResultSet rsStockProduct = preparedStmt.executeQuery();
-			
+
 			while(rsStockProduct.next()) {
 				StockProduct res = buildStockProduct(rsStockProduct);
 				res.setProduct(productDb.getProductById(rsStockProduct.getLong("product_id")));
@@ -54,12 +48,12 @@ public class StockProductDB implements StockProductIF {
 		}
 		return stockProducts;
 	}
-	
+
 	@Override
 	public StockProduct getStockProduct(long id, long warehouseId) throws SQLException {
 		StockProduct stockProduct = null;
 		String sqlProduct = "SELECT * FROM StockProduct WHERE id = ? AND warehouse_id = ?";
-		
+
 		Connection con = DBConnection.getInstance().getConnection();
 
 		try {
@@ -81,51 +75,51 @@ public class StockProductDB implements StockProductIF {
 
 		return stockProduct;
 	}
-	
+
 	@Override
 	public void sellOrLeaseStockProduct(long stockProductId, int amount, long warehouseId) throws SQLException {
 		String sqlUpdate = "UPDATE StockProduct SET amount = ? WHERE id = ? AND warehouse_id = ?";
-		
+
 		StockProduct stockProduct = getStockProduct(stockProductId, warehouseId);
 		amount = stockProduct.getAmount() - amount;
-		
+
 	    Connection con = DBConnection.getInstance().getConnection();
-	
+
 	    try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlUpdate);
 			preparedStmt.setLong(1, amount);
 			preparedStmt.setLong(2, stockProductId);
 			preparedStmt.setLong(3, warehouseId);
-		
+
 			preparedStmt.executeUpdate();
-			
+
 		} catch (SQLException e) {
 			throw e;
 		}
 	}
-	
+
 	@Override
 	public void returnLeaseOrPurchaseStockProduct(long stockProductId, int amount, long warehouseId) throws SQLException {
 		String sqlUpdate = "UPDATE StockProduct SET amount = ? WHERE id = ? AND warehouse_id = ?";
-		
+
 		StockProduct stockProduct = getStockProduct(stockProductId, warehouseId);
 		amount = stockProduct.getAmount() + amount;
-		
+
 	    Connection con = DBConnection.getInstance().getConnection();
-	
+
 	    try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlUpdate);
 			preparedStmt.setLong(1, amount);
 			preparedStmt.setLong(2, stockProductId);
 			preparedStmt.setLong(3, warehouseId);
-		
+
 			preparedStmt.executeUpdate();
-			
+
 		} catch (SQLException e) {
 			throw e;
 		}
 	}
-	
+
 	private StockProduct buildStockProduct(ResultSet rsStockProduct) throws SQLException {
 		return new StockProduct(rsStockProduct.getLong("id"),
 				rsStockProduct.getInt("amount"),
