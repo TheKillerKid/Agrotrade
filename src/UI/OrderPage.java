@@ -819,12 +819,12 @@ public class OrderPage extends JDialog {
 			msgLbl.setForeground(Color.RED);
 		}
 		
-		if(type == OrderPageType.PURCHASE && id != null){
+		if(type == OrderPageType.PURCHASE && id != null && (Date)deliveryDatePicker.getModel().getValue() == null){
 			{
 				middleBtnPanel.add(setAsReceivedBtn);
 			}
 		}
-		if(type == OrderPageType.LEASE && id != null){
+		if(type == OrderPageType.LEASE && id != null && (Date)realReturnDatePicker.getModel().getValue() == null){
 			{
 				middleBtnPanel.add(returnLeaseBtn);
 			}

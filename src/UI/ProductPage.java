@@ -456,7 +456,7 @@ public class ProductPage extends JDialog {
 							
 							setStockProductId(stockProduct.getId());
 							
-							txtpnRegisterProduct.setText("Edit product");
+							txtpnRegisterProduct.setText("Product detail");
 							getContentPane().revalidate();
 							getContentPane().repaint();
 							
@@ -525,7 +525,7 @@ public class ProductPage extends JDialog {
 
 	public void loadData() throws SQLException {
 		try {
-			txtpnRegisterProduct.setText("Edit product");
+			txtpnRegisterProduct.setText("Product detail");
 			
 			StockProduct stockProduct = stockProductController.getStockProduct(stockProductId, LoginContainer.getInstance().getCurrentUser().getWarehouse().getId());
 			
