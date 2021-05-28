@@ -10,14 +10,7 @@ import Model.DB.*;
 import Model.Model.*;
 
 class Utils {
-    private static Utils instance = null;
-	private UnitDB unitDB = new UnitDB();
-	private CategoryDB categoryDB = new CategoryDB();
-	private SupplierDB supplierDB = new SupplierDB();
-	private CustomerDB customerDB = new CustomerDB();
-	private EmployeeDB employeeDB = new EmployeeDB();
-	private AddressDB addressDB = new AddressDB();
-	private WarehouseDB warehouseDB = new WarehouseDB();
+  private static Utils instance = null;
 	public Customer customer;
 	public Employee employee;
 	public Address address;
@@ -29,45 +22,59 @@ class Utils {
 	public static Utils getInstance() {
         if (instance == null)
         	instance = new Utils();
-  
+
         return instance;
     }
-	
+
 	public void createAddress() throws SQLException {
+		AddressDB addressDB = new AddressDB();
 		address = new Address(-1, "Street", "1", "Poprad", "059 51", "Slovakia");
 
 		long id = addressDB.createAddress(address);
 		address.setId(id);
 	}
-	
+
 	public void createWarehouse() throws SQLException {
+		WarehouseDB warehouseDB = new WarehouseDB();
+
 		warehouse = new Warehouse(-1, address);
 		warehouse = warehouseDB.createWarehouse(warehouse);
 	}
-	
+
 	public void createCustomer() throws SQLException {
+		CustomerDB customerDB = new CustomerDB();
+
 		customer = new Customer(-1, "John", "Doe", address, "+451 912 345 678", "john@doe.com", "12345678", 0.0);
 		customer = customerDB.createCustomer(customer);
 	}
 
 	public void createEmployee() throws SQLException {
+		EmployeeDB employeeDB = new EmployeeDB();
 		LocalDate dateOfBirth = LocalDate.of(1999, 4, 20);
 
 		employee = new Employee(-1, "Hugh", "Mungus", dateOfBirth, address, "+451 912 345 673", "hugh@mungus.com", "admin", "1234567890", DepartmentType.WAREHOUSE, PositionType.ADMIN, warehouse);
 		employee = employeeDB.createEmployee(employee);
 	}
-	
-	public void createSupplier() throws SQLException {
+
+	public void createSupplier() {
+		SupplierDB supplierDB = new SupplierDB();
 		supplier = new Supplier(-1, "Mathew", "Smith", address, "+421 943 333 222", "mathew@smith.com", "53634632", "Mathew supplies");
-		supplier = supplierDB.createSupplier(supplier);
+
+		try {
+			supplier = supplierDB.createSupplier(supplier);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
-	
+
 	public void createUnit() throws SQLException {
+		UnitDB unitDB = new UnitDB();
 		unit = new Unit(-1, "pcs");
 		unit = unitDB.createUnit(unit);
 	}
 
 	public void createCategory() throws SQLException {
+		CategoryDB categoryDB = new CategoryDB();
 		category = new Category(-1, "Tools");
 		category = categoryDB.createCategory(category);
 	}
@@ -105,12 +112,12 @@ class Utils {
 					"DBCC CHECKIDENT ('StockProduct',RESEED, 0);" +
 					"DELETE FROM Sale " +
 					"DBCC CHECKIDENT ('Sale',RESEED, 0);" +
+					"DELETE FROM Supplier " +
+					"DBCC CHECKIDENT ('Supplier',RESEED, 0);" +
 					"DELETE FROM Customer " +
 					"DBCC CHECKIDENT ('Customer',RESEED, 0);" +
 					"DELETE FROM Employee " +
 					"DBCC CHECKIDENT ('Employee',RESEED, 0);" +
-					"DELETE FROM Supplier " +
-					"DBCC CHECKIDENT ('Supplier',RESEED, 0);" +
 					"DELETE FROM Unit " +
 					"DBCC CHECKIDENT ('Unit',RESEED, 0);" +
 					"DELETE FROM Category " +
@@ -127,6 +134,13 @@ class Utils {
 		PreparedStatement preparedStmt = con.prepareStatement(deleteSQL);
 
 		preparedStmt.execute();
+		customer = null;
+		employee = null;
+		address = null;
+		warehouse = null;
+		supplier = null;
+		unit = null;
+		category = null;
 	}
 
 	public int getLatestId(String tableName) throws SQLException {

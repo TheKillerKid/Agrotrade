@@ -109,7 +109,6 @@ public class TestSale {
 	@Test
 	public void wasDeliveredSale() {
 		// Arrange
-
 		OrderController orderController = new OrderController();
 		SaleDB saleDB = new SaleDB();
 

@@ -61,9 +61,8 @@ private AddressDB addressDb =  new AddressDB();
 	
 	@Override
 	public Supplier createSupplier(Supplier supplier) throws SQLException {
-		
 		String sqlCreate = "INSERT INTO Supplier (first_name, last_name, address_id, phone, email, cvr_no, company_name) VALUES (?, ?, ?, ?, ?, ?, ?)";
-		
+
 		String firstName = supplier.getFirstName();
 		String lastName = supplier.getLastName();
 		supplier.getAddress().setId(addressDb.createAddress(supplier.getAddress()));
@@ -72,7 +71,7 @@ private AddressDB addressDb =  new AddressDB();
 		String email = supplier.getEmail();
 		String cvrNo = supplier.getCvrNo();
 		String companyName = supplier.getSupplierName();
-		
+
 		Connection con = DBConnection.getInstance().getConnection();
 
      try {
@@ -84,9 +83,9 @@ private AddressDB addressDb =  new AddressDB();
 			preparedStmt.setString(5, email);
 			preparedStmt.setString(6, cvrNo);
 			preparedStmt.setString(7, companyName);
-			
+
 			preparedStmt.executeUpdate();
-			
+
 			ResultSet rs = preparedStmt.getGeneratedKeys();
 			if (rs.next()) {
                 supplier.setId(rs.getLong(1));
@@ -97,6 +96,7 @@ private AddressDB addressDb =  new AddressDB();
 		} catch (SQLException e) {
 			throw e;
 		}
+
 		return supplier;
 	}
 

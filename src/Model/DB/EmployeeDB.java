@@ -54,17 +54,15 @@ public class EmployeeDB implements EmployeeIF{
 		Employee res = null;
 
 		String sqlEmployee = ("SELECT * FROM Employee WHERE email = ?" );
-		long warehouseId = -1;
-		long addressId = -1;
 		Connection con = DBConnection.getInstance().getConnection();
-		
+
 		try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlEmployee);
-				
+
 			preparedStmt.setString(1, email);
-				
+
 			ResultSet rsEmployee = preparedStmt.executeQuery();
-			
+
 			if(rsEmployee.next()) {
 				res = buildEmployee(rsEmployee);	
 				res.setWarehouse(warehouseDb.getWarehouse(rsEmployee.getInt("warehouse_id")));			
