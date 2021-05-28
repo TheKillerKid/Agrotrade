@@ -166,7 +166,6 @@ public class OrderListPage extends JDialog {
 				Object [] newData = {
 						order.getPurchaseId(),
 						order.getOrderCreationDate(),
-						order.getCvrNo(),
 						String.format("%s DKK", order.getTotalPrice()),
 						deliveryDate != null ? deliveryDate.format(DateTimeFormatter.ofPattern("dd MM yyyy")) : "–",
 						getType(order),
@@ -241,7 +240,7 @@ public class OrderListPage extends JDialog {
 		}
 
 		if (type == OrderPageType.PURCHASE.toString()) {
-			String column[] = {"Id", "Created at", "CVR", "Total price", "Delivery date", "Type", ""};
+			String column[] = {"Id", "Created at", "Total price", "Delivery date", "Type", ""};
 			
 			return column;
 		}
