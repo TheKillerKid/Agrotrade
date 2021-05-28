@@ -8,30 +8,27 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import Model.IF.ProductIF;
-import Model.Model.Category;
 import Model.Model.MessagesEnum;
 import Model.Model.Price;
 import Model.Model.PriceType;
 import Model.Model.Product;
 import Model.Model.StockProduct;
-import Model.Model.Supplier;
-import Model.Model.Unit;
 import Model.Model.Warehouse;
 
 public class ProductDB implements ProductIF {
-	
+
 	private PriceDB priceDb = new PriceDB();
 	private SupplierDB supplierDb = new SupplierDB();
 	private WarehouseDB warehouseDb = new WarehouseDB();
 	private CategoryDB categoryDb = new CategoryDB();
 	private UnitDB unitDb = new UnitDB();
-	
+
 	@Override
 	public Product getProductByBarcode(String barcode) throws SQLException {
 		Product product = null;
 		String sqlProduct = "SELECT * FROM Product WHERE barcode = ?";
 		Connection con = DBConnection.getInstance().getConnection();
-		 
+
 		try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlProduct);
 			preparedStmt.setString(1, barcode);
@@ -46,14 +43,15 @@ public class ProductDB implements ProductIF {
 		} catch (SQLException e) {
 			throw e;
 		}
+
 		return product;
 	}
-	
+
 	@Override
 	public Product getProductById(long id) throws SQLException {
 		Product product = null;
 		String sqlProduct = "SELECT * FROM Product WHERE id = ?";
-		
+
 		Connection con = DBConnection.getInstance().getConnection();
 
 		try {
@@ -68,7 +66,6 @@ public class ProductDB implements ProductIF {
 				product.setSupplier(supplierDb.getSupplierById(rsProduct.getLong("supplier_id")));
 				product.setCategory(categoryDb.getCategory(rsProduct.getLong("category_id")));
 				product.setUnit(unitDb.getUnit(rsProduct.getLong("unit_id")));
-				
 			}
 		} catch (SQLException e) {
 			throw e;
@@ -78,21 +75,20 @@ public class ProductDB implements ProductIF {
 
 	@Override
 	public Product createProduct(Product product, int minStock, int maxStock) throws SQLException {
-		
+
 		String sqlCreate = "INSERT INTO Product (barcode, name, category_id, unit_id, supplier_id) VALUES (?,?,?,?,?)";
-		
-		long id;
+
 		String barcode = product.getBarcode();
 		String name = product.getName();
-		long categoryId = product.getCategory().getId();													
+		long categoryId = product.getCategory().getId();
 		Price purchasePrice = product.getPurchasePrice();
 		Price salePrice = product.getSalePrice();
 		Price leasePrice = product.getLeasePrice();
 		long unitId = product.getUnit().getId();
 		long supplierId = product.getSupplier().getId();
-		
+
 	    Connection con = DBConnection.getInstance().getConnection();
-	
+
 	    try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlCreate, Statement.RETURN_GENERATED_KEYS);
 			preparedStmt.setString(1, barcode);
@@ -100,9 +96,9 @@ public class ProductDB implements ProductIF {
 			preparedStmt.setLong(3, categoryId);
 			preparedStmt.setLong(4, unitId);
 			preparedStmt.setLong(5, supplierId);
-		
+
 			preparedStmt.executeUpdate();
-			
+
 			ResultSet rs = preparedStmt.getGeneratedKeys();
             if (rs.next()) {
                 product.setId(rs.getLong(1));
@@ -110,7 +106,7 @@ public class ProductDB implements ProductIF {
             else {
                 throw new SQLException(MessagesEnum.DBSAVEERROR.text);
             }
-			
+
             if(purchasePrice != null) {
             	product.getPurchasePrice().setId(priceDb.createPrice(purchasePrice, product.getId()));
             }
@@ -120,9 +116,9 @@ public class ProductDB implements ProductIF {
             if(leasePrice != null) {
             	product.getLeasePrice().setId(priceDb.createPrice(leasePrice, product.getId()));
             }
-			
+
 			createStockProducts(product.getId(), minStock, maxStock);
-			
+
 		} catch (SQLException e) {
 			throw e;
 		}
@@ -132,19 +128,19 @@ public class ProductDB implements ProductIF {
 	@Override
 	public void updateProduct(Product product) throws SQLException {
 	}
-	
+
 	@Override
 	public void createStockProducts(long productId, int minStock, int maxStock) throws SQLException {
 
 		ArrayList<StockProduct> stockProducts = new ArrayList<StockProduct>();
-		
+
 		String sqlCreate = "INSERT INTO StockProduct (amount, min_stock, max_stock, product_id, warehouse_id) VALUES (?,?,?,?,?)";
-		
+
 		Connection con = DBConnection.getInstance().getConnection();
 
 		try {
 			ArrayList<Warehouse> warehouses = warehouseDb.getWarehouses();
-			
+
 			for(Warehouse warehouse : warehouses) {
 				PreparedStatement preparedStmt = con.prepareStatement(sqlCreate, Statement.RETURN_GENERATED_KEYS);
 				preparedStmt.setInt(1, 0);
@@ -152,11 +148,11 @@ public class ProductDB implements ProductIF {
 				preparedStmt.setInt(3, maxStock);
 				preparedStmt.setLong(4, productId);
 				preparedStmt.setLong(5, warehouse.getId());
-				
+
 				preparedStmt.executeUpdate();
-				
+
 				long id = -1;
-				
+
 				ResultSet rs = preparedStmt.getGeneratedKeys();
 	            if (rs.next()) {
 	                id = rs.getLong(1);
@@ -166,17 +162,17 @@ public class ProductDB implements ProductIF {
 	            }
 				stockProducts.add(new StockProduct(id, 0, minStock, maxStock, null, warehouse.getId()));
 			}
-			
+
 		} catch(SQLException e) {
 			throw e;
 		}
 	}
-	
+
 	@Override
 	public StockProduct getStockProductByProductId(long productId, long warehouseId) throws SQLException {
 		StockProduct stockProduct = null;
 		String sqlProduct = "SELECT * FROM StockProduct WHERE product_id = ? AND warehouse_id = ?";
-		
+
 		Connection con = DBConnection.getInstance().getConnection();
 
 		try {
@@ -198,7 +194,7 @@ public class ProductDB implements ProductIF {
 
 		return stockProduct;
 	}
-	
+
 	private Product buildProduct(ResultSet rsProduct) throws SQLException {
 		return new Product(rsProduct.getLong("id"), 
 						   rsProduct.getString("barcode"), 
@@ -210,7 +206,7 @@ public class ProductDB implements ProductIF {
 						   null, 
 						   null);
 	}
-	
+
 	private StockProduct buildStockProduct(ResultSet rsStockProduct) throws SQLException {
 		return new StockProduct(rsStockProduct.getLong("id"),
 				rsStockProduct.getInt("amount"),

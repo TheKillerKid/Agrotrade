@@ -8,13 +8,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import Model.Model.Address;
-import Model.DB.AddressDB;
 import Model.IF.CustomerIF;
 import Model.Model.Customer;
-import Model.Model.Employee;
 import Model.Model.MessagesEnum;
-import Model.Model.Supplier;
-import Model.Model.Warehouse;
 
 public class CustomerDB implements CustomerIF {
 	
@@ -67,7 +63,6 @@ public class CustomerDB implements CustomerIF {
 	public Customer createCustomer(Customer customer) throws SQLException {
 		String sqlCreate = "INSERT INTO Customer (first_name, last_name, address_id, phone, email, cvr_no, static_discount) VALUES (?, ?, ?, ?, ?, ?, ?)";
 		
-		long id = 0;
 		String firstName = customer.getFirstName();
 		String lastName = customer.getLastName();
 		customer.getAddress().setId(addressDb.createAddress(customer.getAddress()));
@@ -114,7 +109,6 @@ public class CustomerDB implements CustomerIF {
 		Address address = customer.getAddress();
 		String phone = customer.getPhone();
 		String email = customer.getEmail();
-		String cvrNo = customer.getCvrNo();
 		double staticDiscount = customer.getStaticDiscount();
 		
 		Connection con = DBConnection.getInstance().getConnection();
@@ -208,7 +202,6 @@ public class CustomerDB implements CustomerIF {
 		}			
 		return customers;
 	}
-
 
 	private Customer buildCustomer(ResultSet rs) throws SQLException {
 		return new Customer(rs.getLong("id"), 

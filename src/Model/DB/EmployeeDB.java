@@ -3,7 +3,6 @@ package Model.DB;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Date;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -16,7 +15,6 @@ import Model.Model.DepartmentType;
 import Model.Model.Employee;
 import Model.Model.MessagesEnum;
 import Model.Model.PositionType;
-import Model.Model.Supplier;
 import Model.Model.Warehouse;
 
 public class EmployeeDB implements EmployeeIF{
@@ -56,17 +54,15 @@ public class EmployeeDB implements EmployeeIF{
 		Employee res = null;
 
 		String sqlEmployee = ("SELECT * FROM Employee WHERE email = ?" );
-		long warehouseId = -1;
-		long addressId = -1;
 		Connection con = DBConnection.getInstance().getConnection();
-		
+
 		try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlEmployee);
-				
+
 			preparedStmt.setString(1, email);
-				
+
 			ResultSet rsEmployee = preparedStmt.executeQuery();
-			
+
 			if(rsEmployee.next()) {
 				res = buildEmployee(rsEmployee);	
 				res.setWarehouse(warehouseDb.getWarehouse(rsEmployee.getInt("warehouse_id")));			
