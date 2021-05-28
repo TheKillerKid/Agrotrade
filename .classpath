@@ -16,7 +16,7 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/Users/pavolhalas/Downloads/JarFiles/junit-4.10.jar">
+	<classpathentry kind="lib" path="junit-4.10.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
