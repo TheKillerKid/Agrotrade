@@ -1163,12 +1163,12 @@ public class OrderPage extends JDialog {
 			customersComboBox.getModel().setSelectedItem(new String(sale.getCustomer().getCvrNo()) + " - " + sale.getCustomer().getFirstName() + " " + sale.getCustomer().getLastName());
 			
 			if(sale.getShippingDate() != null) {
-				shippingDateModel.setDate(sale.getShippingDate().getYear(), sale.getShippingDate().getMonthValue(), sale.getShippingDate().getDayOfMonth());
+				shippingDateModel.setDate(sale.getShippingDate().getYear(), sale.getShippingDate().getMonthValue() + 1, sale.getShippingDate().getDayOfMonth());
 				shippingDateModel.setSelected(true);
 			}
 			
 			if(sale.getDeliveryDate() != null) {
-				deliveryDateModel.setDate(sale.getDeliveryDate().getYear(), sale.getDeliveryDate().getMonthValue(), sale.getDeliveryDate().getDayOfMonth());
+				deliveryDateModel.setDate(sale.getDeliveryDate().getYear(), sale.getDeliveryDate().getMonthValue() + 1, sale.getDeliveryDate().getDayOfMonth());
 				deliveryDateModel.setSelected(true);
 			}
 		}
@@ -1179,17 +1179,17 @@ public class OrderPage extends JDialog {
 			customersComboBox.getModel().setSelectedItem(new String(lease.getCustomer().getCvrNo()) + " - " + lease.getCustomer().getFirstName() + " " + lease.getCustomer().getLastName());
 			
 			if(lease.getBorrowDate() != null) {
-				borrowDateModel.setDate(lease.getBorrowDate().getYear(), lease.getBorrowDate().getMonthValue(), lease.getBorrowDate().getDayOfMonth());
+				borrowDateModel.setDate(lease.getBorrowDate().getYear(), lease.getBorrowDate().getMonthValue() + 1, lease.getBorrowDate().getDayOfMonth());
 				borrowDateModel.setSelected(true);
 			}
 			
 			if(lease.getExpectedReturnDate() != null) {
-				expectedReturnDateModel.setDate(lease.getExpectedReturnDate().getYear(), lease.getExpectedReturnDate().getMonthValue(), lease.getExpectedReturnDate().getDayOfMonth());
+				expectedReturnDateModel.setDate(lease.getExpectedReturnDate().getYear(), lease.getExpectedReturnDate().getMonthValue() + 1, lease.getExpectedReturnDate().getDayOfMonth());
 				expectedReturnDateModel.setSelected(true);
 			}
 			
 			if(lease.getRealReturnDate() != null) {
-				realReturnDateModel.setDate(lease.getRealReturnDate().getYear(), lease.getRealReturnDate().getMonthValue(), lease.getRealReturnDate().getDayOfMonth());
+				realReturnDateModel.setDate(lease.getRealReturnDate().getYear(), lease.getRealReturnDate().getMonthValue() + 1, lease.getRealReturnDate().getDayOfMonth());
 				realReturnDateModel.setSelected(true);
 			}
 		}
@@ -1198,7 +1198,7 @@ public class OrderPage extends JDialog {
 			Purchase purchase = (Purchase)order;
 			
 			if(purchase.getDeliveryDate() != null) {
-				deliveryDateModel.setDate(purchase.getDeliveryDate().getYear(), purchase.getDeliveryDate().getMonthValue(), purchase.getDeliveryDate().getDayOfMonth());
+				deliveryDateModel.setDate(purchase.getDeliveryDate().getYear(), purchase.getDeliveryDate().getMonthValue() + 1, purchase.getDeliveryDate().getDayOfMonth());
 				deliveryDateModel.setSelected(true);
 			}
 		}
