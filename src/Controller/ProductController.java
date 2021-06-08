@@ -30,9 +30,9 @@ public class ProductController {
 			}
 		}
 		
-		public Product createProduct(Product product, int minStock, int maxStock) throws SQLException {
+		public Product createProduct(Product product, int minStock, int maxStock, String productLocation) throws SQLException {
 			try {
-				return productDb.createProduct(product, minStock, maxStock);
+				return productDb.createProduct(product, minStock, maxStock, productLocation);
 			} catch (SQLException e) {
 				throw e;
 			}
