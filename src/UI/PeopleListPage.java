@@ -100,10 +100,10 @@ public class PeopleListPage extends JDialog {
 		loadingPage = LoadingPage.getInstance();
 		
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[]{109, 100, 0, 0, 599, 0, 0};
-		gridBagLayout.rowHeights = new int[]{0, 0, 22, 733, 39, 0};
-		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.columnWidths = new int[]{50, 109, 100, 0, 100, 0, 599, 50};
+		gridBagLayout.rowHeights = new int[]{50, 733, 39, 0};
+		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0};
+		gridBagLayout.rowWeights = new double[]{0.0, 1.0, 0.0, Double.MIN_VALUE};
 		getContentPane().setLayout(gridBagLayout);
 		contentPanel.setLayout(new FlowLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -116,29 +116,29 @@ public class PeopleListPage extends JDialog {
 		GridBagConstraints gbc_chckbxNewCheckBox = new GridBagConstraints();
 		gbc_chckbxNewCheckBox.anchor = GridBagConstraints.WEST;
 		gbc_chckbxNewCheckBox.insets = new Insets(0, 0, 5, 5);
-		gbc_chckbxNewCheckBox.gridx = 0;
-		gbc_chckbxNewCheckBox.gridy = 1;
+		gbc_chckbxNewCheckBox.gridx = 1;
+		gbc_chckbxNewCheckBox.gridy = 0;
 		getContentPane().add(employeesCheckbox, gbc_chckbxNewCheckBox);
 		{
 			GridBagConstraints gbc_chckbxNewCheckBox_1 = new GridBagConstraints();
 			gbc_chckbxNewCheckBox_1.insets = new Insets(0, 0, 5, 5);
-			gbc_chckbxNewCheckBox_1.gridx = 1;
-			gbc_chckbxNewCheckBox_1.gridy = 1;
+			gbc_chckbxNewCheckBox_1.gridx = 2;
+			gbc_chckbxNewCheckBox_1.gridy = 0;
 			getContentPane().add(customerCheckbox, gbc_chckbxNewCheckBox_1);
 		}
 		{
 			GridBagConstraints gbc_chckbxNewCheckBox_2 = new GridBagConstraints();
 			gbc_chckbxNewCheckBox_2.insets = new Insets(0, 0, 5, 5);
-			gbc_chckbxNewCheckBox_2.gridx = 2;
-			gbc_chckbxNewCheckBox_2.gridy = 1;
+			gbc_chckbxNewCheckBox_2.gridx = 3;
+			gbc_chckbxNewCheckBox_2.gridy = 0;
 			getContentPane().add(suppliersCheckbox, gbc_chckbxNewCheckBox_2);
 		}
 		{
 			JButton searchButton = new JButton("Search");
 			GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
 			gbc_btnNewButton.insets = new Insets(0, 0, 5, 5);
-			gbc_btnNewButton.gridx = 3;
-			gbc_btnNewButton.gridy = 1;
+			gbc_btnNewButton.gridx = 5;
+			gbc_btnNewButton.gridy = 0;
 			getContentPane().add(searchButton, gbc_btnNewButton);
 			searchButton.addActionListener(new ActionListener () {
 				public void actionPerformed(ActionEvent e) {
@@ -190,11 +190,11 @@ public class PeopleListPage extends JDialog {
 					buttonColumn.setMnemonic(KeyEvent.VK_D);
 					
 					GridBagConstraints gbc_table = new GridBagConstraints();
-					gbc_table.gridwidth = 5;
+					gbc_table.gridwidth = 8;
 					gbc_table.insets = new Insets(0, 0, 5, 5);
 					gbc_table.fill = GridBagConstraints.BOTH;
 					gbc_table.gridx = 0;
-					gbc_table.gridy = 3;
+					gbc_table.gridy = 1;
 					
 					sp = new JScrollPane(table);					
 
@@ -211,11 +211,11 @@ public class PeopleListPage extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.LEFT));
 			GridBagConstraints gbc_buttonPane = new GridBagConstraints();
 			gbc_buttonPane.insets = new Insets(0, 0, 0, 5);
-			gbc_buttonPane.gridwidth = 5;
+			gbc_buttonPane.gridwidth = 6;
 			gbc_buttonPane.anchor = GridBagConstraints.NORTH;
 			gbc_buttonPane.fill = GridBagConstraints.HORIZONTAL;
-			gbc_buttonPane.gridx = 0;
-			gbc_buttonPane.gridy = 4;
+			gbc_buttonPane.gridx = 1;
+			gbc_buttonPane.gridy = 2;
 			getContentPane().add(buttonPane, gbc_buttonPane);
 
 			{

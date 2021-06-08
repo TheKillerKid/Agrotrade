@@ -171,7 +171,6 @@ public class ProductListPage extends JDialog {
 			}
 			{
 				JButton btnSearch = new JButton("Search");
-				btnSearch.setVerticalAlignment(SwingConstants.BOTTOM);
 				GridBagConstraints gbc_btnSearch = new GridBagConstraints();
 				gbc_btnSearch.anchor = GridBagConstraints.EAST;
 				gbc_btnSearch.insets = new Insets(0, 0, 0, 5);
