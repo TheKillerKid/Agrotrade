@@ -11,9 +11,9 @@ public interface ProductIF {
 	
 	Product getProductById(long id) throws SQLException;
 	
-	Product createProduct(Product product, int minStock, int maxStock) throws SQLException;
+	Product createProduct(Product product, int minStock, int maxStock, String productLocation) throws SQLException;
 	
-	void createStockProducts(long productId, int minStock, int maxStock) throws SQLException;
+	void createStockProducts(long productId, int minStock, int maxStock, String productLocation) throws SQLException;
 	
 	StockProduct getStockProductByProductId(long productId, long warehouseId) throws SQLException;
 	

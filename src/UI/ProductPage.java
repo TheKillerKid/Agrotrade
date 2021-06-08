@@ -77,6 +77,8 @@ public class ProductPage extends JDialog {
 	private DefaultComboBoxModel<String> categoriesDefaultModel = new DefaultComboBoxModel<String>();
 	private JLabel lblNewLabel_8;
 	private JTextField currentStockField;
+	private JLabel lblNewLabel_9;
+	private JTextField productLocationField;
 
 	
 	public static void start(long stockProductId) {
@@ -109,9 +111,9 @@ public class ProductPage extends JDialog {
 			getContentPane().add(panel);
 			GridBagLayout gbl_panel = new GridBagLayout();
 			gbl_panel.columnWidths = new int[]{8, 89, 127, 0, 0};
-			gbl_panel.rowHeights = new int[]{0, 45, 0, -2, 0, 0, 0, 0, 0, 0, 25, 25, 0, 0, 30, 0, 0};
+			gbl_panel.rowHeights = new int[]{0, 45, 0, -2, 0, 0, 0, 0, 0, 0, 25, 25, 0, 0, 26, 3, 0, 0};
 			gbl_panel.columnWeights = new double[]{1.0, 0.0, 1.0, 1.0, Double.MIN_VALUE};
-			gbl_panel.rowWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
+			gbl_panel.rowWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 			panel.setLayout(gbl_panel);
 			{
 				txtpnRegisterProduct = new JLabel();
@@ -194,6 +196,7 @@ public class ProductPage extends JDialog {
 			}
 			{
 				categoryComboBox = new JComboBox<String>(categoriesDefaultModel);
+				categoryComboBox.setLightWeightPopupEnabled(false);
 				GridBagConstraints gbc_categoryComboBox = new GridBagConstraints();
 				gbc_categoryComboBox.insets = new Insets(0, 0, 5, 5);
 				gbc_categoryComboBox.fill = GridBagConstraints.HORIZONTAL;
@@ -327,6 +330,7 @@ public class ProductPage extends JDialog {
 			}
 			{
 				unitComboBox = new JComboBox<String>(unitsDefaultModel);
+				unitComboBox.setLightWeightPopupEnabled(false);
 				GridBagConstraints gbc_unitComboBox = new GridBagConstraints();
 				gbc_unitComboBox.insets = new Insets(0, 0, 5, 5);
 				gbc_unitComboBox.fill = GridBagConstraints.HORIZONTAL;
@@ -345,6 +349,7 @@ public class ProductPage extends JDialog {
 			}
 			{			
 				supplierComboBox = new JComboBox<String>(suppliersDefaultModel);
+				supplierComboBox.setLightWeightPopupEnabled(false);
 				GridBagConstraints gbc_supplierComboBox = new GridBagConstraints();
 				gbc_supplierComboBox.insets = new Insets(0, 0, 5, 5);
 				gbc_supplierComboBox.fill = GridBagConstraints.HORIZONTAL;
@@ -353,11 +358,30 @@ public class ProductPage extends JDialog {
 				panel.add(supplierComboBox, gbc_supplierComboBox);
 			}
 			{
+				lblNewLabel_9 = new JLabel("Product Location");
+				GridBagConstraints gbc_lblNewLabel_9 = new GridBagConstraints();
+				gbc_lblNewLabel_9.anchor = GridBagConstraints.WEST;
+				gbc_lblNewLabel_9.insets = new Insets(0, 0, 5, 5);
+				gbc_lblNewLabel_9.gridx = 1;
+				gbc_lblNewLabel_9.gridy = 14;
+				panel.add(lblNewLabel_9, gbc_lblNewLabel_9);
+			}
+			{
+				productLocationField = new JTextField();
+				GridBagConstraints gbc_productLocationField = new GridBagConstraints();
+				gbc_productLocationField.insets = new Insets(0, 0, 5, 5);
+				gbc_productLocationField.fill = GridBagConstraints.HORIZONTAL;
+				gbc_productLocationField.gridx = 2;
+				gbc_productLocationField.gridy = 14;
+				panel.add(productLocationField, gbc_productLocationField);
+				productLocationField.setColumns(10);
+			}
+			{
 				msgLbl = new JLabel("");
 				GridBagConstraints gbc_errorMsgLbl = new GridBagConstraints();
 				gbc_errorMsgLbl.insets = new Insets(0, 0, 5, 5);
 				gbc_errorMsgLbl.gridx = 2;
-				gbc_errorMsgLbl.gridy = 14;
+				gbc_errorMsgLbl.gridy = 15;
 				panel.add(msgLbl, gbc_errorMsgLbl);
 			}
 		}
@@ -423,6 +447,7 @@ public class ProductPage extends JDialog {
 							Price salePrice = null;
 							Price leasePrice = null;
 							
+							
 							if(!purchasePriceField.getText().isEmpty()) {
 								purchasePrice = new Price(-1, ParsingHelper.tryParseDouble(purchasePriceField.getText()), LocalDate.now(), PriceType.PURCHASE);
 							}
@@ -432,7 +457,6 @@ public class ProductPage extends JDialog {
 							if(!leasePriceField.getText().isEmpty()) {
 								leasePrice = new Price(-1, ParsingHelper.tryParseDouble(leasePriceField.getText()), LocalDate.now(), PriceType.LEASE);
 							}
-							
 							if(minStockField.getText().isEmpty()) {
 								throw new Exception(MessagesEnum.MINSTOCKREQUIREDERROR.text);
 							}
@@ -450,7 +474,7 @@ public class ProductPage extends JDialog {
 												  unit,
 												  supplier);
 							
-							product = productCtrl.createProduct(product, ParsingHelper.tryParseInt(minStockField.getText()), ParsingHelper.tryParseInt(maxStockField.getText()));
+							product = productCtrl.createProduct(product, ParsingHelper.tryParseInt(minStockField.getText()), ParsingHelper.tryParseInt(maxStockField.getText()), productLocationField.getText());
 							
 							StockProduct stockProduct = productCtrl.getStockProductByProductId(product.getId(), LoginContainer.getInstance().getCurrentUser().getWarehouse().getId());
 							
@@ -503,7 +527,7 @@ public class ProductPage extends JDialog {
 			suppliers.stream().forEach(supplier -> suppliersDefaultModel.addElement(String.valueOf(supplier.getCvrNo()) + " - " + supplier.getSupplierName()));
 			units.stream().forEach(unit -> unitsDefaultModel.addElement(unit.getName()));
 			categories.stream().forEach(category -> categoriesDefaultModel.addElement(category.getName()));
-			
+						
 			if (stockProductId != -1) {				
 				loadData();
 			}
@@ -548,6 +572,7 @@ public class ProductPage extends JDialog {
 			supplierComboBox.getModel().setSelectedItem(supplier);
 			categoryComboBox.getModel().setSelectedItem(stockProduct.getProduct().getCategory().getName());
 			unitComboBox.getModel().setSelectedItem(stockProduct.getProduct().getUnit().getName());
+			productLocationField.setText(stockProduct.getProductLocation());
 		} catch (SQLException e) {
 			throw e;
 		}

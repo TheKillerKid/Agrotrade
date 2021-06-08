@@ -8,14 +8,16 @@ public class StockProduct {
 	private int maxStock;
 	private Product product;
 	private long warehouseId;
+	private String productLocation;
 	
-	public StockProduct(long id, int amount, int minStock, int maxStock, Product product, long warehouseId) {
+	public StockProduct(long id, int amount, int minStock, int maxStock, Product product, long warehouseId, String productLocation) {
 		this.id = id;
 		this.amount = amount;
 		this.minStock = minStock;
 		this.maxStock = maxStock;
 		this.product = product;
 		this.warehouseId = warehouseId;
+		this.productLocation = productLocation;
 	}
 	
 	public long getId() {
@@ -26,6 +28,14 @@ public class StockProduct {
 		this.id = id;
 	}
 
+	public String getProductLocation() {
+		return productLocation;
+	}
+	
+	public void setProductLocation(String productLocation) {
+		this.productLocation = productLocation;
+	}
+	
 	public int getAmount() {
 		return amount;
 	}
