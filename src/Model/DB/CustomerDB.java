@@ -54,7 +54,9 @@ public class CustomerDB implements CustomerIF {
 				res = buildCustomer(rsCustomer);
 				res.setAddress(addressDb.getAddress(rsCustomer.getLong("address_id")));
 			}
+			con.commit();
 		} catch (SQLException e) {
+			con.rollback();
 			throw e;
 		}
 		return res;
@@ -93,8 +95,10 @@ public class CustomerDB implements CustomerIF {
             else {
                 throw new SQLException(MessagesEnum.DBSAVEERROR.text);
             }
-            
+
+            con.commit();
 		} catch (SQLException e) {
+			con.rollback();
 			throw e;
 		}
 		return customer;
@@ -196,8 +200,10 @@ public class CustomerDB implements CustomerIF {
 				res.setAddress(addressDb.getAddress(rsCustomer.getLong("address_id")));
 				customers.add(res);
 			}
-		
+			
+			con.commit();
 		} catch (SQLException e) {
+			con.rollback();
 			throw e;
 		}			
 		return customers;

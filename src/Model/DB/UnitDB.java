@@ -55,7 +55,9 @@ public class UnitDB implements UnitIF{
 				Unit res = buildUnit(rsUnit);
 				units.add(res);
 			}
+			con.commit();
 		} catch (SQLException e) {
+			con.rollback();
 			throw e;
 		}
 		return units;

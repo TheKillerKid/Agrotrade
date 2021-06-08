@@ -412,17 +412,14 @@ public class PersonPage extends JDialog {
 								messageLabel.setText(MessagesEnum.DBERROR.text);
 								messageLabel.setForeground(Color.RED);
 								e1.printStackTrace();
-								return;
 							} catch (NumberFormatException e2) {
 								messageLabel.setText(MessagesEnum.PARSEERROR.text);
 								messageLabel.setForeground(Color.RED);
 								e2.printStackTrace();
-								return;
 							} catch (Exception e3) {
 								messageLabel.setText(e3.getMessage());
 								messageLabel.setForeground(Color.RED);
 								e3.printStackTrace();
-								return;
 							}
 						}
 						if (type == PersonPageType.CUSTOMER) {
@@ -483,17 +480,14 @@ public class PersonPage extends JDialog {
 								messageLabel.setText(MessagesEnum.PARSEERROR.text);
 								messageLabel.setForeground(Color.RED);
 								e1.printStackTrace();
-								return;
 							} catch (SQLException e2) {
 								messageLabel.setText(MessagesEnum.CUSTOMERSAVED.text);
 								messageLabel.setForeground(Color.RED);
 								e2.printStackTrace();
-								return;
 							} catch (Exception e3) {
 								messageLabel.setText(e3.getMessage());
 								messageLabel.setForeground(Color.RED);
 								e3.printStackTrace();
-								return;
 							}
 							
 						}
@@ -546,16 +540,13 @@ public class PersonPage extends JDialog {
 								messageLabel.setText(MessagesEnum.PARSEERROR.text);
 								messageLabel.setForeground(Color.RED);
 								e1.printStackTrace();
-								return;
 							} catch (SQLException e2) {
 								messageLabel.setText(MessagesEnum.DBERROR.text);
 								e2.printStackTrace();
-								return;
 							} catch (Exception e3) {
 								messageLabel.setText(e3.getMessage());
 								messageLabel.setForeground(Color.RED);
 								e3.printStackTrace();
-								return;
 							}
 						}
 						

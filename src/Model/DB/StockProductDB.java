@@ -42,8 +42,9 @@ public class StockProductDB implements StockProductIF {
 				res.setProduct(productDb.getProductById(rsStockProduct.getLong("product_id")));
 				stockProducts.add(res);
 			}
-
+			con.commit();
 		} catch (SQLException e) {
+			con.rollback();
 			throw e;
 		}
 		return stockProducts;
@@ -69,7 +70,9 @@ public class StockProductDB implements StockProductIF {
 					Product product = productDb.getProductById(rsStockProduct.getLong("product_id"));
 					stockProduct.setProduct(product);
 				}
+				con.commit();
 		} catch (SQLException e) {
+			con.rollback();
 			throw e;
 		}
 

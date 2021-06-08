@@ -40,7 +40,9 @@ public class ProductDB implements ProductIF {
 				product.setPurchasePrice(priceDb.getPrice(product.getId(), PriceType.PURCHASE));
 				product.setSupplier(supplierDb.getSupplierById(product.getSupplier().getId()));
 			}
+			con.commit();
 		} catch (SQLException e) {
+			con.rollback();
 			throw e;
 		}
 
@@ -103,7 +105,7 @@ public class ProductDB implements ProductIF {
             if (rs.next()) {
                 product.setId(rs.getLong(1));
             }
-            else {
+            else {   	
                 throw new SQLException(MessagesEnum.DBSAVEERROR.text);
             }
 
@@ -118,8 +120,11 @@ public class ProductDB implements ProductIF {
             }
 
 			createStockProducts(product.getId(), minStock, maxStock);
+			
+            con.commit();
 
 		} catch (SQLException e) {
+			con.rollback();
 			throw e;
 		}
 		return product;
@@ -188,7 +193,9 @@ public class ProductDB implements ProductIF {
 					Product product = getProductById(productId);
 					stockProduct.setProduct(product);
 				}
+				con.commit();
 		} catch (SQLException e) {
+			con.rollback();
 			throw e;
 		}
 

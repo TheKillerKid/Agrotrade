@@ -49,7 +49,9 @@ public class LeaseDB implements LeaseIF{
             else {
                 throw new SQLException(MessagesEnum.DBSAVEERROR.text);
             }
+            con.commit();
 		} catch (SQLException e) {
+			con.rollback();
 			throw e;
 		}
 		return lease;
@@ -78,7 +80,9 @@ public class LeaseDB implements LeaseIF{
 	    		
 	    		res = lease;
 	    	}
+	    	con.commit();
 	    } catch (SQLException e) {
+	    	con.rollback();
 	    	throw e;
 	    }
 	
@@ -110,7 +114,9 @@ public class LeaseDB implements LeaseIF{
             		stockProductDb.returnLeaseOrPurchaseStockProduct(ol.getStockProduct().getId(), ol.getAmount(), ol.getStockProduct().getWarehouseId());
             	}
             }
+            con.commit();
 		} catch (Exception e) {
+			con.rollback();
 			throw e;
 		}
 	}

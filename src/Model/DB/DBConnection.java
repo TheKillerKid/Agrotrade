@@ -29,9 +29,11 @@ public class DBConnection {
             System.out.println("Cannot find the driver");
             System.out.println(e.getMessage());
         }
+        
         try{
             con = DriverManager.getConnection(url);
-            con.setAutoCommit(true);
+            con.setAutoCommit(false);
+            con.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
             dma = con.getMetaData();
             System.out.println("Connection to " + dma.getURL());
             System.out.println("Driver " + dma.getDriverName());

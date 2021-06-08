@@ -42,7 +42,9 @@ public class PurchaseDB implements PurchaseIF{
             else {
                 throw new SQLException(MessagesEnum.DBSAVEERROR.text);
             }
+            con.commit();
 		} catch (SQLException e) {
+			con.rollback();
 			throw e;
 		}
 		return purchase;
@@ -70,7 +72,9 @@ public class PurchaseDB implements PurchaseIF{
 	    		
 	    		res = purchase;
 	    	}
+	    	con.commit();
 	    } catch (SQLException e) {
+	    	con.rollback();
 	    	throw e;
 	    }
 	    return res;
@@ -100,7 +104,9 @@ public class PurchaseDB implements PurchaseIF{
             		stockProductDb.returnLeaseOrPurchaseStockProduct(ol.getStockProduct().getId(), ol.getAmount(), ol.getStockProduct().getWarehouseId());
             	}
             }
+            con.commit();
 		} catch (Exception e) {
+			con.rollback();
 			throw e;
 		}
 	}

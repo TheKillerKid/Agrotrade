@@ -57,7 +57,9 @@ public class CategoryDB implements CategoryIF{
 				Category res = buildCategory(rsCategory);
 				categories.add(res);
 			}	
+			con.commit();
 		} catch (SQLException e) {
+			con.rollback();
 			throw e;
 		}
 		return categories;

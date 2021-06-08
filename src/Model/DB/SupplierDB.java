@@ -53,7 +53,9 @@ private AddressDB addressDb =  new AddressDB();
 				res = buildSupplier(rsSupplier);
 				res.setAddress(addressDb.getAddress(rsSupplier.getLong("address_id")));	
 			}
+			con.commit();
 		} catch (SQLException e) {
+			con.rollback();
 			throw e;
 		}
 		return res;
@@ -93,7 +95,10 @@ private AddressDB addressDb =  new AddressDB();
             else {
                 throw new SQLException(MessagesEnum.DBSAVEERROR.text);
             }
+			
+			con.commit();
 		} catch (SQLException e) {
+			con.rollback();
 			throw e;
 		}
 
@@ -128,8 +133,9 @@ private AddressDB addressDb =  new AddressDB();
 				res.setAddress(addressDb.getAddress(rsSupplier.getLong("address_id")));
 				suppliers.add(res);
 			}
-
+			con.commit();
 		} catch (SQLException e) {
+			con.rollback();
 			throw e;
 		}
 

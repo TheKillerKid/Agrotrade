@@ -44,7 +44,9 @@ public class SaleDB implements SaleIF {
             else {
                 throw new Exception(MessagesEnum.DBSAVEERROR.text);
             }
+            con.commit();
 		} catch (SQLException e) {
+			con.rollback();
 			throw e;
 		}
 		return sale;
@@ -72,7 +74,10 @@ public class SaleDB implements SaleIF {
 	    		
 	    		res = sale;
 	    	}
+	    	
+	    	con.commit();
 	    } catch (SQLException e) {
+	    	con.rollback();
 	    	throw e;
 	    }
 	
@@ -98,7 +103,9 @@ public class SaleDB implements SaleIF {
             if (!rs.next()) {
             	throw new Exception(MessagesEnum.DBUPDATEERROR.text);
             }
+            con.commit();
 		} catch (Exception e) {
+			con.rollback();
 			throw e;
 		}
 	}
@@ -122,7 +129,9 @@ public class SaleDB implements SaleIF {
             if (!rs.next()) {
             	throw new Exception(MessagesEnum.DBUPDATEERROR.text);
             }
+            con.commit();
 		} catch (Exception e) {
+			con.commit();
 			throw e;
 		}
 	}

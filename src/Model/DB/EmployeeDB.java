@@ -62,13 +62,16 @@ public class EmployeeDB implements EmployeeIF{
 			preparedStmt.setString(1, email);
 
 			ResultSet rsEmployee = preparedStmt.executeQuery();
-
+			
 			if(rsEmployee.next()) {
 				res = buildEmployee(rsEmployee);	
 				res.setWarehouse(warehouseDb.getWarehouse(rsEmployee.getInt("warehouse_id")));			
 				res.setAddress(addressDb.getAddress(rsEmployee.getInt("address_id")));
 			}
+			
+			con.commit();
 		} catch (SQLException e) {
+			con.rollback();
 			throw e;
 		}
 		
@@ -95,7 +98,10 @@ public class EmployeeDB implements EmployeeIF{
 				res.setWarehouse(warehouseDb.getWarehouse(rsEmployee.getInt("warehouse_id")));			
 				res.setAddress(addressDb.getAddress(rsEmployee.getInt("address_id")));
 			}
+			
+			con.commit();
 		} catch (SQLException e) {
+			con.rollback();
 			throw e;
 		}
 		
@@ -144,7 +150,10 @@ public class EmployeeDB implements EmployeeIF{
 	        else {
 	            throw new SQLException(MessagesEnum.DBSAVEERROR.text);
 	        }
+
+            con.commit();
 		} catch (SQLException e) {
+			con.rollback();
 			throw e;
 		}
 		return employee;
@@ -272,25 +281,7 @@ public class EmployeeDB implements EmployeeIF{
 	
 	@Override
 	public void deleteEmployee(String cprNo) throws SQLException {
-		 /* Connection connection = null;
-	       Statement stmt = null;
-		
-		try
-		{ (Statement s = DBConnection.getInstance().getConnection().createStatement()) {
-			
-			stmt.execute("DELETE FROM EMPLOYEE WHERE CPRNO >= 1");
-		}catch (Exception e) {
-            throw e;
-        }finally {
- try {   
-                stmt.close();
-                connection.close();
-            } catch (Exception e) {
-                throw e;
-            	}
-        	}
-		}*/
-		
+		//TODO: Auto-generated method from interface
 	}
 
 	@Override
@@ -309,8 +300,9 @@ public class EmployeeDB implements EmployeeIF{
 				res.setAddress(addressDb.getAddress(rsEmployee.getLong("address_id")));
 				employees.add(res);
 			}
-		
+			con.commit();
 		} catch (SQLException e) {
+			con.rollback();
 			throw e;
 		}			
 		return employees;
