@@ -76,7 +76,7 @@ public class ProductDB implements ProductIF {
 	}
 
 	@Override
-	public Product createProduct(Product product, int minStock, int maxStock) throws SQLException {
+	public Product createProduct(Product product, int minStock, int maxStock, String productLocation) throws SQLException {
 
 		String sqlCreate = "INSERT INTO Product (barcode, name, category_id, unit_id, supplier_id) VALUES (?,?,?,?,?)";
 
@@ -119,9 +119,10 @@ public class ProductDB implements ProductIF {
             	product.getLeasePrice().setId(priceDb.createPrice(leasePrice, product.getId()));
             }
 
-			createStockProducts(product.getId(), minStock, maxStock);
+			createStockProducts(product.getId(), minStock, maxStock, productLocation);
 			
             con.commit();
+
 
 		} catch (SQLException e) {
 			con.rollback();
@@ -135,11 +136,11 @@ public class ProductDB implements ProductIF {
 	}
 
 	@Override
-	public void createStockProducts(long productId, int minStock, int maxStock) throws SQLException {
+	public void createStockProducts(long productId, int minStock, int maxStock, String productLocation) throws SQLException {
 
 		ArrayList<StockProduct> stockProducts = new ArrayList<StockProduct>();
 
-		String sqlCreate = "INSERT INTO StockProduct (amount, min_stock, max_stock, product_id, warehouse_id) VALUES (?,?,?,?,?)";
+		String sqlCreate = "INSERT INTO StockProduct (amount, min_stock, max_stock, product_id, warehouse_id, location) VALUES (?,?,?,?,?,?)";
 
 		Connection con = DBConnection.getInstance().getConnection();
 
@@ -153,6 +154,7 @@ public class ProductDB implements ProductIF {
 				preparedStmt.setInt(3, maxStock);
 				preparedStmt.setLong(4, productId);
 				preparedStmt.setLong(5, warehouse.getId());
+				preparedStmt.setString(6, productLocation);
 
 				preparedStmt.executeUpdate();
 
@@ -165,7 +167,7 @@ public class ProductDB implements ProductIF {
 	            else {
 	                throw new SQLException("Creating stock product failed, no ID obtained.");
 	            }
-				stockProducts.add(new StockProduct(id, 0, minStock, maxStock, null, warehouse.getId()));
+				stockProducts.add(new StockProduct(id, 0, minStock, maxStock, null, warehouse.getId(), productLocation));
 			}
 
 		} catch(SQLException e) {
@@ -220,6 +222,7 @@ public class ProductDB implements ProductIF {
 				rsStockProduct.getInt("min_stock"),
 				rsStockProduct.getInt("max_stock"),
 				null,
-				rsStockProduct.getLong("warehouse_id"));
+				rsStockProduct.getLong("warehouse_id"),
+				rsStockProduct.getString("location"));
 	}
 }

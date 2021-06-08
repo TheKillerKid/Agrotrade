@@ -129,7 +129,8 @@ public class StockProductDB implements StockProductIF {
 				rsStockProduct.getInt("min_stock"),
 				rsStockProduct.getInt("max_stock"),
 				null,
-				rsStockProduct.getLong("warehouse_id"));
+				rsStockProduct.getLong("warehouse_id"),
+				rsStockProduct.getString("location"));
 	}
 
 }

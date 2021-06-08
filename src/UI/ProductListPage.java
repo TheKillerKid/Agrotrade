@@ -30,12 +30,15 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 
 
 public class ProductListPage extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
-	private JTextField searchField;
+	private JTextField nameFiltereField;
+	private JCheckBox isUnderMinAmountCheckBox;
 	
 	private ArrayList<StockProduct> stockProducts = new ArrayList<StockProduct>();
 	private Object[][] data;
@@ -78,81 +81,110 @@ public class ProductListPage extends JDialog {
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		GridBagLayout gbl_contentPanel = new GridBagLayout();
-		gbl_contentPanel.columnWidths = new int[]{411, 0, 205, 0, 0};
-		gbl_contentPanel.rowHeights = new int[]{0, 117, 0, 0};
-		gbl_contentPanel.columnWeights = new double[]{0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
-		gbl_contentPanel.rowWeights = new double[]{1.0, 0.0, 1.0, Double.MIN_VALUE};
+		gbl_contentPanel.columnWidths = new int[]{411, 0};
+		gbl_contentPanel.rowHeights = new int[]{66, 117, 0, 0};
+		gbl_contentPanel.columnWeights = new double[]{1.0, Double.MIN_VALUE};
+		gbl_contentPanel.rowWeights = new double[]{0.0, 0.0, 1.0, Double.MIN_VALUE};
 		contentPanel.setLayout(gbl_contentPanel);
 		
 		String column[]={"Id", "Barcode", "Name", "Category", "Current stock", "Min/Max stock", "Supplier", ""};
+		
+		DefaultTableModel model = new DefaultTableModel(data, column);
+		JTable table = new JTable( model );
+		
+		AbstractAction open = new AbstractAction() {
+			public void actionPerformed(ActionEvent e) {
+		        JTable table = (JTable)e.getSource();
+		        int modelRow = Integer.valueOf( e.getActionCommand() );
+		       
+		        long stockProductId = Long.parseLong((String) table.getValueAt(modelRow, 0)); 
+		        
+		        ProductPage.start(stockProductId);
+		        dispose();
+		    }
+		};
 
 		{
-			searchField = new JTextField();
-			GridBagConstraints gbc_searchField = new GridBagConstraints();
-			gbc_searchField.insets = new Insets(0, 0, 5, 5);
-			gbc_searchField.fill = GridBagConstraints.HORIZONTAL;
-			gbc_searchField.gridx = 0;
-			gbc_searchField.gridy = 0;
-			contentPanel.add(searchField, gbc_searchField);
-			searchField.setColumns(10);
-		}
-		{
-			if(searchField.getText().isEmpty()){
-				this.stockProducts = loadData(); 
-				this.data = new Object[stockProducts.size()][];
-				
+			JPanel filterPanal = new JPanel();
+			GridBagConstraints gbc_filterPanal = new GridBagConstraints();
+			gbc_filterPanal.insets = new Insets(0, 0, 5, 0);
+			gbc_filterPanal.fill = GridBagConstraints.HORIZONTAL;
+			gbc_filterPanal.gridx = 0;
+			gbc_filterPanal.gridy = 0;
+			contentPanel.add(filterPanal, gbc_filterPanal);
+			GridBagLayout gbl_filterPanal = new GridBagLayout();
+			gbl_filterPanal.columnWidths = new int[]{50, 0, 200, 0, 99, 0, 50, 0};
+			gbl_filterPanal.rowHeights = new int[]{40, 0};
+			gbl_filterPanal.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+			gbl_filterPanal.rowWeights = new double[]{0.0, Double.MIN_VALUE};
+			filterPanal.setLayout(gbl_filterPanal);
+			
+			{
+				JLabel nameFilterLbl = new JLabel("Name");
+				GridBagConstraints gbc_nameFilterLbl = new GridBagConstraints();
+				gbc_nameFilterLbl.insets = new Insets(0, 0, 0, 5);
+				gbc_nameFilterLbl.gridx = 1;
+				gbc_nameFilterLbl.gridy = 0;
+				filterPanal.add(nameFilterLbl, gbc_nameFilterLbl);
+			}
+			{
+				nameFiltereField = new JTextField();
+				GridBagConstraints gbc_nameFiltereField = new GridBagConstraints();
+				gbc_nameFiltereField.insets = new Insets(0, 0, 0, 5);
+				gbc_nameFiltereField.fill = GridBagConstraints.HORIZONTAL;
+				gbc_nameFiltereField.gridx = 2;
+				gbc_nameFiltereField.gridy = 0;
+				filterPanal.add(nameFiltereField, gbc_nameFiltereField);
+				nameFiltereField.setColumns(10);
+			}
+			{
+				if(nameFiltereField.getText().isEmpty()){
+					this.stockProducts = loadData(); 
+					this.data = new Object[stockProducts.size()][];
 					
-				for (int i = 0; i < stockProducts.size(); i++) {
-					StockProduct stockProduct = stockProducts.get(i);
-					Object [] newData = {
-						Long.toString(stockProduct.getId()),
-						stockProduct.getProduct().getBarcode(),
-						stockProduct.getProduct().getName(),
-						stockProduct.getProduct().getCategory().getName(),
-						Integer.toString(stockProduct.getAmount()),
-						String.format("%s/%s", stockProduct.getMinStock(), stockProduct.getMaxStock()),
-						stockProduct.getProduct().getSupplier().getSupplierName(),
-						"Open",
-					};
-	
-					this.data[i] = newData;
+						
+					for (int i = 0; i < stockProducts.size(); i++) {
+						StockProduct stockProduct = stockProducts.get(i);
+						Object [] newData = {
+							Long.toString(stockProduct.getId()),
+							stockProduct.getProduct().getBarcode(),
+							stockProduct.getProduct().getName(),
+							stockProduct.getProduct().getCategory().getName(),
+							Integer.toString(stockProduct.getAmount()),
+							String.format("%s/%s", stockProduct.getMinStock(), stockProduct.getMaxStock()),
+							stockProduct.getProduct().getSupplier().getSupplierName(),
+							"Open",
+						};
+		
+						this.data[i] = newData;
 
+					}
 				}
 			}
-			
-			AbstractAction open = new AbstractAction() {
-				public void actionPerformed(ActionEvent e) {
-			        JTable table = (JTable)e.getSource();
-			        int modelRow = Integer.valueOf( e.getActionCommand() );
-			       
-			        long stockProductId = Long.parseLong((String) table.getValueAt(modelRow, 0)); 
-			        
-			        ProductPage.start(stockProductId);
-			        dispose();
-			    }
-			};
-			
-						
-			DefaultTableModel model = new DefaultTableModel(data, column);
-			JTable table = new JTable( model );
-
-			ButtonColumn buttonColumn = new ButtonColumn(table, open, 7);
-			buttonColumn.setMnemonic(KeyEvent.VK_D);
-			
+			{
+				isUnderMinAmountCheckBox = new JCheckBox("Under minimum stock");
+				GridBagConstraints gbc_isUnderMinAmountCheckBox = new GridBagConstraints();
+				gbc_isUnderMinAmountCheckBox.insets = new Insets(0, 0, 0, 5);
+				gbc_isUnderMinAmountCheckBox.gridx = 3;
+				gbc_isUnderMinAmountCheckBox.gridy = 0;
+				filterPanal.add(isUnderMinAmountCheckBox, gbc_isUnderMinAmountCheckBox);
+			}
 			{
 				JButton btnSearch = new JButton("Search");
 				btnSearch.setVerticalAlignment(SwingConstants.BOTTOM);
 				GridBagConstraints gbc_btnSearch = new GridBagConstraints();
-				gbc_btnSearch.insets = new Insets(0, 0, 5, 5);
-				gbc_btnSearch.gridx = 1;
+				gbc_btnSearch.anchor = GridBagConstraints.EAST;
+				gbc_btnSearch.insets = new Insets(0, 0, 0, 5);
+				gbc_btnSearch.gridx = 5;
 				gbc_btnSearch.gridy = 0;
-				contentPanel.add(btnSearch, gbc_btnSearch);
+				filterPanal.add(btnSearch, gbc_btnSearch);
+				
 				btnSearch.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						ArrayList<StockProduct> filteredList = stockProducts.stream()
-								.filter((stockProduct) -> {
-									return stockProduct.getProduct().getName().contains(searchField.getText());
-								})
+								.filter((stockProduct) -> 
+								stockProduct.getProduct().getName().contains(nameFiltereField.getText()) && 
+								isUnderMinAmountCheckBox.isSelected() ? stockProduct.getAmount() < stockProduct.getMinStock() : true)
 								.collect(Collectors.toCollection(ArrayList::new));
 						setData(new Object[filteredList.size()][]);
 						Object[][] data = new Object[filteredList.size()][];
@@ -180,10 +212,12 @@ public class ProductListPage extends JDialog {
 					}
 				});
 			}
+			
+			ButtonColumn buttonColumn = new ButtonColumn(table, open, 7);
+			buttonColumn.setMnemonic(KeyEvent.VK_D);
 
 			GridBagConstraints gbc_table = new GridBagConstraints();
 			gbc_table.gridheight = 2;
-			gbc_table.gridwidth = 4;
 			gbc_table.fill = GridBagConstraints.BOTH;
 			gbc_table.gridx = 0;
 			gbc_table.gridy = 1;
