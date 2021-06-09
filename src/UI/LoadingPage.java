@@ -20,7 +20,7 @@ public class LoadingPage extends JDialog implements Runnable {
 		running = true;
 		
 		if(LoginContainer.getInstance().betaEnabled) {
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 			dialog.setVisible(true);
 		}
 		
@@ -54,7 +54,7 @@ public class LoadingPage extends JDialog implements Runnable {
 			getContentPane().repaint();
 		}
 
-		dispose();
+		dialog.setVisible(false);
 	}
 	
 	private LoadingPage() {

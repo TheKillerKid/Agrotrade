@@ -75,7 +75,7 @@ public class ProductListPage extends JDialog {
 		return stockProducts;
 	}
 
-	public ProductListPage() throws SQLException {
+	public ProductListPage() {
 		setBounds(150, 150, 1280, 800);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -181,9 +181,8 @@ public class ProductListPage extends JDialog {
 				btnSearch.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						ArrayList<StockProduct> filteredList = stockProducts.stream()
-								.filter((stockProduct) -> 
-								stockProduct.getProduct().getName().contains(nameFiltereField.getText()) && 
-								isUnderMinAmountCheckBox.isSelected() ? stockProduct.getAmount() < stockProduct.getMinStock() : true)
+								.filter((stockProduct) -> stockProduct.getProduct().getName().contains(nameFiltereField.getText()) && 
+										(isUnderMinAmountCheckBox.isSelected() ? stockProduct.getAmount() < stockProduct.getMinStock() : true))
 								.collect(Collectors.toCollection(ArrayList::new));
 						setData(new Object[filteredList.size()][]);
 						Object[][] data = new Object[filteredList.size()][];
