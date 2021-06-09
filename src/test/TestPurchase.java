@@ -19,11 +19,15 @@ public class TestPurchase {
 	static StockProduct tempStockProduct;
 
 	/** Fixture for sale testing. 
-	 * @throws SQLException */
+	 * @throws SQLException 
+	 * @throws InterruptedException
+	 * */
 	@BeforeClass
-	public static void setUp() throws SQLException {
+	public static void setUp() throws SQLException, InterruptedException {
 		DBConnection con = DBConnection.getTestInstance("dmaj0920_1086315", "Password1!", "dmaj0920_1086315");
-		con.getConnection();
+		System.out.println(con.getConnection().getMetaData());
+		
+		Utils.getInstance().deleteTestData();
 		Utils.getInstance().createTestData();
 	}
 
@@ -43,7 +47,7 @@ public class TestPurchase {
 
 		// Act
 		try {
-			localProduct = productDB.createProduct(localProduct, 1, 100);
+			localProduct = productDB.createProduct(localProduct, 1, 100, "4F");
 			tempStockProduct = productDB.getStockProductByProductId(localProduct.getId(), Utils.getInstance().warehouse.getId());
 			latestId = Utils.getInstance().getLatestId("StockProduct");
 		} catch(Exception ex) { 
@@ -66,7 +70,7 @@ public class TestPurchase {
 		localOrderLines.add(new OrderLine(-1, 3, 10, tempStockProduct));
 
 		tempPurchase = new Purchase(
-			-1, 100, "Note", creationDate, Utils.getInstance().warehouse, localOrderLines, null, -1, shippingDate
+			0, 100, "Note", creationDate, Utils.getInstance().warehouse, localOrderLines, null, -1, shippingDate
 		);
 
 		// Act
@@ -86,18 +90,6 @@ public class TestPurchase {
 
 	@AfterClass
 	public static void cleanUpWhenFinish() {	
-		// Arrange
-
-		// Act
-		try {
-			Utils.getInstance().deleteTestData();
-		} catch(Exception ex) { 
-			System.out.println("Error: " + ex.getMessage());
-		} finally {
 			DBConnection.closeConnection();
-		}
-	
-		// Assert
-		assertEquals("Database deleted", 1, 1); // We use script to turncate whole database
 	}
 }
