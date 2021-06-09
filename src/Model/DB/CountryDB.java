@@ -41,7 +41,7 @@ public class CountryDB implements CountryIF{
 		if(id != -1) {
 			return id;
 		}
-		
+
 		String sqlCountry = ("INSERT INTO Country (name) VALUES (?)");
 		Connection con = DBConnection.getInstance().getConnection();
 

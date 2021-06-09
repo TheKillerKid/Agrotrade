@@ -60,7 +60,7 @@ public class DBConnection {
         }
         try{
             con = DriverManager.getConnection(url);
-            con.setAutoCommit(true);
+            con.setAutoCommit(false);
             dma = con.getMetaData();
             System.out.println("Connection to " + dma.getURL());
             System.out.println("Driver " + dma.getDriverName());

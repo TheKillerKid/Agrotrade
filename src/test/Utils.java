@@ -20,10 +20,9 @@ class Utils {
 	public Category category;
 
 	public static Utils getInstance() {
-        if (instance == null)
-        	instance = new Utils();
-
-        return instance;
+				if (instance == null)
+				instance = new Utils();
+				return instance;
     }
 
 	public void createAddress() throws SQLException {
@@ -44,7 +43,7 @@ class Utils {
 	public void createCustomer() throws SQLException {
 		CustomerDB customerDB = new CustomerDB();
 
-		customer = new Customer(-1, "John", "Doe", address, "+451 912 345 678", "john@doe.com", "12345678", 0.0);
+		customer = new Customer(-1, "Jane", "Drew", address, "+451 912 345 679", "jane@drew.com", "12345678", 0.0);
 		customer = customerDB.createCustomer(customer);
 	}
 
@@ -56,15 +55,11 @@ class Utils {
 		employee = employeeDB.createEmployee(employee);
 	}
 
-	public void createSupplier() {
+	public void createSupplier() throws SQLException {
 		SupplierDB supplierDB = new SupplierDB();
+		
 		supplier = new Supplier(-1, "Mathew", "Smith", address, "+421 943 333 222", "mathew@smith.com", "53634632", "Mathew supplies");
-
-		try {
-			supplier = supplierDB.createSupplier(supplier);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		supplier = supplierDB.createSupplier(supplier);
 	}
 
 	public void createUnit() throws SQLException {
@@ -80,6 +75,8 @@ class Utils {
 	}
 
 	public void createTestData () throws SQLException {
+		Connection con = DBConnection.getInstance().getConnection();
+
 		createAddress();
 		createWarehouse();
 		createCustomer();
@@ -87,68 +84,38 @@ class Utils {
 		createSupplier();
 		createCategory();
 		createUnit();
+		con.commit();
 	}
 	
 	public void deleteTestData() throws SQLException {
 		Connection con = DBConnection.getInstance().getConnection();
+
 		String deleteSQL = 
-					"DELETE FROM Invoice " +
-					"DBCC CHECKIDENT ('Invoice',RESEED, 0);" +
-					"DELETE FROM OrderLine " +
-					"DBCC CHECKIDENT ('OrderLine',RESEED, 0);" +
-					"DELETE FROM Orders " +
-					"DBCC CHECKIDENT ('Orders',RESEED, 0);" +
-					"DELETE FROM Lease " +
-					"DBCC CHECKIDENT ('Lease',RESEED, 0);" +
-					"DELETE FROM Sale " +
-					"DBCC CHECKIDENT ('Sale',RESEED, 0);" +
-					"DELETE FROM Purchase " +
-					"DBCC CHECKIDENT ('Purchase',RESEED, 0);" +
-					"DELETE FROM Price " +
-					"DBCC CHECKIDENT ('Price',RESEED, 0);" +
-					"DELETE FROM Product " +
-					"DBCC CHECKIDENT ('Product',RESEED, 0);" +
-					"DELETE FROM StockProduct " +
-					"DBCC CHECKIDENT ('StockProduct',RESEED, 0);" +
-					"DELETE FROM Sale " +
-					"DBCC CHECKIDENT ('Sale',RESEED, 0);" +
-					"DELETE FROM Supplier " +
-					"DBCC CHECKIDENT ('Supplier',RESEED, 0);" +
-					"DELETE FROM Customer " +
-					"DBCC CHECKIDENT ('Customer',RESEED, 0);" +
-					"DELETE FROM Employee " +
-					"DBCC CHECKIDENT ('Employee',RESEED, 0);" +
-					"DELETE FROM Unit " +
-					"DBCC CHECKIDENT ('Unit',RESEED, 0);" +
-					"DELETE FROM Category " +
-					"DBCC CHECKIDENT ('Category',RESEED, 0);" +
-					"DELETE FROM Warehouse " +
-					"DBCC CHECKIDENT ('Warehouse',RESEED, 0);" +
-					"DELETE FROM Address " +
-					"DBCC CHECKIDENT ('Address',RESEED, 0);" +
-					"DELETE FROM City " +
-					"DBCC CHECKIDENT ('City',RESEED, 0);" +
-					"DELETE FROM Country " +
-					"DBCC CHECKIDENT ('Country',RESEED, 0);";
+					"EXEC sp_MSForEachTable 'ALTER TABLE ? NOCHECK CONSTRAINT all';" +
+					"EXEC sp_MSForEachTable 'DELETE FROM ?';" +
+					"EXEC sp_MSForEachTable 'ALTER TABLE ? WITH CHECK CHECK CONSTRAINT all';";
+		try {
+			PreparedStatement preparedStmt = con.prepareStatement(deleteSQL);
+			preparedStmt.executeUpdate();
+			con.commit();
 
-		PreparedStatement preparedStmt = con.prepareStatement(deleteSQL);
-
-		preparedStmt.execute();
-		customer = null;
-		employee = null;
-		address = null;
-		warehouse = null;
-		supplier = null;
-		unit = null;
-		category = null;
+			customer = null;
+			employee = null;
+			address = null;
+			warehouse = null;
+			supplier = null;
+			unit = null;
+			category = null;
+		} catch(Exception ex) { 
+			System.out.println("Error: " + ex.getMessage());
+		}
 	}
 
 	public int getLatestId(String tableName) throws SQLException {
+		Connection con = DBConnection.getInstance().getConnection();
 		int latestID = 0;
 
 		String sqlGet = String.format("SELECT TOP 1 %s.id FROM %s ORDER BY id DESC", tableName, tableName);
-
-		Connection con = DBConnection.getInstance().getConnection();
 
 		try {
 			PreparedStatement preparedStmt = con.prepareStatement(sqlGet);
@@ -157,6 +124,7 @@ class Utils {
 			if (rs.next()) {
 				latestID = rs.getInt(1);
 			}
+			con.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

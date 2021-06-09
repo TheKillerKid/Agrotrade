@@ -181,9 +181,13 @@ public class ProductListPage extends JDialog {
 				btnSearch.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						ArrayList<StockProduct> filteredList = stockProducts.stream()
-								.filter((stockProduct) -> 
-								stockProduct.getProduct().getName().contains(nameFiltereField.getText()) && 
-								isUnderMinAmountCheckBox.isSelected() ? stockProduct.getAmount() < stockProduct.getMinStock() : true)
+								.filter((stockProduct) -> {
+									System.out.println(stockProduct.getProduct().getName().contains(nameFiltereField.getText()) && 
+									isUnderMinAmountCheckBox.isSelected() ? stockProduct.getAmount() < stockProduct.getMinStock() : true);
+
+									return stockProduct.getProduct().getName().contains(nameFiltereField.getText()) && 
+									isUnderMinAmountCheckBox.isSelected() ? stockProduct.getAmount() < stockProduct.getMinStock() : true;
+								})
 								.collect(Collectors.toCollection(ArrayList::new));
 						setData(new Object[filteredList.size()][]);
 						Object[][] data = new Object[filteredList.size()][];
