@@ -87,7 +87,7 @@ public class ProductListPage extends JDialog {
 		gbl_contentPanel.rowWeights = new double[]{0.0, 0.0, 1.0, Double.MIN_VALUE};
 		contentPanel.setLayout(gbl_contentPanel);
 		
-		String column[]={"Id", "Barcode", "Name", "Category", "Current stock", "Min/Max stock", "Supplier", ""};
+		String column[]={"Id", "Barcode", "Name", "Category", "Current stock", "Min/Max stock", "Supplier", "Location", ""};
 		
 		DefaultTableModel model = new DefaultTableModel(data, column);
 		JTable table = new JTable( model );
@@ -153,6 +153,7 @@ public class ProductListPage extends JDialog {
 							Integer.toString(stockProduct.getAmount()),
 							String.format("%s/%s", stockProduct.getMinStock(), stockProduct.getMaxStock()),
 							stockProduct.getProduct().getSupplier().getSupplierName(),
+							stockProduct.getProductLocation(),
 							"Open",
 						};
 		
@@ -202,6 +203,7 @@ public class ProductListPage extends JDialog {
 								Integer.toString(stockProduct.getAmount()),
 								String.format("%s/%s", stockProduct.getMinStock(), stockProduct.getMaxStock()),
 								stockProduct.getProduct().getSupplier().getSupplierName(),
+								stockProduct.getProductLocation(),
 								"Open",
 							};
 
@@ -210,13 +212,13 @@ public class ProductListPage extends JDialog {
 						setData(data);
 						DefaultTableModel model = new DefaultTableModel(data, column);
 						table.setModel(model);
-						ButtonColumn buttonColumn = new ButtonColumn(table, open, 7);
+						ButtonColumn buttonColumn = new ButtonColumn(table, open, 8);
 						buttonColumn.setMnemonic(KeyEvent.VK_D);
 					}
 				});
 			}
 			
-			ButtonColumn buttonColumn = new ButtonColumn(table, open, 7);
+			ButtonColumn buttonColumn = new ButtonColumn(table, open, 8);
 			buttonColumn.setMnemonic(KeyEvent.VK_D);
 
 			GridBagConstraints gbc_table = new GridBagConstraints();
