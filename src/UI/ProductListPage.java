@@ -12,8 +12,10 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import Controller.ProductController;
 import Controller.StockProductContoller;
 import Model.Model.LoginContainer;
+import Model.Model.ProductView;
 import Model.Model.StockProduct;
 
 import java.awt.GridBagLayout;
@@ -40,7 +42,7 @@ public class ProductListPage extends JDialog {
 	private JTextField nameFiltereField;
 	private JCheckBox isUnderMinAmountCheckBox;
 	
-	private ArrayList<StockProduct> stockProducts = new ArrayList<StockProduct>();
+	private ArrayList<ProductView> products = new ArrayList<ProductView>();
 	private Object[][] data;
 
 	public static void start() {
@@ -62,17 +64,17 @@ public class ProductListPage extends JDialog {
 
 	}
 	
-	private ArrayList<StockProduct> loadData () {
-		StockProductContoller stockProductController = new StockProductContoller();
-		ArrayList<StockProduct> stockProducts = new ArrayList<StockProduct>();
+	private ArrayList<ProductView> loadData () {
+		ProductController productController = new ProductController();
+		ArrayList<ProductView> products = new ArrayList<ProductView>();
 
 		try {
-			stockProducts = stockProductController.getStockProducts(LoginContainer.getInstance().getCurrentUser().getWarehouse().getId());
+			products = productController.getProductsForView(LoginContainer.getInstance().getCurrentUser().getWarehouse().getId());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
-		return stockProducts;
+		return products;
 	}
 
 	public ProductListPage() {
@@ -139,21 +141,21 @@ public class ProductListPage extends JDialog {
 			}
 			{
 				if(nameFiltereField.getText().isEmpty()){
-					this.stockProducts = loadData(); 
-					this.data = new Object[stockProducts.size()][];
+					this.products = loadData(); 
+					this.data = new Object[products.size()][];
 					
 						
-					for (int i = 0; i < stockProducts.size(); i++) {
-						StockProduct stockProduct = stockProducts.get(i);
+					for (int i = 0; i < products.size(); i++) {
+						ProductView product = products.get(i);
 						Object [] newData = {
-							Long.toString(stockProduct.getId()),
-							stockProduct.getProduct().getBarcode(),
-							stockProduct.getProduct().getName(),
-							stockProduct.getProduct().getCategory().getName(),
-							Integer.toString(stockProduct.getAmount()),
-							String.format("%s/%s", stockProduct.getMinStock(), stockProduct.getMaxStock()),
-							stockProduct.getProduct().getSupplier().getSupplierName(),
-							stockProduct.getProductLocation(),
+							Long.toString(product.getStockProductId()),
+							product.getBarcode(),
+							product.getName(),
+							product.getCategory(),
+							Integer.toString(product.getAmount()),
+							String.format("%s/%s", product.getMinStock(), product.getMaxStock()),
+							product.getSupplier(),
+							product.getLocation(),
 							"Open",
 						};
 		
@@ -181,24 +183,24 @@ public class ProductListPage extends JDialog {
 				
 				btnSearch.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						ArrayList<StockProduct> filteredList = stockProducts.stream()
-								.filter((stockProduct) -> stockProduct.getProduct().getName().contains(nameFiltereField.getText()) && 
+						ArrayList<ProductView> filteredList = products.stream()
+								.filter((stockProduct) -> stockProduct.getName().contains(nameFiltereField.getText()) && 
 										(isUnderMinAmountCheckBox.isSelected() ? stockProduct.getAmount() < stockProduct.getMinStock() : true))
 								.collect(Collectors.toCollection(ArrayList::new));
 						setData(new Object[filteredList.size()][]);
 						Object[][] data = new Object[filteredList.size()][];
 						
 						for (int i = 0; i < filteredList.size(); i++) {
-							StockProduct stockProduct = filteredList.get(i);
+							ProductView product = filteredList.get(i);
 							Object [] newData = {
-								Long.toString(stockProduct.getId()),
-								stockProduct.getProduct().getBarcode(),
-								stockProduct.getProduct().getName(),
-								stockProduct.getProduct().getCategory().getName(),
-								Integer.toString(stockProduct.getAmount()),
-								String.format("%s/%s", stockProduct.getMinStock(), stockProduct.getMaxStock()),
-								stockProduct.getProduct().getSupplier().getSupplierName(),
-								stockProduct.getProductLocation(),
+								Long.toString(product.getStockProductId()),
+								product.getBarcode(),
+								product.getName(),
+								product.getName(),
+								Integer.toString(product.getAmount()),
+								String.format("%s/%s", product.getMinStock(), product.getMaxStock()),
+								product.getSupplier(),
+								product.getLocation(),
 								"Open",
 							};
 

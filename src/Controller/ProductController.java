@@ -8,11 +8,20 @@ import java.util.concurrent.ThreadLocalRandom;
 import Model.DB.ProductDB;
 import Model.IF.ProductIF;
 import Model.Model.Product;
+import Model.Model.ProductView;
 import Model.Model.StockProduct;
 
 public class ProductController {
 
 		private ProductIF productDb = new ProductDB();
+		
+		public ArrayList<ProductView> getProductsForView(long warehouseId) throws SQLException {
+			try {
+				return productDb.getProductsForView(warehouseId);
+			} catch (SQLException e){
+				throw e;
+			}
+		}
 
 		public Product getProductByBarcode(String barcode) throws SQLException {
 			try {

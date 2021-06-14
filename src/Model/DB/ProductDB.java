@@ -12,6 +12,7 @@ import Model.Model.MessagesEnum;
 import Model.Model.Price;
 import Model.Model.PriceType;
 import Model.Model.Product;
+import Model.Model.ProductView;
 import Model.Model.StockProduct;
 import Model.Model.Warehouse;
 
@@ -22,6 +23,33 @@ public class ProductDB implements ProductIF {
 	private WarehouseDB warehouseDb = new WarehouseDB();
 	private CategoryDB categoryDb = new CategoryDB();
 	private UnitDB unitDb = new UnitDB();
+	
+	@Override 
+	public ArrayList<ProductView> getProductsForView(long warehouseId) throws SQLException {
+
+		ArrayList<ProductView> products = new ArrayList<ProductView>();
+
+		String sql = ("SELECT * FROM ProductView WHERE warehouse_id = ?");
+
+		Connection con = DBConnection.getInstance().getConnection();
+
+		try {
+			PreparedStatement preparedStmt = con.prepareStatement(sql);
+	
+			preparedStmt.setLong(1, warehouseId);			
+
+			ResultSet rsProducts = preparedStmt.executeQuery();
+
+			while(rsProducts.next()) {
+				products.add(buildProductForView(rsProducts));
+			}
+			con.commit();
+		} catch (SQLException e) {
+			con.rollback();
+			throw e;
+		}
+		return products;
+	}
 
 	@Override
 	public Product getProductByBarcode(String barcode) throws SQLException {
@@ -214,6 +242,19 @@ public class ProductDB implements ProductIF {
 						   null, 
 						   null, 
 						   null);
+	}
+	
+	private ProductView buildProductForView(ResultSet rsProduct) throws SQLException{
+		return new ProductView(rsProduct.getLong("stock_product_id"), 
+							   rsProduct.getLong("barcode"), 
+							   rsProduct.getString("product_name"),
+							   rsProduct.getString("category_name"),
+							   rsProduct.getInt("amount"),
+							   rsProduct.getInt("min_stock"),
+							   rsProduct.getInt("max_stock"),
+							   rsProduct.getString("supplier"),
+							   rsProduct.getString("location")
+				);
 	}
 
 	private StockProduct buildStockProduct(ResultSet rsStockProduct) throws SQLException {

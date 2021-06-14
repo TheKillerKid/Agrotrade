@@ -3,9 +3,11 @@ package Model.IF;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import Model.Model.Product;
+import Model.Model.ProductView;
 import Model.Model.StockProduct;
 
 public interface ProductIF {
+	ArrayList<ProductView> getProductsForView(long warehouseId) throws SQLException;
 	
 	Product getProductByBarcode(String barcode) throws SQLException;
 	
